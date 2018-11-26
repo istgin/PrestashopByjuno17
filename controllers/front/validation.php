@@ -40,9 +40,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		if (empty($toc) || !$toc || $toc != "terms_conditions")
 		{
 			if ($repayment == 3 || $repayment == 4) {
-				$backLink = $this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "invoice", "agree" => "false"));
+				$backLink = "index.php?controller=order&step=1";//$this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "invoice", "agree" => "false"));
 			} else {
-				$backLink = $this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "installment", "agree" => "false"));
+				$backLink = "index.php?controller=order&step=1";//$this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "installment", "agree" => "false"));
 			}
 
 			$cookie->byjuno_invoice_send = Tools::getValue('invoice_send');
