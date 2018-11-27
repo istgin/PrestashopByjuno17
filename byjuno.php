@@ -1,5 +1,6 @@
 <?php
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+
 if (!defined('_PS_VERSION_'))
     exit;
 
@@ -139,10 +140,11 @@ class Byjuno extends PaymentModule
         $customer = $this->context->customer;
         $payment = 'invoice';
         $pp = Tools::getValue('paymentmethod');
-        if ($pp ==  'invoice' || $pp == 'installment') {
+        if ($pp == 'invoice' || $pp == 'installment') {
             $payment = $pp;
         }
-        $selected_payments = Array();
+        $selected_payments_invoice = Array();
+        $selected_payments_installment = Array();
         $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_EN');
         $lng = Context::getContext()->language->iso_code;
         $langtoc = "DE";
@@ -176,84 +178,91 @@ class Byjuno extends PaymentModule
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));*/
         $paymentMethod = Array();
+        $invoice_address = new Address($cart->id_address_invoice);
+        $values = array(
+            'payment' => $payment,
+            'invoice_send' => $invoice_send,
+            'byjuno_allowpostal' => (Configuration::get('BYJUNO_ALLOW_POSTAL') == 'true') ? 1 : 0,
+            'byjuno_gender_birthday' => (Configuration::get('BYJUNO_GENDER_BIRTHDAY') == 'true') ? 1 : 0,
+            'email' => $this->context->customer->email,
+            'address' => trim($invoice_address->address1 . ' ' . $invoice_address->address2) . ', ' . $invoice_address->postcode . ' ' . $invoice_address->city,
+            'years' => $years,
+            'sl_year' => $byjuno_years,
+            'months' => $months,
+            'sl_month' => $byjuno_months,
+            'days' => $days,
+            'sl_day' => $byjuno_days,
+            'sl_gender' => $selected_gender,
+            'l_select_payment_plan' => $this->trans("Select payment plan", array(), 'Modules.Byjuno.Admin'),
+            'l_select_invoice_delivery_method' => $this->trans("Select invoice delivery method", array(), 'Modules.Byjuno.Admin'),
+            'l_gender' => $this->trans("Gender", array(), 'Modules.Byjuno.Admin'),
+            'l_male' => $this->trans("Male", array(), 'Modules.Byjuno.Admin'),
+            'l_female' => $this->trans("Female", array(), 'Modules.Byjuno.Admin'),
+            'l_date_of_birth' => $this->trans("Date of Birth", array(), 'Modules.Byjuno.Admin'),
+            'l_you_must_agree_terms_conditions' => $this->trans("You must agree terms conditions", array(), 'Modules.Byjuno.Admin'),
+            'l_i_agree_with_terms_and_conditions' => $this->trans("I agree with terms and conditions", array(), 'Modules.Byjuno.Admin'),
+            'l_other_payment_methods' => $this->trans("Other payment methods", array(), 'Modules.Byjuno.Admin'),
+            'l_i_confirm_my_order' => $this->trans("I confirm my order", array(), 'Modules.Byjuno.Admin'),
+            'l_your_shopping_cart_is_empty' => $this->trans("Your shopping cart is empty.", array(), 'Modules.Byjuno.Admin'),
+            'l_by_email' => $this->trans("By email", array(), 'Modules.Byjuno.Admin'),
+            'l_by_post' => $this->trans("By post", array(), 'Modules.Byjuno.Admin'),
+            'agree_error' => (!empty(Tools::getValue('agree'))) ? 1 : 0
+        );
         if ($byjuno_invoice) {
 
-            if ($payment == 'invoice')
-            {
-                if (Configuration::get("byjuno_invoice") == 'enable')
-                {
-                    $selected_payments[] = Array('name' => 'Byjuno Invoice (with partial payment option)', 'id' => 'byjuno_invoice', "selected" => 0);
-                }
-                if (Configuration::get("single_invoice") == 'enable')
-                {
-                    $selected_payments[] = Array('name' => 'Byjuno Single Invoice', 'id' => 'single_invoice', "selected" => 0);
-                }
-                $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_'.$langtoc);
+            if (Configuration::get("byjuno_invoice") == 'enable') {
+                $selected_payments_invoice[] = Array('name' => 'Byjuno Invoice (with partial payment option)', 'id' => 'byjuno_invoice', "selected" => 0);
             }
-            $selected_payments[0]["selected"] = 1;
+            if (Configuration::get("single_invoice") == 'enable') {
+                $selected_payments_invoice[] = Array('name' => 'Byjuno Single Invoice', 'id' => 'single_invoice', "selected" => 0);
+            }
+            $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
-            $invoice_address = new Address($cart->id_address_invoice);
-            $values = array(
-                'payment' => $payment,
-                'selected_payments' => $selected_payments,
-                'invoice_send' => $invoice_send,
-                'byjuno_allowpostal' => (Configuration::get('BYJUNO_ALLOW_POSTAL') == 'true') ? 1 : 0,
-                'byjuno_gender_birthday' => (Configuration::get('BYJUNO_GENDER_BIRTHDAY') == 'true') ? 1 : 0,
-                'email' => $this->context->customer->email,
-                'address' => trim($invoice_address->address1.' '.$invoice_address->address2).', '.$invoice_address->postcode.' '.$invoice_address->city,
-                'years' => $years,
-                'sl_year' => $byjuno_years,
-                'months' => $months,
-                'sl_month' => $byjuno_months,
-                'days' => $days,
-                'sl_day' => $byjuno_days,
-                'sl_gender' => $selected_gender,
-                'toc_url' => $tocUrl,
-                'l_select_payment_plan' => $this->trans("Select payment plan", array(), 'Modules.Byjuno.Admin'),
-                'l_select_invoice_delivery_method' => $this->trans("Select invoice delivery method", array(), 'Modules.Byjuno.Admin'),
-                'l_gender' => $this->trans("Gender", array(), 'Modules.Byjuno.Admin'),
-                'l_male' => $this->trans("Male", array(), 'Modules.Byjuno.Admin'),
-                'l_female' => $this->trans("Female", array(), 'Modules.Byjuno.Admin'),
-                'l_date_of_birth' => $this->trans("Date of Birth", array(), 'Modules.Byjuno.Admin'),
-                'l_you_must_agree_terms_conditions' => $this->trans("You must agree terms conditions", array(), 'Modules.Byjuno.Admin'),
-                'l_i_agree_with_terms_and_conditions' => $this->trans("I agree with terms and conditions", array(), 'Modules.Byjuno.Admin'),
-                'l_other_payment_methods' => $this->trans("Other payment methods", array(), 'Modules.Byjuno.Admin'),
-                'l_i_confirm_my_order' => $this->trans("I confirm my order", array(), 'Modules.Byjuno.Admin'),
-                'l_your_shopping_cart_is_empty' => $this->trans("Your shopping cart is empty.", array(), 'Modules.Byjuno.Admin'),
-                'l_by_email' => $this->trans("By email", array(), 'Modules.Byjuno.Admin'),
-                'l_by_post' => $this->trans("By post", array(), 'Modules.Byjuno.Admin'),
-                //Select invoice delivery method
-                //Gender
-                //Male
-                //Female
-                //Date of Birth
-                //You must agree terms conditions
-                //I agree with terms and conditions
-                //Other payment methods
-                //I confirm my order
-                //Your shopping cart is empty.
-                //By email
-                //By post
-                'agree_error' => (!empty(Tools::getValue('agree'))) ? 1 : 0
-            );
-
-            $this->smarty->assign(
-                $values
-            );
-            $paymentForm = $this->fetch('module:byjuno/views/templates/front/payment_infos_byjuno.tpl');
-            $newOptionByjuno = new PaymentOption();
-            $newOptionByjuno->setModuleName($this->name)
-                ->setCallToActionText($this->trans('Byjuno invoice', array(), 'Modules.Byjuno.Admin'))
-                ->setForm($this->generateForm());
-
-            $paymentMethod[] = $newOptionByjuno;
+            $selected_payments_invoice[0]["selected"] = 1;
+            $values['selected_payments_invoice'] = $selected_payments_invoice;
+            $values['toc_url_invoice'] = $tocUrl;
         }
 
+        if ($byjuno_installment) {
+            if (Configuration::get("installment_3") == 'enable') {
+                $selected_payments_installment[] = Array('name' => '3 installments', 'id' => 'installment_3', "selected" => 0);
+            }
+            if (Configuration::get("installment_10") == 'enable') {
+                $selected_payments_installment[] = Array('name' => '10 installments', 'id' => 'installment_10', "selected" => 0);
+            }
+            if (Configuration::get("installment_12") == 'enable') {
+                $selected_payments_installment[] = Array('name' => '12 installments', 'id' => 'installment_12', "selected" => 0);
+            }
+            if (Configuration::get("installment_24") == 'enable') {
+                $selected_payments_installment[] = Array('name' => '24 installments', 'id' => 'installment_24', "selected" => 0);
+            }
+            if (Configuration::get("installment_4x12") == 'enable') {
+                $selected_payments_installment[] = Array('name' => '4 installments in 12 months', 'id' => 'installment_4x12', "selected" => 0);
+            }
+            $tocUrl = Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
+            $selected_payments_installment[0]["selected"] = 1;
+
+            $values['selected_payments_installment'] = $selected_payments_installment;
+            $values['toc_url_installment'] = $tocUrl;
+        }
+
+        $this->smarty->assign(
+            $values
+        );
+
+        if ($byjuno_invoice) {
+            $newOptionInvoice = new PaymentOption();
+            $newOptionInvoice->setModuleName($this->name)
+                ->setCallToActionText($this->trans('Byjuno invoice', array(), 'Modules.Byjuno.Admin'))
+                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_invoice.tpl'));
+
+            $paymentMethod[] = $newOptionInvoice;
+        }
         if ($byjuno_installment) {
             $newOptionInstallment = new PaymentOption();
             $newOptionInstallment->setModuleName($this->name)
                 ->setCallToActionText($this->trans('Byjuno installment', array(), 'Modules.Byjuno.Admin'))
-                ->setForm($this->generateForm());
+                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_installment.tpl'));
             $paymentMethod[] = $newOptionInstallment;
         }
 
@@ -263,31 +272,6 @@ class Byjuno extends PaymentModule
         return $paymentMethod;
     }
 
-    public function getEmbeddedPaymentOption()
-    {
-        $embeddedOption = new PaymentOption();
-        $embeddedOption->setCallToActionText($this->trans('Pay embedded', array(), 'Modules.Byjuno.Admin'))
-            ->setForm($this->generateForm());
-        return $embeddedOption;
-    }
-
-    protected function generateForm()
-    {
-        $months = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $months[] = sprintf("%02d", $i);
-        }
-        $years = [];
-        for ($i = 0; $i <= 10; $i++) {
-            $years[] = date('Y', strtotime('+'.$i.' years'));
-        }
-        $this->context->smarty->assign([
-            'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true),
-            'months' => $months,
-            'years' => $years,
-        ]);
-        return $this->fetch('module:byjuno/views/templates/front/payment_form.tpl');
-    }
 
     public function hookPayment($params)
     {
@@ -522,8 +506,7 @@ class Byjuno extends PaymentModule
                 /* @var $invoice OrderInvoiceCore */
                 $curInvoice = $invoice;
             }
-            if ($curInvoice == null)
-            {
+            if ($curInvoice == null) {
                 return;
             }
             $invoiceNum = $curInvoice->getInvoiceNumberFormatted($id_lang = Context::getContext()->language->id, (int)$orderCore->id_shop);
@@ -571,7 +554,7 @@ class Byjuno extends PaymentModule
             $arrayOfTrigger = false;
             try {
                 $arrayOfTrigger = unserialize(Configuration::get('BYJUNO_S4_TRIGGER'));
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $arrayOfTrigger = false;
             }
             if ($arrayOfTrigger != false && in_array($orderStatus->id, $arrayOfTrigger)) {
@@ -788,7 +771,7 @@ class Byjuno extends PaymentModule
         $arrayOfTrigger = false;
         try {
             $arrayOfTrigger = unserialize(Configuration::get('BYJUNO_S4_TRIGGER'));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $arrayOfTrigger = Array(0 => Configuration::get('PS_OS_PAYMENT'));
         }
         if ($arrayOfTrigger == false) {

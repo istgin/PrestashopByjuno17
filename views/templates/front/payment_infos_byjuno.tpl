@@ -1,4 +1,4 @@
-<section>
+<section class="form-fields">
 	<style>
 		div.byjuno_toc .checker,
 		.checker+label {
@@ -32,14 +32,21 @@
 		}
 		acceptCGVByjuno();
 	</script>
-	<div class="box cheque-box">
+		<div class="form-group row">
+			<label class="col-md-3 form-control-label">
+				{$l_select_payment_plan}
+			</label>
+			<div class="col-md-9">
+				{foreach from=$selected_payments item=s_payment}
+					<input type="radio" name="selected_plan" class="form-control" value="{$s_payment.id}" {if $s_payment.selected == 1} checked="checked"{/if}> &nbsp;{l s=$s_payment.name mod='byjuno'}<br />
+				{/foreach}
+			</div>
+		</div>
 		<h3 class="page-subheading">{l s=$paymentname mod='byjuno'}</h3>
 		{if (count($selected_payments) > 1)}
 			<div class="required form-group">
 				<label for="selected_plan">{$l_select_payment_plan}</label><br />
-				{foreach from=$selected_payments item=s_payment}
-					<input type="radio" name="selected_plan" class="form-control" value="{$s_payment.id}" {if $s_payment.selected == 1} checked="checked"{/if}> &nbsp;{l s=$s_payment.name mod='byjuno'}<br />
-				{/foreach}
+
 			</div><br />
 		{/if}
 		{if (count($selected_payments) == 1)}
@@ -110,14 +117,4 @@
 			<input type="checkbox" value="terms_conditions" name="terms_conditions" id="terms_conditions" style="display: inline-block" />
 			<a href="{$toc_url}" target="_blank" style="font-weight: bold; text-decoration: underline">{$l_i_agree_with_terms_and_conditions}</a>
 		</div>
-	</div>
 </section>
-<script>
-	$("#payment-confirmation > .ps-shown-by-js > button").click(function(e) {
-		var byjunoValidation = $(".payment-options").find("input[data-module-name='byjuno']").is(':checked');
-		if (myPaymentMethodSelected){
-			alert('aaa');
-			//Your validations or other checks.
-		}
-	});
-</script>
