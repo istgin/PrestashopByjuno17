@@ -48,7 +48,12 @@ class Byjuno extends PaymentModule
         $state = $params['order']->getCurrentState();
         if (in_array($state, array(Configuration::get('BYJUNO_ORDER_STATE_COMPLETE')))) {
             $this->smarty->assign(array(
-                'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
+                'total_to_pay' => Tools::displayPrice(
+                    $params['order']->getOrdersTotalPaid(),
+                    new Currency($params['order']->id_currency),
+                    false
+                ),
+                'shop_name' => $this->context->shop->name,
                 'status' => 'ok',
                 'order_status_text' => $this->l('Your order on %s is complete.'),
                 'order_status_text2' => $this->l('Amount'),
