@@ -182,18 +182,18 @@ class Byjuno extends PaymentModule
             'days' => $days,
             'sl_day' => $byjuno_days,
             'sl_gender' => $selected_gender,
-            'l_select_payment_plan' => $this->trans("Select payment plan", array(), 'Modules.Byjuno.Admin'),
-            'l_select_invoice_delivery_method' => $this->trans("Select invoice delivery method", array(), 'Modules.Byjuno.Admin'),
-            'l_gender' => $this->trans("Gender", array(), 'Modules.Byjuno.Admin'),
-            'l_male' => $this->trans("Male", array(), 'Modules.Byjuno.Admin'),
-            'l_female' => $this->trans("Female", array(), 'Modules.Byjuno.Admin'),
-            'l_date_of_birth' => $this->trans("Date of Birth", array(), 'Modules.Byjuno.Admin'),
-            'l_i_agree_with_terms_and_conditions' => $this->trans("I agree with terms and conditions", array(), 'Modules.Byjuno.Admin'),
-            'l_other_payment_methods' => $this->trans("Other payment methods", array(), 'Modules.Byjuno.Admin'),
-            'l_i_confirm_my_order' => $this->trans("I confirm my order", array(), 'Modules.Byjuno.Admin'),
-            'l_your_shopping_cart_is_empty' => $this->trans("Your shopping cart is empty.", array(), 'Modules.Byjuno.Admin'),
-            'l_by_email' => $this->trans("By email", array(), 'Modules.Byjuno.Admin'),
-            'l_by_post' => $this->trans("By post", array(), 'Modules.Byjuno.Admin'),
+            'l_select_payment_plan' => $this->l("Select payment plan"),
+            'l_select_invoice_delivery_method' => $this->l("Select invoice delivery method"),
+            'l_gender' => $this->l("Gender"),
+            'l_male' => $this->l("Male"),
+            'l_female' => $this->l("Female"),
+            'l_date_of_birth' => $this->l("Date of Birth"),
+            'l_i_agree_with_terms_and_conditions' => $this->l("I agree with terms and conditions"),
+            'l_other_payment_methods' => $this->l("Other payment methods"),
+            'l_i_confirm_my_order' => $this->l("I confirm my order"),
+            'l_your_shopping_cart_is_empty' => $this->l("Your shopping cart is empty."),
+            'l_by_email' => $this->l("By email"),
+            'l_by_post' => $this->l("By post"),
         );
         if ($byjuno_invoice) {
 
@@ -240,7 +240,7 @@ class Byjuno extends PaymentModule
         if ($byjuno_invoice) {
             $newOptionInvoice = new PaymentOption();
             $newOptionInvoice->setModuleName($this->name)
-                ->setCallToActionText($this->trans('Byjuno invoice', array(), 'Modules.Byjuno.Admin'))
+                ->setCallToActionText($this->l('Byjuno invoice'))
                 ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_invoice.tpl'));
 
             $paymentMethod[] = $newOptionInvoice;
@@ -248,7 +248,7 @@ class Byjuno extends PaymentModule
         if ($byjuno_installment) {
             $newOptionInstallment = new PaymentOption();
             $newOptionInstallment->setModuleName($this->name)
-                ->setCallToActionText($this->trans('Byjuno installment', array(), 'Modules.Byjuno.Admin'))
+                ->setCallToActionText($this->l('Byjuno installment'))
                 ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_installment.tpl'));
             $paymentMethod[] = $newOptionInstallment;
         }
@@ -644,7 +644,7 @@ class Byjuno extends PaymentModule
         if (!empty(Tools::getValue('agree_byjuno')))
         {
             $values = array(
-                'l_you_must_agree_terms_conditions' => $this->trans("You must agree terms conditions", array(), 'Modules.Byjuno.Admin'),
+                'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
                 'agree_error' => (!empty(Tools::getValue('agree_byjuno'))) ? 1 : 0
             );
 
