@@ -41,6 +41,7 @@ class Byjuno extends PaymentModule
 
     public function hookPaymentReturn($params)
     {
+        global $cookie;
         if (!$this->active)
             return;
 
@@ -59,6 +60,7 @@ class Byjuno extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
+        $cookie->intrumId = "";
         return $this->fetch('module:byjuno/views/templates/hook/payment_return.tpl');
     }
 
@@ -164,19 +166,6 @@ class Byjuno extends PaymentModule
         $byjuno_years = date("Y", $tm);
         $byjuno_months = date("m", $tm);
         $byjuno_days = date("d", $tm);
-        /*
-        $this->smarty->assign(array(
-            'byjuno_invoice' => $byjuno_invoice,
-            'byjuno_installment' => $byjuno_installment,
-            'name_byjuno_installemnt' => $this->l('Byjuno installment', 'byjuno'),
-            'name_byjuno_invoice' => $this->l('Byjuno invoice', 'byjuno'),
-            'name_pay_byjuno_installemnt' => $this->l('Pay by byjuno installment', 'byjuno'),
-            'name_pay_byjuno_invoice' => $this->l('Pay by byjuno invoice', 'byjuno'),
-            'lang' => $lang,
-            'this_path' => $this->_path,
-            'this_path_bw' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));*/
         $paymentMethod = Array();
         $invoice_address = new Address($cart->id_address_invoice);
         $values = array(
@@ -402,8 +391,7 @@ class Byjuno extends PaymentModule
         if (!parent::install()
             || !$this->registerHook('paymentOptions')
             || !$this->registerHook('paymentReturn')
-            || !$this->registerHook('displayAfterBodyOpeningTag')
-            || !$this->registerHook('displayBeforeShoppingCartBlock')
+            || !$this->registerHook('displayCheckoutSummaryTop')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('header')
@@ -653,7 +641,7 @@ class Byjuno extends PaymentModule
         }
     }
 
-    public function hookDisplayBeforeShoppingCartBlock($params)
+    public function hookDisplayCheckoutSummaryTop($params)
     {
         global $cookie;
         if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && (!isset($cookie->intrumId) || $cookie->intrumId == "")) {
