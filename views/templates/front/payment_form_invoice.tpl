@@ -82,11 +82,6 @@
                 </div>
             </div>
         {/if}
-        {if ($agree_error == 1)}
-            <div class="alert alert-danger">
-                {$l_you_must_agree_terms_conditions}
-            </div>
-        {/if}
         <div class="form-group byjuno_toc">
             <input type="checkbox" value="terms_conditions" name="terms_conditions" id="terms_conditions"
                    style="display: inline-block"/> &nbsp;

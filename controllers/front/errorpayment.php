@@ -39,6 +39,6 @@ class ByjunoErrorpaymentModuleFrontController extends ModuleFrontController
 	{
 		$this->display_column_left = false;
 		parent::initContent();
-		$this->setTemplate('payment_error.tpl');
+		$this->setTemplate('module:byjuno/views/templates/front/payment_error.tpl');
 	}
 }

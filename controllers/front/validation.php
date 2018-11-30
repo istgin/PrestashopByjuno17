@@ -40,9 +40,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		if (empty($toc) || !$toc || $toc != "terms_conditions")
 		{
 			if ($repayment == 3 || $repayment == 4) {
-				$backLink = "index.php?controller=order&step=1";//$this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "invoice", "agree" => "false"));
+				$backLink = "index.php?controller=order&step=1&agree_byjuno=true";
 			} else {
-				$backLink = "index.php?controller=order&step=1";//$this->context->link->getModuleLink('byjuno', 'payment', Array("paymentmethod" => "installment", "agree" => "false"));
+				$backLink = "index.php?controller=order&step=1&agree_byjuno=true";
 			}
 
 			$cookie->byjuno_invoice_send = Tools::getValue('invoice_send');
@@ -197,10 +197,6 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 			"response" => $responseS3,
 			"request" => $xml
 		));
-		//$history = new OrderHistory();
-		//$history->id_order = $this->module->currentOrder;
-		//$history->changeIdOrderState(Configuration::get('PS_OS_PAYMENT'), $this->module->currentOrder);
-		//$history->addWithemail(true);
 
 		if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
 			$order->setCurrentState(Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));

@@ -188,14 +188,12 @@ class Byjuno extends PaymentModule
             'l_male' => $this->trans("Male", array(), 'Modules.Byjuno.Admin'),
             'l_female' => $this->trans("Female", array(), 'Modules.Byjuno.Admin'),
             'l_date_of_birth' => $this->trans("Date of Birth", array(), 'Modules.Byjuno.Admin'),
-            'l_you_must_agree_terms_conditions' => $this->trans("You must agree terms conditions", array(), 'Modules.Byjuno.Admin'),
             'l_i_agree_with_terms_and_conditions' => $this->trans("I agree with terms and conditions", array(), 'Modules.Byjuno.Admin'),
             'l_other_payment_methods' => $this->trans("Other payment methods", array(), 'Modules.Byjuno.Admin'),
             'l_i_confirm_my_order' => $this->trans("I confirm my order", array(), 'Modules.Byjuno.Admin'),
             'l_your_shopping_cart_is_empty' => $this->trans("Your shopping cart is empty.", array(), 'Modules.Byjuno.Admin'),
             'l_by_email' => $this->trans("By email", array(), 'Modules.Byjuno.Admin'),
             'l_by_post' => $this->trans("By post", array(), 'Modules.Byjuno.Admin'),
-            'agree_error' => (!empty(Tools::getValue('agree'))) ? 1 : 0
         );
         if ($byjuno_invoice) {
 
@@ -392,6 +390,7 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('paymentOptions')
             || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayCheckoutSummaryTop')
+            || !$this->registerHook('displayPaymentTop')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('header')
@@ -640,7 +639,22 @@ class Byjuno extends PaymentModule
             }
         }
     }
+    public function hookDisplayPaymentTop($params)
+    {
+        if (!empty(Tools::getValue('agree_byjuno')))
+        {
+            $values = array(
+                'l_you_must_agree_terms_conditions' => $this->trans("You must agree terms conditions", array(), 'Modules.Byjuno.Admin'),
+                'agree_error' => (!empty(Tools::getValue('agree_byjuno'))) ? 1 : 0
+            );
 
+            $this->smarty->assign(
+                $values
+            );
+
+            return $this->fetch('module:byjuno/views/templates/hook/payment_err_byjuno.tpl');
+        }
+    }
     public function hookDisplayCheckoutSummaryTop($params)
     {
         global $cookie;
