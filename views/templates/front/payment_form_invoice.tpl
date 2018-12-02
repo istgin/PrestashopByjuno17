@@ -26,7 +26,7 @@
                     {$l_select_invoice_delivery_method}
                 </label>
 
-                <div class="col-md-9">
+                <div class="col-md-9 form-control-comment">
                     <input type="radio" name="invoice_send" {if $invoice_send == "email"} checked="checked"{/if}
                            value="email"> &nbsp;{$l_by_email}: {$email}<br/>
                     <input type="radio" name="invoice_send" {if $invoice_send == "postal"} checked="checked"{/if}
