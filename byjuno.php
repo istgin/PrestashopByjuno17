@@ -199,6 +199,7 @@ class Byjuno extends PaymentModule
             'l_your_shopping_cart_is_empty' => $this->l("Your shopping cart is empty."),
             'l_by_email' => $this->l("By email"),
             'l_by_post' => $this->l("By post"),
+            'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
         );
         if ($byjuno_invoice) {
 
