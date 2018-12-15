@@ -480,7 +480,7 @@ class Byjuno extends PaymentModule
         {
             return '';
         }
-        if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") == 'enable') {
+        if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") == 'enable' && Configuration::get("BYJUNO_S4_ALLOWED") == 'enable') {
             return '';
         }
         return '<style>#desc-order-partial_refund { display: none !important; visibility: hidden !important;}</style>';
