@@ -228,7 +228,7 @@ function CreatePrestaShopRequest(CartCore $cart, CustomerCore $customer, Currenc
     $request->setExtraInfo($extraInfo);
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno Prestashop module 1.0.3';
+    $extraInfo["Value"] = 'Byjuno Prestashop 1.7 module 1.0.0';
     $request->setExtraInfo($extraInfo);	
 
     return $request;
@@ -389,7 +389,7 @@ function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno Prestashop module 1.0.3';
+    $extraInfo["Value"] = 'Byjuno Prestashop 1.7 module 1.0.0';
     $request->setExtraInfo($extraInfo);	
 
     return $request;
