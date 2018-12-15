@@ -11,7 +11,7 @@
                     {foreach from=$selected_payments_installment item=s_payment}
                         <input type="radio" name="selected_plan"
                                value="{$s_payment.id}" {if $s_payment.selected == 1} checked="checked"{/if}>
-                        &nbsp;{l s=$s_payment.name mod='byjuno'}
+                        &nbsp;{$s_payment.name}
                         <br/>
                     {/foreach}
                 </div>

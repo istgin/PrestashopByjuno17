@@ -204,10 +204,10 @@ class Byjuno extends PaymentModule
         if ($byjuno_invoice) {
 
             if (Configuration::get("byjuno_invoice") == 'enable') {
-                $selected_payments_invoice[] = Array('name' => 'Byjuno Invoice (with partial payment option)', 'id' => 'byjuno_invoice', "selected" => 0);
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
             }
             if (Configuration::get("single_invoice") == 'enable') {
-                $selected_payments_invoice[] = Array('name' => 'Byjuno Single Invoice', 'id' => 'single_invoice', "selected" => 0);
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
             }
             $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
@@ -218,19 +218,19 @@ class Byjuno extends PaymentModule
 
         if ($byjuno_installment) {
             if (Configuration::get("installment_3") == 'enable') {
-                $selected_payments_installment[] = Array('name' => '3 installments', 'id' => 'installment_3', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
             }
             if (Configuration::get("installment_10") == 'enable') {
-                $selected_payments_installment[] = Array('name' => '10 installments', 'id' => 'installment_10', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('10 installments'), 'id' => 'installment_10', "selected" => 0);
             }
             if (Configuration::get("installment_12") == 'enable') {
-                $selected_payments_installment[] = Array('name' => '12 installments', 'id' => 'installment_12', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
             }
             if (Configuration::get("installment_24") == 'enable') {
-                $selected_payments_installment[] = Array('name' => '24 installments', 'id' => 'installment_24', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('24 installments'), 'id' => 'installment_24', "selected" => 0);
             }
             if (Configuration::get("installment_4x12") == 'enable') {
-                $selected_payments_installment[] = Array('name' => '4 installments in 12 months', 'id' => 'installment_4x12', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('4 installments in 12 months'), 'id' => 'installment_4x12', "selected" => 0);
             }
             $tocUrl = Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
             $selected_payments_installment[0]["selected"] = 1;
