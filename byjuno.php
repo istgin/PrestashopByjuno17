@@ -399,6 +399,7 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('displayPaymentTop')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
+            || !$this->registerHook('displayBackOfficeOrderActions')
             || !$this->registerHook('header')
         ) {
             return false;
@@ -469,6 +470,20 @@ class Byjuno extends PaymentModule
 
         }
         return true;
+    }
+
+    public  function  hookDisplayBackOfficeOrderActions($params)
+    {
+        $orderCore = new OrderCore((int)$params["id_order"]);
+        $order_module = $orderCore->module;
+        if ($order_module != 'byjuno')
+        {
+            return '';
+        }
+        if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") == 'enable') {
+            return '';
+        }
+        return '<style>#desc-order-partial_refund { display: none !important; visibility: hidden !important;}</style>';
     }
 
     public function hookActionOrderSlipAdd($params)
