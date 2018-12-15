@@ -161,6 +161,10 @@ function CreatePrestaShopRequest(CartCore $cart, CustomerCore $customer, Currenc
         $request->setCompanyName1($invoice_address->company);
     }
 
+    if (!empty($shipping_address->company)) {
+        $request->setDeliveryCompanyName1($shipping_address->company);
+    }
+
     if ($selected_gender != "") {
         $request->setGender($selected_gender);
     }
@@ -294,6 +298,10 @@ function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency
 
     if (!empty($invoice_address->company)) {
         $request->setCompanyName1($invoice_address->company);
+    }
+
+    if (!empty($shipping_address->company)) {
+        $request->setDeliveryCompanyName1($shipping_address->company);
     }
 
     if ($selected_gender != "") {
