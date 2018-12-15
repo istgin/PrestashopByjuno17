@@ -18,7 +18,7 @@
             </div>
         {/if}
         {if (count($selected_payments_installment) == 1)}
-            <input type="hidden" name="selected_plan" value="{$selected_payments[0].id}">
+            <input type="hidden" name="selected_plan" value="{$selected_payments_installment[0].id}">
         {/if}
         {if ($byjuno_allowpostal == 1)}
             <div class="form-group row">

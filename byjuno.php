@@ -92,13 +92,13 @@ class Byjuno extends PaymentModule
         ) {
             $byjuno_installment = true;
         }
+        $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
         if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
             $status = 0;
             $invoice_address = new Address($this->context->cart->id_address_invoice);
             $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
 
             $type = "Credit check";
-            $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
             $xml = "";
             if ($b2b && !empty($invoice_address->company)) {
                 $type = "Credit check B2B";
@@ -202,18 +202,28 @@ class Byjuno extends PaymentModule
             'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
         );
         if ($byjuno_invoice) {
+            if ($b2b && !empty($invoice_address->company)) {
+                if (Configuration::get("single_invoice") == 'enable') {
+                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
+                }
+                $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
-            if (Configuration::get("byjuno_invoice") == 'enable') {
-                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
-            }
-            if (Configuration::get("single_invoice") == 'enable') {
-                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
-            }
-            $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
+                $selected_payments_invoice[0]["selected"] = 1;
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+                $values['toc_url_invoice'] = $tocUrl;
+            } else  {
+                if (Configuration::get("byjuno_invoice") == 'enable') {
+                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
+                }
+                if (Configuration::get("single_invoice") == 'enable') {
+                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
+                }
+                $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
-            $selected_payments_invoice[0]["selected"] = 1;
-            $values['selected_payments_invoice'] = $selected_payments_invoice;
-            $values['toc_url_invoice'] = $tocUrl;
+                $selected_payments_invoice[0]["selected"] = 1;
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+                $values['toc_url_invoice'] = $tocUrl;
+            }
         }
 
         if ($byjuno_installment) {
@@ -289,13 +299,13 @@ class Byjuno extends PaymentModule
         ) {
             $byjuno_installment = true;
         }
+        $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
         if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
             $status = 0;
             $invoice_address = new Address($this->context->cart->id_address_invoice);
             $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
 
             $type = "Credit check";
-            $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
             $xml = "";
             if ($b2b && !empty($invoice_address->company)) {
                 $type = "Credit check B2B";
