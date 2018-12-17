@@ -405,7 +405,7 @@ class Byjuno extends PaymentModule
         if (!parent::install()
             || !$this->registerHook('paymentOptions')
             || !$this->registerHook('paymentReturn')
-            || !$this->registerHook('displayCheckoutSummaryTop')
+            || !$this->registerHook('displayAfterBodyOpeningTag')
             || !$this->registerHook('displayPaymentTop')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
@@ -482,7 +482,7 @@ class Byjuno extends PaymentModule
         return true;
     }
 
-    public  function  hookDisplayBackOfficeOrderActions($params)
+    public function hookDisplayBackOfficeOrderActions($params)
     {
         $orderCore = new OrderCore((int)$params["id_order"]);
         $order_module = $orderCore->module;
@@ -686,7 +686,8 @@ class Byjuno extends PaymentModule
             return $this->fetch('module:byjuno/views/templates/hook/payment_err_byjuno.tpl');
         }
     }
-    public function hookDisplayCheckoutSummaryTop($params)
+
+    public function hookDisplayAfterBodyOpeningTag($params)
     {
         global $cookie;
         if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && (!isset($cookie->intrumId) || $cookie->intrumId == "")) {
