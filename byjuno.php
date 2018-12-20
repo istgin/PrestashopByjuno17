@@ -85,13 +85,19 @@ class Byjuno extends PaymentModule
         if (Configuration::get("single_invoice") == 'enable' || Configuration::get("byjuno_invoice") == 'enable') {
             $byjuno_invoice = true;
         }
-        if ((Configuration::get("installment_3") == 'enable'
+        if (Configuration::get("installment_3") == 'enable'
             || Configuration::get("installment_10") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
-            || Configuration::get("installment_4x12") == 'enable') && !$b2b
+            || Configuration::get("installment_4x12") == 'enable'
         ) {
             $byjuno_installment = true;
+        }
+        if ($b2b) {
+            $invoice_address = new Address($this->context->cart->id_address_invoice);
+            if (!empty($invoice_address->company)) {
+                $byjuno_installment = false;
+            }
         }
         if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
             $status = 0;
@@ -292,13 +298,19 @@ class Byjuno extends PaymentModule
         if (Configuration::get("single_invoice") == 'enable' || Configuration::get("byjuno_invoice") == 'enable') {
             $byjuno_invoice = true;
         }
-        if ((Configuration::get("installment_3") == 'enable'
+        if (Configuration::get("installment_3") == 'enable'
             || Configuration::get("installment_10") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
-            || Configuration::get("installment_4x12") == 'enable') && !$b2b
+            || Configuration::get("installment_4x12") == 'enable'
         ) {
             $byjuno_installment = true;
+        }
+        if ($b2b) {
+            $invoice_address = new Address($this->context->cart->id_address_invoice);
+            if (!empty($invoice_address->company)) {
+                $byjuno_installment = false;
+            }
         }
         if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
             $status = 0;
