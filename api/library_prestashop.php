@@ -253,7 +253,7 @@ function byjunoIsStatusOk($status, $position)
     }
 }
 
-function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency $currency, $repayment, $riskOwner, $invoiceDelivery, $selected_gender = "", $selected_birthday = "") {
+function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency $currency, $repayment, $riskOwner, $invoiceDelivery, $selected_gender = "", $selected_birthday = "", $transaction = "") {
 
     global $cookie;
     $customer = new Customer($order->id_customer);
@@ -385,6 +385,12 @@ function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency
     if ($riskOwner != "") {
         $extraInfo["Name"] = 'RISKOWNER';
         $extraInfo["Value"] = $riskOwner;
+        $request->setExtraInfo($extraInfo);
+    }
+
+    if (!empty($transaction)) {
+        $extraInfo["Name"] = 'TRANSACTIONNUMBER';
+        $extraInfo["Value"] = $transaction;
         $request->setExtraInfo($extraInfo);
     }
 

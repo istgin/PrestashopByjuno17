@@ -71,6 +71,7 @@ class Byjuno extends PaymentModule
 
     public function hookPaymentOptions($params)
     {
+        global $cookie;
         if (!$this->active) {
             return;
         }
@@ -103,42 +104,52 @@ class Byjuno extends PaymentModule
             $status = 0;
             $invoice_address = new Address($this->context->cart->id_address_invoice);
             $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
-
+            $requestUniq = clone $request;
+            $requestUniq->setRequestId("");
             $type = "Credit check";
             $xml = "";
+            $xmlSha = "";
             if ($b2b && !empty($invoice_address->company)) {
                 $type = "Credit check B2B";
                 $xml = $request->createRequestCompany();
+                $xmlSha = $requestUniq->createRequestCompany();
             } else {
                 $xml = $request->createRequest();
+                $xmlSha = $requestUniq->createRequest();
             }
+            $sha = sha1($xmlSha);
+            if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
+                $status = $cookie->creditCheckStatus;
+            } else {
+                $byjunoCommunicator = new ByjunoCommunicator();
+                $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
+                $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
 
-            $byjunoCommunicator = new ByjunoCommunicator();
-            $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-            $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-
-            if ($response) {
-                $byjunoResponse = new ByjunoResponse();
-                $byjunoResponse->setRawResponse($response);
-                $byjunoResponse->processResponse();
-                $status = $byjunoResponse->getCustomerRequestStatus();
+                if ($response) {
+                    $byjunoResponse = new ByjunoResponse();
+                    $byjunoResponse->setRawResponse($response);
+                    $byjunoResponse->processResponse();
+                    $status = $byjunoResponse->getCustomerRequestStatus();
+                }
+                $byjunoLogger = ByjunoLogger::getInstance();
+                $byjunoLogger->log(Array(
+                    "firstname" => $request->getFirstName(),
+                    "lastname" => $request->getLastName(),
+                    "town" => $request->getTown(),
+                    "postcode" => $request->getPostCode(),
+                    "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
+                    "country" => $request->getCountryCode(),
+                    "ip" => byjunoGetClientIp(),
+                    "status" => $status,
+                    "request_id" => $request->getRequestId(),
+                    "type" => $type,
+                    "error" => ($status == 0) ? "ERROR" : "",
+                    "response" => $response,
+                    "request" => $xml
+                ));
+                $cookie->creditCheckSha = $sha;
+                $cookie->creditCheckStatus = $status;
             }
-            $byjunoLogger = ByjunoLogger::getInstance();
-            $byjunoLogger->log(Array(
-                "firstname" => $request->getFirstName(),
-                "lastname" => $request->getLastName(),
-                "town" => $request->getTown(),
-                "postcode" => $request->getPostCode(),
-                "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
-                "country" => $request->getCountryCode(),
-                "ip" => byjunoGetClientIp(),
-                "status" => $status,
-                "request_id" => $request->getRequestId(),
-                "type" => $type,
-                "error" => ($status == 0) ? "ERROR" : "",
-                "response" => $response,
-                "request" => $xml
-            ));
             if (!byjunoIsStatusOk($status, "BYJUNO_CDP_ACCEPT")) {
                 return;
             }
@@ -284,6 +295,7 @@ class Byjuno extends PaymentModule
 
     public function hookPayment($params)
     {
+        global $cookie;
         if (!$this->active)
             return;
 
@@ -316,42 +328,53 @@ class Byjuno extends PaymentModule
             $status = 0;
             $invoice_address = new Address($this->context->cart->id_address_invoice);
             $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
+            $requestUniq = clone $request;
+            $requestUniq->setRequestId("");
 
             $type = "Credit check";
             $xml = "";
+            $xmlSha = "";
             if ($b2b && !empty($invoice_address->company)) {
                 $type = "Credit check B2B";
                 $xml = $request->createRequestCompany();
+                $xmlSha = $requestUniq->createRequestCompany();
             } else {
                 $xml = $request->createRequest();
+                $xmlSha = $requestUniq->createRequest();
             }
+            $sha = sha1($xmlSha);
+            if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
+                $status = $cookie->creditCheckStatus;
+            } else {
+                $byjunoCommunicator = new ByjunoCommunicator();
+                $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
+                $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
 
-            $byjunoCommunicator = new ByjunoCommunicator();
-            $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-            $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-
-            if ($response) {
-                $byjunoResponse = new ByjunoResponse();
-                $byjunoResponse->setRawResponse($response);
-                $byjunoResponse->processResponse();
-                $status = $byjunoResponse->getCustomerRequestStatus();
+                if ($response) {
+                    $byjunoResponse = new ByjunoResponse();
+                    $byjunoResponse->setRawResponse($response);
+                    $byjunoResponse->processResponse();
+                    $status = $byjunoResponse->getCustomerRequestStatus();
+                }
+                $byjunoLogger = ByjunoLogger::getInstance();
+                $byjunoLogger->log(Array(
+                    "firstname" => $request->getFirstName(),
+                    "lastname" => $request->getLastName(),
+                    "town" => $request->getTown(),
+                    "postcode" => $request->getPostCode(),
+                    "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
+                    "country" => $request->getCountryCode(),
+                    "ip" => byjunoGetClientIp(),
+                    "status" => $status,
+                    "request_id" => $request->getRequestId(),
+                    "type" => $type,
+                    "error" => ($status == 0) ? "ERROR" : "",
+                    "response" => $response,
+                    "request" => $xml
+                ));
+                $cookie->creditCheckSha = $sha;
+                $cookie->creditCheckStatus = $status;
             }
-            $byjunoLogger = ByjunoLogger::getInstance();
-            $byjunoLogger->log(Array(
-                "firstname" => $request->getFirstName(),
-                "lastname" => $request->getLastName(),
-                "town" => $request->getTown(),
-                "postcode" => $request->getPostCode(),
-                "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
-                "country" => $request->getCountryCode(),
-                "ip" => byjunoGetClientIp(),
-                "status" => $status,
-                "request_id" => $request->getRequestId(),
-                "type" => $type,
-                "error" => ($status == 0) ? "ERROR" : "",
-                "response" => $response,
-                "request" => $xml
-            ));
             if (!byjunoIsStatusOk($status, "BYJUNO_CDP_ACCEPT")) {
                 return;
             }

@@ -124,11 +124,13 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		$byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
 		$response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
 
+        $transaction = "";
 		if ($response) {
 			$byjunoResponse = new ByjunoResponse();
 			$byjunoResponse->setRawResponse($response);
 			$byjunoResponse->processResponse();
 			$status = $byjunoResponse->getCustomerRequestStatus();
+            $transaction = $byjunoResponse->getTransactionNumber();
 		}
 		$byjunoLogger = ByjunoLogger::getInstance();
 		$byjunoLogger->log(Array(
@@ -163,7 +165,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		$this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
 		$order = new OrderCore((int)$this->module->currentOrder);
 
-		$requestS3 = CreatePrestaShopRequestAfterPaid($this->context->cart, $order, $this->context->currency, Tools::getValue('selected_plan'), $accept, $invoiceDelivery, $selected_gender, $selected_birthday);
+		$requestS3 = CreatePrestaShopRequestAfterPaid($this->context->cart, $order, $this->context->currency, Tools::getValue('selected_plan'), $accept, $invoiceDelivery, $selected_gender, $selected_birthday, $transaction);
 		$typeS3 = "S3 Request";
 		$b2b = Configuration::get("BYJUNO_B2B") == 'enable';
 		$xml = "";
