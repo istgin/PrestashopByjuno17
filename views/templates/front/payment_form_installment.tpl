@@ -1,6 +1,6 @@
 <form action="{$link->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post"
       onsubmit="return acceptCGVByjuno()">
-    <section class="form-fields">
+    <div class="form-fields">
         {if (count($selected_payments_installment) > 1)}
             <div class="form-group row">
                 <label class="col-md-3 form-control-label">
@@ -88,7 +88,7 @@
             <a href="{$toc_url_installment}" target="_blank"
                style="font-weight: bold; text-decoration: underline">{$l_i_agree_with_terms_and_conditions}</a>
         </div>
-    </section>
+    </div>
 </form>
 <style>
     div.byjuno_toc .checker,
