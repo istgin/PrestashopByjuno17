@@ -15,7 +15,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.0';
+        $this->version = '1.0.4';
         $this->author = 'Byjuno.ch';
         $this->controllers = array('payment', 'validation', 'errorpayment');
         $this->is_eu_compatible = 1;
@@ -182,7 +182,9 @@ class Byjuno extends PaymentModule
         $years = Tools::dateYears();
         $months = Tools::dateMonths();
         $days = Tools::dateDays();
-
+        if ($tm <= 0) {
+            $tm = strtotime("1990-01-01");
+        }
         $invoice_send = "email";
         $selected_gender = $customer->id_gender;
         $byjuno_years = date("Y", $tm);
