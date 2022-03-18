@@ -566,7 +566,7 @@ class Byjuno extends PaymentModule
             if ($curInvoice == null) {
                 return;
             }
-            $invoiceNum = $curInvoice->getInvoiceNumberFormatted($id_lang = Context::getContext()->language->id, (int)$orderCore->id_shop);
+            $invoiceNum = $curInvoice->getInvoiceNumberFormatted((int) Configuration::get('PS_LANG_DEFAULT'), (int)$orderCore->id_shop);
             $currency = CurrencyCore::getCurrency($orderCore->id_currency);
             $time = strtotime($curSlip->date_add);
             $dt = date("Y-m-d", $time);
@@ -621,7 +621,7 @@ class Byjuno extends PaymentModule
                     $invoices = $orderCore->getInvoicesCollection();
                     foreach ($invoices as $invoice) {
                         /* @var $invoice OrderInvoiceCore */
-                        $invoiceNum = $invoice->getInvoiceNumberFormatted($id_lang = Context::getContext()->language->id, (int)$orderCore->id_shop);
+                        $invoiceNum = $invoice->getInvoiceNumberFormatted((int) Configuration::get('PS_LANG_DEFAULT'), (int)$orderCore->id_shop);
                         $currency = CurrencyCore::getCurrency($orderCore->id_currency);
                         $time = strtotime($invoice->date_add);
                         $dt = date("Y-m-d", $time);
