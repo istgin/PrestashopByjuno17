@@ -77,7 +77,7 @@ function mapPaymentMethodToSpecs($method){
 function mapMethod($method) {
     if ($method == 'installment_3') {
         return "INSTALLMENT";
-    } else if ($method == 'installment_10') {
+    } else if ($method == 'installment_36') {
         return "INSTALLMENT";
     } else if ($method == 'installment_12') {
         return "INSTALLMENT";
@@ -98,8 +98,8 @@ function mapRepayment($type) {
 
     if ($type == 'installment_3') {
         return "10";
-    } else if ($type == 'installment_10') {
-        return "5";
+    } else if ($type == 'installment_36') {
+        return "11";
     } else if ($type == 'installment_12') {
         return "8";
     } else if ($type == 'installment_24') {
@@ -159,6 +159,9 @@ function CreatePrestaShopRequest(CartCore $cart, CustomerCore $customer, Currenc
 
     if (!empty($invoice_address->company)) {
         $request->setCompanyName1($invoice_address->company);
+    }
+    if (!empty($invoice_address->vat_number)) {
+        $request->setCompanyVatId($invoice_address->vat_number);
     }
 
     if (!empty($shipping_address->company)) {
@@ -298,6 +301,10 @@ function CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, Currency
 
     if (!empty($invoice_address->company)) {
         $request->setCompanyName1($invoice_address->company);
+    }
+
+    if (!empty($invoice_address->vat_number)) {
+        $request->setCompanyVatId($invoice_address->vat_number);
     }
 
     if (!empty($shipping_address->company)) {

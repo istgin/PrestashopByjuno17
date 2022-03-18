@@ -532,19 +532,6 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            10 installments:
-                        </label>
-
-                        <div class="col-lg-9">
-                            <select name="installment_10" id="installment_10">
-                                <option value="enable"{if ($installment_10 == 'enable')} selected{/if}>Enable</option>
-                                <option value="disable"{if ($installment_10 == 'disable')} selected{/if}>Disable
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3 required">
                             12 installments:
                         </label>
 
@@ -565,6 +552,19 @@
                             <select name="installment_24" id="installment_24">
                                 <option value="enable"{if ($installment_24 == 'enable')} selected{/if}>Enable</option>
                                 <option value="disable"{if ($installment_24 == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            36 installments:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="installment_36" id="installment_36">
+                                <option value="enable"{if ($installment_36 == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($installment_36 == 'disable')} selected{/if}>Disable
                                 </option>
                             </select>
                         </div>

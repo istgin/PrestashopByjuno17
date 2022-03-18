@@ -87,7 +87,7 @@ class Byjuno extends PaymentModule
             $byjuno_invoice = true;
         }
         if (Configuration::get("installment_3") == 'enable'
-            || Configuration::get("installment_10") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
             || Configuration::get("installment_4x12") == 'enable'
@@ -249,8 +249,8 @@ class Byjuno extends PaymentModule
             if (Configuration::get("installment_3") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
             }
-            if (Configuration::get("installment_10") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('10 installments'), 'id' => 'installment_10', "selected" => 0);
+            if (Configuration::get("installment_36") == 'enable') {
+                $selected_payments_installment[] = Array('name' => $this->l('30 installments'), 'id' => 'installment_36', "selected" => 0);
             }
             if (Configuration::get("installment_12") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
@@ -313,7 +313,7 @@ class Byjuno extends PaymentModule
             $byjuno_invoice = true;
         }
         if (Configuration::get("installment_3") == 'enable'
-            || Configuration::get("installment_10") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
             || Configuration::get("installment_4x12") == 'enable'
@@ -485,7 +485,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('byjuno_invoice', 'disable');
             Configuration::updateValue('single_invoice', 'disable');
             Configuration::updateValue('installment_3', 'disable');
-            Configuration::updateValue('installment_10', 'disable');
+            Configuration::updateValue('installment_36', 'disable');
             Configuration::updateValue('installment_12', 'disable');
             Configuration::updateValue('installment_24', 'disable');
             Configuration::updateValue('installment_4x12', 'disable');
@@ -783,7 +783,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('byjuno_invoice', trim(Tools::getValue('byjuno_invoice')));
             Configuration::updateValue('single_invoice', trim(Tools::getValue('single_invoice')));
             Configuration::updateValue('installment_3', trim(Tools::getValue('installment_3')));
-            Configuration::updateValue('installment_10', trim(Tools::getValue('installment_10')));
+            Configuration::updateValue('installment_36', trim(Tools::getValue('installment_36')));
             Configuration::updateValue('installment_12', trim(Tools::getValue('installment_12')));
             Configuration::updateValue('installment_24', trim(Tools::getValue('installment_24')));
             Configuration::updateValue('installment_4x12', trim(Tools::getValue('installment_4x12')));
@@ -868,7 +868,7 @@ class Byjuno extends PaymentModule
             'byjuno_invoice' => Configuration::get("byjuno_invoice"),
             'single_invoice' => Configuration::get("single_invoice"),
             'installment_3' => Configuration::get("installment_3"),
-            'installment_10' => Configuration::get("installment_10"),
+            'installment_36' => Configuration::get("installment_36"),
             'installment_12' => Configuration::get("installment_12"),
             'installment_24' => Configuration::get("installment_24"),
             'installment_4x12' => Configuration::get("installment_4x12"),
