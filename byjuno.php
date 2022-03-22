@@ -250,7 +250,7 @@ class Byjuno extends PaymentModule
                 $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
             }
             if (Configuration::get("installment_36") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('30 installments'), 'id' => 'installment_36', "selected" => 0);
+                $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => 0);
             }
             if (Configuration::get("installment_12") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
