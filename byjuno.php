@@ -20,6 +20,8 @@ class Byjuno extends PaymentModule
         $this->controllers = array('payment', 'validation', 'errorpayment');
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
+        $this->currencies = true;
+        $this->currencies_mode = 'checkbox';
         parent::__construct();
         $this->displayName = $this->l('Byjuno');
         $this->description = $this->l('Byjuno payment gateway');
