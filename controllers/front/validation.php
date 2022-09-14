@@ -201,7 +201,12 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		));
 
 		if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
-			$order->setCurrentState(Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
+            try {
+                $success = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER'));
+            } catch (Exception $e) {
+                $success = Configuration::get('PS_OS_PAYMENT');
+            }
+			$order->setCurrentState($success);
 			Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
 		} else {
 			$order->setCurrentState(Configuration::get('PS_OS_CANCELED'));

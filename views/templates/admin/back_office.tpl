@@ -365,6 +365,19 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-lg-3 required">
+                       Order state after success payment:
+                    </label>
+                    <div class="col-lg-9">
+                        <select name="BYJUNO_SUCCESS_TRIGGER" id="BYJUNO_SUCCESS_TRIGGER">
+                            {foreach from=$order_status_list item=ostatus}
+                            <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_SUCCESS_TRIGGER))} selected{/if}>{$ostatus['name']}</option>
+                            {/foreach}>
+                        </select><br />
+                        Ctrl + click select multiple
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-3 required">
                         S4 transactions:
                     </label>
 
