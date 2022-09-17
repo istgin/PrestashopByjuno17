@@ -369,8 +369,8 @@
                     </label>
                     <div class="col-lg-9">
                         <select name="BYJUNO_SUCCESS_TRIGGER" id="BYJUNO_SUCCESS_TRIGGER">
-                            {foreach from=$order_status_list item=ostatus}
-                            <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_SUCCESS_TRIGGER))} selected{/if}>{$ostatus['name']}</option>
+                            {foreach from=$order_success_status_list item=ostatus}
+                            <option value="{$ostatus['id_order_state']}"{if ($ostatus['id_order_state'] == $BYJUNO_SUCCESS_TRIGGER)} selected{/if}>{$ostatus['name']}</option>
                             {/foreach}>
                         </select><br />
                         Ctrl + click select multiple

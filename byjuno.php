@@ -49,7 +49,7 @@ class Byjuno extends PaymentModule
 
         $state = $params['order']->getCurrentState();
         try {
-            $success = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER'));
+            $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
         } catch (Exception $e) {
             $success = Configuration::get('PS_OS_PAYMENT');
         }
@@ -811,7 +811,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_B2B', trim(Tools::getValue('BYJUNO_B2B')));
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', trim(Tools::getValue('BYJUNO_GENDER_BIRTHDAY')));
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Tools::getValue('BYJUNO_S4_TRIGGER')));
-            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER')));
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
             Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', trim(Tools::getValue('BYJUNO_TOC_INVOICE_EN')));
             Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_EN')));
             Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', trim(Tools::getValue('BYJUNO_TOC_INVOICE_DE')));
@@ -862,15 +862,19 @@ class Byjuno extends PaymentModule
             $arrayOfTrigger = Array(0 => Configuration::get('PS_OS_PAYMENT'));
         }
 
-        $arrayOfTriggerSuccess = false;
+        $triggerSuccess = false;
         try {
-            $arrayOfTriggerSuccess = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER'));
+            $triggerSuccess = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
         } catch (Exception $e) {
-            $arrayOfTriggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
+            $triggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
         }
-        if ($arrayOfTriggerSuccess == false) {
-            $arrayOfTriggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
+        if ($triggerSuccess == false) {
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
+            $triggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
         }
+        $success_statuses_list = OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT'));
+        $success_statuses_list = array(-1 => array('id_order_state' => -1, 'name' => 'Do not change')) + $success_statuses_list;
         $values = array(
             'bootstrap' => true,
             'this_path' => $this->_path,
@@ -906,7 +910,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_B2B' => Configuration::get("BYJUNO_B2B"),
             'BYJUNO_GENDER_BIRTHDAY' => Configuration::get("BYJUNO_GENDER_BIRTHDAY"),
             'BYJUNO_S4_TRIGGER' => $arrayOfTrigger,
-            'BYJUNO_SUCCESS_TRIGGER' => $arrayOfTriggerSuccess,
+            'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
             'BYJUNO_TOC_INVOICE_EN' => Configuration::get('BYJUNO_TOC_INVOICE_EN'),
             'BYJUNO_TOC_INSTALLMENT_EN' => Configuration::get('BYJUNO_TOC_INSTALLMENT_EN'),
             'BYJUNO_TOC_INVOICE_DE' => Configuration::get('BYJUNO_TOC_INVOICE_DE'),
@@ -923,7 +927,8 @@ class Byjuno extends PaymentModule
             'urllogs' => "?controller=AdminModules&token=" . Tools::getValue('token') . "&configure=byjuno&tab_module=payments_gateways&module_name=byjuno&logs=true",
             'intrum_view_xml' => Tools::getValue('viewxml') != "" ? 1 : 0,
             'intrum_single_log' => self::getSingleLog(Tools::getValue('viewxml')),
-            'order_status_list' => OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT'))
+            'order_status_list' => OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT')),
+            'order_success_status_list' => $success_statuses_list
         );
         $this->context->smarty->assign($values);
 

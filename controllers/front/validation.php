@@ -202,8 +202,11 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 
 		if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
             try {
-                $success = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER'));
+                $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
             } catch (Exception $e) {
+                $success = Configuration::get('PS_OS_PAYMENT');
+            }
+            if ($success == -1) {
                 $success = Configuration::get('PS_OS_PAYMENT');
             }
 			$order->setCurrentState($success);
