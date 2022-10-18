@@ -513,6 +513,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('INTRUM_ENABLETMX', 'true');
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', 'true');
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
             Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', 'https://byjuno.ch/en/3a/terms/');
             Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', 'https://byjuno.ch/en/1b/terms/');
@@ -811,6 +812,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_B2B', trim(Tools::getValue('BYJUNO_B2B')));
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', trim(Tools::getValue('BYJUNO_GENDER_BIRTHDAY')));
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Tools::getValue('BYJUNO_S4_TRIGGER')));
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
             Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', trim(Tools::getValue('BYJUNO_TOC_INVOICE_EN')));
             Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_EN')));
@@ -862,6 +864,17 @@ class Byjuno extends PaymentModule
             $arrayOfTrigger = Array(0 => Configuration::get('PS_OS_PAYMENT'));
         }
 
+        $arrayOfNotModify = false;
+        try {
+            $arrayOfNotModify = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
+        } catch (Exception $e) {
+            $arrayOfNotModify = Array();
+        }
+        if ($arrayOfNotModify == false) {
+            $arrayOfNotModify = Array();
+        }
+
+
         $triggerSuccess = false;
         try {
             $triggerSuccess = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
@@ -910,6 +923,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_B2B' => Configuration::get("BYJUNO_B2B"),
             'BYJUNO_GENDER_BIRTHDAY' => Configuration::get("BYJUNO_GENDER_BIRTHDAY"),
             'BYJUNO_S4_TRIGGER' => $arrayOfTrigger,
+            'BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY' => $arrayOfNotModify,
             'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
             'BYJUNO_TOC_INVOICE_EN' => Configuration::get('BYJUNO_TOC_INVOICE_EN'),
             'BYJUNO_TOC_INSTALLMENT_EN' => Configuration::get('BYJUNO_TOC_INSTALLMENT_EN'),

@@ -201,15 +201,22 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		));
 
 		if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
+            $orderStatusChange = new OrderCore((int)$this->module->currentOrder);
             try {
-                $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                $arrayOfTriggerDoNotChange = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
             } catch (Exception $e) {
-                $success = Configuration::get('PS_OS_PAYMENT');
+                $arrayOfTriggerDoNotChange = false;
             }
-            if ($success == -1) {
-                $success = Configuration::get('PS_OS_PAYMENT');
+            if ($arrayOfTriggerDoNotChange == false || !in_array($orderStatusChange->getCurrentState(), $arrayOfTriggerDoNotChange)) {
+                try {
+                    $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                } catch (Exception $e) {
+                    $success = -1;
+                }
+                if ($success != -1) {
+                    $order->setCurrentState($success);
+                }
             }
-			$order->setCurrentState($success);
 			Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
 		} else {
 			$order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
