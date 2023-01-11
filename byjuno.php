@@ -178,7 +178,7 @@ class Byjuno extends PaymentModule
         $selected_payments_installment = Array();
         $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_EN');
         $lng = Context::getContext()->language->iso_code;
-        $langtoc = "DE";
+        $langtoc = "EN";
         if ($lng == "en" || $lng == "de" || $lng == "fr" || $lng == "it") {
             $langtoc = strtoupper($lng);
         }
