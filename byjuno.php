@@ -229,12 +229,8 @@ class Byjuno extends PaymentModule
         );
         if ($byjuno_invoice) {
             if ($b2b && !empty($invoice_address->company)) {
-                if (Configuration::get("single_invoice") == 'enable') {
-                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
-                }
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 1);
                 $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
-
-                $selected_payments_invoice[0]["selected"] = 1;
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
                 $values['toc_url_invoice'] = $tocUrl;
             } else  {

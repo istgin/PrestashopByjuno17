@@ -1,5 +1,5 @@
 <form action="{$link->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post"
-      onsubmit="return acceptCGVByjuno()">
+      onsubmit="return acceptCGVByjuno()" id="byjuno-installment">
     <div class="form-fields">
         {if (count($selected_payments_installment) > 1)}
             <div class="form-group row">
