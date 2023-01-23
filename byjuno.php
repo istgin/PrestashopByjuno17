@@ -624,9 +624,17 @@ class Byjuno extends PaymentModule
                 $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
                 if ($order_module == "byjuno") {
                     $invoices = $orderCore->getInvoicesCollection();
-                    foreach ($invoices as $invoice) {
+                    $time = 0;
+                    foreach ($invoices as $invoiceOrder) {
+                        $t = strtotime($invoiceOrder->date_add);
+                        if ($t >= $time) {
+                            $time = $t;
+                            $invoice = $invoiceOrder;
+                        }
+                    }
+                    if (!empty($invoice)) {
                         /* @var $invoice OrderInvoiceCore */
-                        $invoiceNum = $invoice->getInvoiceNumberFormatted((int) Configuration::get('PS_LANG_DEFAULT'), (int)$orderCore->id_shop);
+                        $invoiceNum = $invoice->getInvoiceNumberFormatted((int)Configuration::get('PS_LANG_DEFAULT'), (int)$orderCore->id_shop);
                         $currency = CurrencyCore::getCurrency($orderCore->id_currency);
                         $time = strtotime($invoice->date_add);
                         $dt = date("Y-m-d", $time);
@@ -644,7 +652,7 @@ class Byjuno extends PaymentModule
                             $statusS4 = $byjunoResponseS4->getProcessingInfoClassification();
                         }
                         $byjunoLogger = ByjunoLogger::getInstance();
-                        $byjunoLogger->log(Array(
+                        $byjunoLogger->log(array(
                             "firstname" => "-",
                             "lastname" => "-",
                             "town" => "-",
