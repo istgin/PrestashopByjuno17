@@ -16,15 +16,15 @@ class Byjuno extends PaymentModule
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
         $this->version = '1.1.0';
-        $this->author = 'Byjuno.ch';
+        $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment');
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         parent::__construct();
-        $this->displayName = $this->l('Byjuno');
-        $this->description = $this->l('Byjuno payment gateway');
+        $this->displayName = $this->l('CembraPay');
+        $this->description = $this->l('CembraPay payment gateway');
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.99.99');
         $this->l('Select payment plan');
         $this->l('Select invoice delivery method');
