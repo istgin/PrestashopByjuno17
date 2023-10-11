@@ -113,7 +113,7 @@
 
     }
 </style>
-<h1 style="padding: 0; margin: 0">Byjuno payment gateway configuration</h1>
+<h1 style="padding: 0; margin: 0">CembraPay payment gateway configuration</h1>
 
 
 <ul class="tab nav nav-tabs">
@@ -248,7 +248,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Connection timeout to Byjuno CDP server in seconds:
+                            Connection timeout to CembraPay CDP server in seconds:
                         </label>
 
                         <div class="col-lg-9">
@@ -456,7 +456,7 @@
                 <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Accepted Byjuno Risk for S2 (comma separated):
+                            Accepted CembraPay Risk for S2 (comma separated):
                         </label>
 
                         <div class="col-lg-9">
@@ -500,12 +500,12 @@
 
             <div class="panel" id="fieldset_0">
                 <div class="panel-heading">
-                    <i class="icon-cogs"></i> Byjuno Invoice payment settings
+                    <i class="icon-cogs"></i> CembraPay Invoice payment settings
                 </div>
                 <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Byjuno Invoice (with partial payment option):
+                            CembraPay Invoice (with partial payment option):
                         </label>
 
                         <div class="col-lg-9">
@@ -541,7 +541,7 @@
 
             <div class="panel" id="fieldset_0">
                 <div class="panel-heading">
-                    <i class="icon-cogs"></i> Byjuno Installment payment settings
+                    <i class="icon-cogs"></i> CembraPay Installment payment settings
                 </div>
                 <div class="form-wrapper">
                     <div class="form-group">
@@ -625,7 +625,7 @@
                 <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Invoice (DE):
+                            T&C CembraPay Invoice (DE):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INVOICE_DE" id="BYJUNO_TOC_INVOICE_DE"
@@ -634,7 +634,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Installment (DE):
+                            T&C CembraPay Installment (DE):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INSTALLMENT_DE" id="BYJUNO_TOC_INSTALLMENT_DE"
@@ -645,7 +645,7 @@
 
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Invoice (FR):
+                            T&C CembraPay Invoice (FR):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INVOICE_FR" id="BYJUNO_TOC_INVOICE_FR"
@@ -654,7 +654,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Installment (FR):
+                            T&C CembraPay Installment (FR):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INSTALLMENT_FR" id="BYJUNO_TOC_INSTALLMENT_FR"
@@ -665,7 +665,7 @@
 
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Invoice (IT):
+                            T&C CembraPay Invoice (IT):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INVOICE_IT" id="BYJUNO_TOC_INVOICE_IT"
@@ -674,7 +674,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Installment (IT):
+                            T&C CembraPay Installment (IT):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INSTALLMENT_IT" id="BYJUNO_TOC_INSTALLMENT_IT"
@@ -685,7 +685,7 @@
 
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Invoice (EN):
+                            T&C CembraPay Invoice (EN):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INVOICE_EN" id="BYJUNO_TOC_INVOICE_EN"
@@ -694,7 +694,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            T&C Byjuno Installment (EN):
+                            T&C CembraPay Installment (EN):
                         </label>
                         <div class="col-lg-9">
                             <input type="text" name="BYJUNO_TOC_INSTALLMENT_EN" id="BYJUNO_TOC_INSTALLMENT_EN"

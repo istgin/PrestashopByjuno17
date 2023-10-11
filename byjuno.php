@@ -15,7 +15,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.7';
+        $this->version = '1.1.0';
         $this->author = 'Byjuno.ch';
         $this->controllers = array('payment', 'validation', 'errorpayment');
         $this->is_eu_compatible = 1;

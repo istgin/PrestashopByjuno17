@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>byjuno</name>
-	<displayName><![CDATA[Byjuno]]></displayName>
-	<version><![CDATA[1.0.7]]></version>
-	<description><![CDATA[Byjuno payment gateway]]></description>
-	<author><![CDATA[Byjuno (http://www.byjuno.ch/)]]></author>
+	<displayName><![CDATA[CembraPay]]></displayName>
+	<version><![CDATA[1.1.0]]></version>
+	<description><![CDATA[CembraPay payment gateway]]></description>
+	<author><![CDATA[CembraPay]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall><![CDATA[Are you sure about removing these details?]]></confirmUninstall>
 	<is_configurable>1</is_configurable>
