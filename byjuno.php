@@ -25,7 +25,7 @@ class Byjuno extends PaymentModule
         parent::__construct();
         $this->displayName = $this->l('CembraPay');
         $this->description = $this->l('CembraPay payment gateway');
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.99.99');
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->l('Select payment plan');
         $this->l('Select invoice delivery method');
         $this->l('Gender');
