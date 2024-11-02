@@ -1,16 +1,20 @@
 <?php
+
+use Byjuno\ByjunoPayments\Api\CembraPayConstants;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 if (!defined('_PS_VERSION_'))
     exit;
 
 if (!defined('_PS_MODULE_INTRUMCOM_API')) {
-    require(_PS_MODULE_DIR_ . 'byjuno/api/intrum.php');
+    require(_PS_MODULE_DIR_ . 'byjuno/api/cembrapay.php');
     require(_PS_MODULE_DIR_ . 'byjuno/api/library_prestashop.php');
 }
 
 class Byjuno extends PaymentModule
 {
+
+    public $cembraPayAzure;
     public function __construct()
     {
         $this->name = 'byjuno';
@@ -39,6 +43,7 @@ class Byjuno extends PaymentModule
         $this->l('Your shopping cart is empty.');
         $this->l('By email');
         $this->l('By post');
+        $this->cembraPayAzure = new CembraPayAzure();
     }
 
     public function hookPaymentReturn($params)
@@ -78,15 +83,9 @@ class Byjuno extends PaymentModule
 
     public function hookPaymentOptions($params)
     {
-        global $cookie;
-        if (!$this->active) {
+        if (!$this->hookPaymentCembraPay($params)) {
             return;
         }
-        $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
-        if ((float)$total < (float)Configuration::get("BYJUNO_MIN_AMOUNT") || (float)$total > (float)Configuration::get("BYJUNO_MAX_AMOUNT")) {
-            return;
-        }
-
         $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
         $byjuno_invoice = false;
         $byjuno_installment = false;
@@ -105,60 +104,6 @@ class Byjuno extends PaymentModule
             $invoice_address = new Address($this->context->cart->id_address_invoice);
             if (!empty($invoice_address->company)) {
                 $byjuno_installment = false;
-            }
-        }
-        if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
-            $status = 0;
-            $invoice_address = new Address($this->context->cart->id_address_invoice);
-            $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
-            $requestUniq = clone $request;
-            $requestUniq->setRequestId("");
-            $type = "Credit check";
-            $xml = "";
-            $xmlSha = "";
-            if ($b2b && !empty($invoice_address->company)) {
-                $type = "Credit check B2B";
-                $xml = $request->createRequestCompany();
-                $xmlSha = $requestUniq->createRequestCompany();
-            } else {
-                $xml = $request->createRequest();
-                $xmlSha = $requestUniq->createRequest();
-            }
-            $sha = sha1($xmlSha);
-            if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
-                $status = $cookie->creditCheckStatus;
-            } else {
-                $byjunoCommunicator = new ByjunoCommunicator();
-                $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-                $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-
-                if ($response) {
-                    $byjunoResponse = new ByjunoResponse();
-                    $byjunoResponse->setRawResponse($response);
-                    $byjunoResponse->processResponse();
-                    $status = $byjunoResponse->getCustomerRequestStatus();
-                }
-                $byjunoLogger = ByjunoLogger::getInstance();
-                $byjunoLogger->log(Array(
-                    "firstname" => $request->getFirstName(),
-                    "lastname" => $request->getLastName(),
-                    "town" => $request->getTown(),
-                    "postcode" => $request->getPostCode(),
-                    "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
-                    "country" => $request->getCountryCode(),
-                    "ip" => byjunoGetClientIp(),
-                    "status" => $status,
-                    "request_id" => $request->getRequestId(),
-                    "type" => $type,
-                    "error" => ($status == 0) ? "ERROR" : "",
-                    "response" => $response,
-                    "request" => $xml
-                ));
-                $cookie->creditCheckSha = $sha;
-                $cookie->creditCheckStatus = $status;
-            }
-            if (!byjunoIsStatusOk($status, "BYJUNO_CDP_ACCEPT")) {
-                return;
             }
         }
         $lang = 'de';
@@ -297,18 +242,46 @@ class Byjuno extends PaymentModule
         return $paymentMethod;
     }
 
+    public function getAccessData($mode) {
+        $accessData = new CembraPayLoginDto();
+        $accessData->helperObject = $this;
+        $accessData->timeout = (int)30;
+        if ($mode == 'test') {
+            $accessData->mode = 'test';
+            $accessData->username = "XXX";
+            $accessData->password = "XXX";
+            $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
+            $accessToken = "XXX";
+        } else {
+            $accessData->mode = 'live';
+            $accessData->username = "XXX";
+            $accessData->password = "XXX";
+            $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
+            $accessToken = "XXX";
+        }
+        $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
+        $hash = $accessData->username.$accessData->password.$accessData->audience;
+        if ($hash == $tkn[0] && !empty($tkn[1])) {
+            $accessData->accessToken = $tkn[1];
+        }
+        return $accessData;
+    }
+
+    public function saveToken($token, $accessData) {
+        /* @var $accessData CembraPayLoginDto */
+        $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
+        if ($accessData->mode == 'test') {
+           // $this->systemConfigService->set('ByjunoPayments.config.accesstokentest', $hash.$token);
+        } else {
+          //  $this->systemConfigService->set('ByjunoPayments.config.accesstokenlive', $hash.$token);
+        }
+    }
 
     public function hookPayment($params)
     {
-        global $cookie;
-        if (!$this->active)
-            return;
-
-        $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
-        if ((float)$total < (float)Configuration::get("BYJUNO_MIN_AMOUNT") || (float)$total > (float)Configuration::get("BYJUNO_MAX_AMOUNT")) {
+        if (!$this->hookPaymentCembraPay($params)) {
             return;
         }
-
         $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
         $byjuno_invoice = false;
         $byjuno_installment = false;
@@ -329,61 +302,7 @@ class Byjuno extends PaymentModule
                 $byjuno_installment = false;
             }
         }
-        if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
-            $status = 0;
-            $invoice_address = new Address($this->context->cart->id_address_invoice);
-            $request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "CREDITCHECK");
-            $requestUniq = clone $request;
-            $requestUniq->setRequestId("");
 
-            $type = "Credit check";
-            $xml = "";
-            $xmlSha = "";
-            if ($b2b && !empty($invoice_address->company)) {
-                $type = "Credit check B2B";
-                $xml = $request->createRequestCompany();
-                $xmlSha = $requestUniq->createRequestCompany();
-            } else {
-                $xml = $request->createRequest();
-                $xmlSha = $requestUniq->createRequest();
-            }
-            $sha = sha1($xmlSha);
-            if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
-                $status = $cookie->creditCheckStatus;
-            } else {
-                $byjunoCommunicator = new ByjunoCommunicator();
-                $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-                $response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-
-                if ($response) {
-                    $byjunoResponse = new ByjunoResponse();
-                    $byjunoResponse->setRawResponse($response);
-                    $byjunoResponse->processResponse();
-                    $status = $byjunoResponse->getCustomerRequestStatus();
-                }
-                $byjunoLogger = ByjunoLogger::getInstance();
-                $byjunoLogger->log(Array(
-                    "firstname" => $request->getFirstName(),
-                    "lastname" => $request->getLastName(),
-                    "town" => $request->getTown(),
-                    "postcode" => $request->getPostCode(),
-                    "street" => trim($request->getFirstLine() . ' ' . $request->getHouseNumber()),
-                    "country" => $request->getCountryCode(),
-                    "ip" => byjunoGetClientIp(),
-                    "status" => $status,
-                    "request_id" => $request->getRequestId(),
-                    "type" => $type,
-                    "error" => ($status == 0) ? "ERROR" : "",
-                    "response" => $response,
-                    "request" => $xml
-                ));
-                $cookie->creditCheckSha = $sha;
-                $cookie->creditCheckStatus = $status;
-            }
-            if (!byjunoIsStatusOk($status, "BYJUNO_CDP_ACCEPT")) {
-                return;
-            }
-        }
         $lang = 'de';
         $ln = Context::getContext()->language->iso_code;
         if ($ln == 'de' || $ln == 'en' || $ln == 'it' || $ln == 'fr') {
@@ -402,6 +321,91 @@ class Byjuno extends PaymentModule
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
         return $this->display(__FILE__, 'payment.tpl');
+    }
+
+    public function hookPaymentCembraPay($params)
+    {
+        global $cookie;
+        if (!$this->active)
+            return true;
+
+        $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
+        if ((float)$total < (float)Configuration::get("BYJUNO_MIN_AMOUNT") || (float)$total > (float)Configuration::get("BYJUNO_MAX_AMOUNT")) {
+            return true;
+        }
+
+        $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
+        $mode = Configuration::get("INTRUM_MODE");
+        $byjuno_invoice = false;
+        $byjuno_installment = false;
+        if (Configuration::get("single_invoice") == 'enable' || Configuration::get("byjuno_invoice") == 'enable') {
+            $byjuno_invoice = true;
+        }
+        if (Configuration::get("installment_3") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_12") == 'enable'
+            || Configuration::get("installment_24") == 'enable'
+            || Configuration::get("installment_4x12") == 'enable'
+        ) {
+            $byjuno_installment = true;
+        }
+        if ($b2b) {
+            $invoice_address = new Address($this->context->cart->id_address_invoice);
+            if (!empty($invoice_address->company)) {
+                $byjuno_installment = false;
+            }
+        }
+        if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
+            $screeningStatus = "";
+            $request = Cembra_CreatePrestaShopRequestScreening($this->context->cart, $this->context->customer, $this->context->currency);
+            $jsonUniq = clone $request;
+            $jsonUniq->requestMsgId = "";
+            $jsonUniq->requestMsgDateTime = "";
+            $jsonUniq->customerConsents = null;
+            $jsonUniq = $jsonUniq->createRequest();
+            $sha = sha1($jsonUniq);
+            if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
+                var_dump($cookie->creditCheckStatus);
+                $screeningStatus = $cookie->creditCheckStatus;
+            } else {
+                $statusLog = "Screening request";
+                if ($request->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS && $b2b) {
+                    $statusLog = "Screening request company";
+                }
+                $json = $request->createRequest();
+                $cembrapayCommunicator = new CembraPayCommunicator($this->cembraPayAzure);
+                if (isset($mode) && strtolower($mode) == 'live') {
+                    $cembrapayCommunicator->setServer('live');
+                } else {
+                    $cembrapayCommunicator->setServer('test');
+                }
+                $accessData = $this->getAccessData($mode);
+                $response = $cembrapayCommunicator->sendScreeningRequest($json, $accessData, function ($object, $token, $accessData) {
+                    $object->saveToken($token, $accessData);
+                });
+                if ($response) {
+                    /* @var $responseRes CembraPayCheckoutScreeningResponse */
+                    $responseRes = CembraPayConstants::screeningResponse($response);
+                    $screeningStatus = $responseRes->processingStatus;
+                    //$this->saveCembraLog($event->getContext(), $json, $response, $responseRes->processingStatus, $statusLog,
+                   //     $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
+                    //    $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+                } else {
+                   // $this->saveCembraLog($event->getContext(), $json, $response, "Query error", $statusLog,
+                   //     $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
+                    //    $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, "-", "-");
+                    $screeningStatus = CembraPayConstants::$SCREENING_NET_ERROR;
+                }
+
+                $cookie->creditCheckSha = $sha;
+                $cookie->creditCheckStatus = $screeningStatus;
+            }
+            if ($screeningStatus == CembraPayConstants::$SCREENING_OK) {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 
 
