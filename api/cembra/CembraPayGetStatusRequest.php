@@ -1,11 +1,7 @@
 <?php
 
-/*
-"requestMsgType": "TST",
-"requestMsgId": "ed58eb92-8424-487e-bb7c-fcb43066dcac",
-"requestMsgDateTime": "2023-10-27T14:21:51Z",
-"transactionId": "210728105911212199"
- */
+namespace Byjuno\ByjunoPayments\Api;
+
 class CembraPayGetStatusRequest
 {
     public $requestMsgType; //boolean

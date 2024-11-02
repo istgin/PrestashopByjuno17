@@ -1,5 +1,7 @@
 <?php
 
+namespace Byjuno\ByjunoPayments\Api;
+
 /* sample request
 {
 "requestMsgType": "CAN",

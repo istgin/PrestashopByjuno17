@@ -1,5 +1,6 @@
 <?php
 
+namespace Byjuno\ByjunoPayments\Api;
 
 class CembraPayAzure
 {

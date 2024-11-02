@@ -1,7 +1,7 @@
 <?php
-/**
- * Created by CembraPay.
- */
+
+namespace Byjuno\ByjunoPayments\Api;
+
 /*
  * {
     "requestMsgType": "AUT",

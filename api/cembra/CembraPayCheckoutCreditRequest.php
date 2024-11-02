@@ -1,5 +1,7 @@
 <?php
 
+namespace Byjuno\ByjunoPayments\Api;
+
 class CembraPayCheckoutCreditRequest extends CembraPayCheckoutAutRequest
 {
     public $requestMsgType; //String

@@ -271,9 +271,9 @@ class Byjuno extends PaymentModule
         /* @var $accessData CembraPayLoginDto */
         $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
         if ($accessData->mode == 'test') {
-           // $this->systemConfigService->set('ByjunoPayments.config.accesstokentest', $hash.$token);
+            Configuration::get("BYJUNO_ACCESS_TOKEN_TEST", $hash.$token);
         } else {
-          //  $this->systemConfigService->set('ByjunoPayments.config.accesstokenlive', $hash.$token);
+            Configuration::get("BYJUNO_ACCESS_TOKEN_LIVE", $hash.$token);
         }
     }
 

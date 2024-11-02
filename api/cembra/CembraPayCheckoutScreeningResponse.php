@@ -1,7 +1,6 @@
 <?php
-/**
- * Created by CembraPay.
- */
+
+namespace Byjuno\ByjunoPayments\Api;
 
 class CembraPayCheckoutScreeningDetails {
     public $allowedCembraPayPaymentMethods;  //array( String )

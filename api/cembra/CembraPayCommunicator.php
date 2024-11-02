@@ -1,5 +1,7 @@
 <?php
 
+namespace Byjuno\ByjunoPayments\Api;
+
 class CembraPayCommunicator
 {
 

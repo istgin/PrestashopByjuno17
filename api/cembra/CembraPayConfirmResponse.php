@@ -1,5 +1,7 @@
 <?php
 
+namespace Byjuno\ByjunoPayments\Api;
+
 class CembraPayConfirmAuthorization
 {
     public $authorizationValidTill; //String

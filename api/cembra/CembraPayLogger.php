@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by CembraPay.
- * User: i.sutugins
- * Date: 14.2.9
- * Time: 10:28
- */
+
+namespace Byjuno\ByjunoPayments\Api;
 
 class CembraPayLogger
 {

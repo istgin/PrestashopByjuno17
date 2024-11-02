@@ -1,4 +1,7 @@
 <?php
+
+namespace Byjuno\ByjunoPayments\Api;
+
 /**
  * Created by CembraPay.
  */

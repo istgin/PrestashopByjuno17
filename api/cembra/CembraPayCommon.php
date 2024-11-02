@@ -1,6 +1,5 @@
 <?php
 
-
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
 
 function Cembra_byjunoGetClientIp() {
