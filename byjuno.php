@@ -1,6 +1,10 @@
 <?php
 
+use Byjuno\ByjunoPayments\Api\CembraPayAzure;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutScreeningResponse;
+use Byjuno\ByjunoPayments\Api\CembraPayCommunicator;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
+use Byjuno\ByjunoPayments\Api\CembraPayLoginDto;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 if (!defined('_PS_VERSION_'))
@@ -271,9 +275,9 @@ class Byjuno extends PaymentModule
         /* @var $accessData CembraPayLoginDto */
         $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
         if ($accessData->mode == 'test') {
-            Configuration::get("BYJUNO_ACCESS_TOKEN_TEST", $hash.$token);
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", $hash.$token);
         } else {
-            Configuration::get("BYJUNO_ACCESS_TOKEN_LIVE", $hash.$token);
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", $hash.$token);
         }
     }
 
@@ -489,6 +493,8 @@ class Byjuno extends PaymentModule
         Configuration::updateValue('BYJUNO_ORDER_S5_FAIL', $s5FailId);
 
         if (!Configuration::get("byjuno_invoice")) {
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", '');
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", '');
             Configuration::updateValue('byjuno_invoice', 'disable');
             Configuration::updateValue('single_invoice', 'disable');
             Configuration::updateValue('installment_3', 'disable');
@@ -791,10 +797,11 @@ class Byjuno extends PaymentModule
         if (Tools::isSubmit('submitIntrumMain')) {
             Configuration::updateValue('INTRUM_SUBMIT_MAIN', 'OK');
             Configuration::updateValue('INTRUM_MODE', trim(Tools::getValue('intrum_mode')));
-            Configuration::updateValue('INTRUM_CLIENT_ID', trim(Tools::getValue('intrum_client_id')));
-            Configuration::updateValue('INTRUM_USER_ID', trim(Tools::getValue('INTRUM_USER_ID')));
-            Configuration::updateValue('INTRUM_PASSWORD', trim(Tools::getValue('intrum_password')));
-            Configuration::updateValue('INTRUM_TECH_EMAIL', trim(Tools::getValue('intrum_tech_email')));
+            Configuration::updateValue('CEMBRAPAY_PAYMENT_MODE', trim(Tools::getValue('CEMBRAPAY_PAYMENT_MODE')));
+            Configuration::updateValue('CEMBRAPAY_LIVE_CLIENT_ID', trim(Tools::getValue('CEMBRAPAY_LIVE_CLIENT_ID')));
+            Configuration::updateValue('CEMBRAPAY_LIVE_PASSWORD', trim(Tools::getValue('CEMBRAPAY_LIVE_PASSWORD')));
+            Configuration::updateValue('CEMBRAPAY_TEST_CLIENT_ID', trim(Tools::getValue('CEMBRAPAY_TEST_CLIENT_ID')));
+            Configuration::updateValue('CEMBRAPAY_TEST_PASSWORD', trim(Tools::getValue('CEMBRAPAY_TEST_PASSWORD')));
             Configuration::updateValue('INTRUM_ENABLETMX', trim(Tools::getValue('INTRUM_ENABLETMX')));
             Configuration::updateValue('INTRUM_TMXORGID', trim(Tools::getValue('INTRUM_TMXORGID')));
             Configuration::updateValue('byjuno_invoice', trim(Tools::getValue('byjuno_invoice')));
@@ -901,11 +908,11 @@ class Byjuno extends PaymentModule
             'this_path' => $this->_path,
             'intrum_submit_main' => Configuration::get("INTRUM_SUBMIT_MAIN"),
             'intrum_submit_payments' => Configuration::get("INTRUM_SUBMIT_PAYMENTS"),
-            'intrum_mode' => Configuration::get("INTRUM_MODE"),
-            'intrum_client_id' => Configuration::get("INTRUM_CLIENT_ID"),
-            'INTRUM_USER_ID' => Configuration::get("INTRUM_USER_ID"),
-            'intrum_password' => Configuration::get("INTRUM_PASSWORD"),
-            'intrum_tech_email' => Configuration::get("INTRUM_TECH_EMAIL"),
+            'cembrapay_payment_mode' => Configuration::get("CEMBRAPAY_PAYMENT_MODE"),
+            'cembra_live_client_id' => Configuration::get("CEMBRAPAY_LIVE_CLIENT_ID"),
+            'cembra_live_password' => Configuration::get("CEMBRAPAY_LIVE_PASSWORD"),
+            'cembra_test_client_id' => Configuration::get("CEMBRAPAY_TEST_CLIENT_ID"),
+            'cembra_test_password' => Configuration::get("CEMBRAPAY_TEST_PASSWORD"),
             'intrum_show_log' => Configuration::get("INTRUM_SHOW_LOG"),
             'INTRUM_ENABLETMX' => Configuration::get("INTRUM_ENABLETMX"),
             'INTRUM_TMXORGID' => Configuration::get("INTRUM_TMXORGID"),

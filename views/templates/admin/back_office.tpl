@@ -208,42 +208,54 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Client ID:
+                            Payment mode:
                         </label>
 
                         <div class="col-lg-9">
-                            <input type="text" name="intrum_client_id" id="intrum_client_id"
-                                   value="{$intrum_client_id|escape}"/>
+                            <select name="CEMBRAPAY_PAYMENT_MODE" id="CEMBRAPAY_PAYMENT_MODE">
+                                <option value="test"{if ($cembrapay_payment_mode == 'api')} selected{/if}>API with no redirect</option>
+                                <option value="live"{if ($cembrapay_payment_mode == 'checkout')} selected{/if}>Checkout with redirect</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            User ID:
+                            Live client ID:
                         </label>
 
                         <div class="col-lg-9">
-                            <input type="text" name="INTRUM_USER_ID" id="INTRUM_USER_ID"
-                                   value="{$INTRUM_USER_ID|escape}"/>
+                            <input type="text" name="CEMBRAPAY_LIVE_CLIENT_ID" id="CEMBRAPAY_LIVE_CLIENT_ID"
+                                   value="{$cembra_live_client_id|escape}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Password:
+                            Live password:
                         </label>
 
                         <div class="col-lg-9">
-                            <input type="password" name="intrum_password" id="intrum_password"
-                                   value="{$intrum_password|escape}"/>
+                            <input type="text" name="CEMBRAPAY_LIVE_PASSWORD" id="CEMBRAPAY_LIVE_PASSWORD"
+                                   value="{$cembra_live_password|escape}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Technical Contact (E-mail):
+                            Test client ID:
                         </label>
 
                         <div class="col-lg-9">
-                            <input type="text" name="intrum_tech_email" id="intrum_tech_email"
-                                   value="{$intrum_tech_email|escape}"/>
+                            <input type="text" name="CEMBRAPAY_TEST_CLIENT_ID" id="CEMBRAPAY_TEST_CLIENT_ID"
+                                   value="{$cembra_test_client_id|escape}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Test password:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <input type="text" name="CEMBRAPAY_TEST_PASSWORD" id="CEMBRAPAY_TEST_PASSWORD"
+                                   value="{$cembra_test_password|escape}"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -291,18 +303,18 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Enable gender &amp; birthday selection:
-                    </label>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Enable gender &amp; birthday selection:
+                        </label>
 
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_GENDER_BIRTHDAY" id="BYJUNO_GENDER_BIRTHDAY">
-                            <option value="false"{if ($BYJUNO_GENDER_BIRTHDAY == 'false')} selected{/if}>Disabled
-                            </option>
-                            <option value="true"{if ($BYJUNO_GENDER_BIRTHDAY == 'true')} selected{/if}>Enabled</option>
-                        </select>
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_GENDER_BIRTHDAY" id="BYJUNO_GENDER_BIRTHDAY">
+                                <option value="false"{if ($BYJUNO_GENDER_BIRTHDAY == 'false')} selected{/if}>Disabled
+                                </option>
+                                <option value="true"{if ($BYJUNO_GENDER_BIRTHDAY == 'true')} selected{/if}>Enabled</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="panel-footer">
@@ -318,130 +330,132 @@
                 <div class="panel-heading">
                     <i class="icon-cogs"></i> Risk managment
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Mininmal amount for checkout (default 10):
-                    </label>
 
-                    <div class="col-lg-9">
-                        <input type="text" name="BYJUNO_MIN_AMOUNT" id="BYJUNO_MIN_AMOUNT"
-                               value="{$BYJUNO_MIN_AMOUNT|escape}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Maximal amount for checkout (default 1000):
-                    </label>
-
-                    <div class="col-lg-9">
-                        <input type="text" name="BYJUNO_MAX_AMOUNT" id="BYJUNO_MAX_AMOUNT"
-                               value="{$BYJUNO_MAX_AMOUNT|escape}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Credit check before show payments:
-                    </label>
-
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_CREDIT_CHECK" id="BYJUNO_CREDIT_CHECK">
-                            <option value="enable"{if ($BYJUNO_CREDIT_CHECK == 'enable')} selected{/if}>Enable</option>
-                            <option value="disable"{if ($BYJUNO_CREDIT_CHECK == 'disable')} selected{/if}>Disable
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Enable B2B check:
-                    </label>
-
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_B2B" id="BYJUNO_B2B">
-                            <option value="enable"{if ($BYJUNO_B2B == 'enable')} selected{/if}>Enable</option>
-                            <option value="disable"{if ($BYJUNO_B2B == 'disable')} selected{/if}>Disable</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                       Order state after success payment:
-                    </label>
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_SUCCESS_TRIGGER" id="BYJUNO_SUCCESS_TRIGGER">
-                            {foreach from=$order_success_status_list item=ostatus}
-                            <option value="{$ostatus['id_order_state']}"{if ($ostatus['id_order_state'] == $BYJUNO_SUCCESS_TRIGGER)} selected{/if}>{$ostatus['name']}</option>
-                            {/foreach}>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Do not change order status after success S3:
-                    </label>
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY[]" id="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY" multiple="multiple" style="height: 340px">
-                            {foreach from=$order_status_list item=ostatus}
-                            <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY))} selected{/if}>{$ostatus['name']}</option>
-                            {/foreach}>
-                        </select><br />
-                        Order will not change the status if it will have the following statuses<br />
-                        Ctrl + click select multiple
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        S4 transactions:
-                    </label>
-
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_S4_ALLOWED" id="BYJUNO_S4_ALLOWED">
-                            <option value="enable"{if ($BYJUNO_S4_ALLOWED == 'enable')} selected{/if}>Enable</option>
-                            <option value="disable"{if ($BYJUNO_S4_ALLOWED == 'disable')} selected{/if}>Disable
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        S4 trigger order state:
-                    </label>
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_S4_TRIGGER[]" id="BYJUNO_S4_TRIGGER" multiple="multiple" style="height: 340px">
-                            {foreach from=$order_status_list item=ostatus}
-                                <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_S4_TRIGGER))} selected{/if}>{$ostatus['name']}</option>
-                            {/foreach}>
-                        </select><br />
-                        Ctrl + click select multiple
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Cancel S5 transactions:
-                    </label>
-
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_CANCEL_S5_ALLOWED" id="BYJUNO_CANCEL_S5_ALLOWED">
-                            <option value="enable"{if ($BYJUNO_CANCEL_S5_ALLOWED == 'enable')} selected{/if}>Enable</option>
-                            <option value="disable"{if ($BYJUNO_CANCEL_S5_ALLOWED == 'disable')} selected{/if}>Disable
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-lg-3 required">
-                        Refund S5 transactions:
-                    </label>
-
-                    <div class="col-lg-9">
-                        <select name="BYJUNO_REFUND_S5_ALLOWED" id="BYJUNO_REFUND_S5_ALLOWED">
-                            <option value="enable"{if ($BYJUNO_REFUND_S5_ALLOWED == 'enable')} selected{/if}>Enable</option>
-                            <option value="disable"{if ($BYJUNO_REFUND_S5_ALLOWED == 'disable')} selected{/if}>Disable
-                            </option>
-                        </select>
-                    </div>
-                </div>
                 <div class="form-wrapper">
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Mininmal amount for checkout (default 10):
+                        </label>
+
+                        <div class="col-lg-9">
+                            <input type="text" name="BYJUNO_MIN_AMOUNT" id="BYJUNO_MIN_AMOUNT"
+                                   value="{$BYJUNO_MIN_AMOUNT|escape}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Maximal amount for checkout (default 1000):
+                        </label>
+
+                        <div class="col-lg-9">
+                            <input type="text" name="BYJUNO_MAX_AMOUNT" id="BYJUNO_MAX_AMOUNT"
+                                   value="{$BYJUNO_MAX_AMOUNT|escape}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Credit check before show payments:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_CREDIT_CHECK" id="BYJUNO_CREDIT_CHECK">
+                                <option value="enable"{if ($BYJUNO_CREDIT_CHECK == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_CREDIT_CHECK == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Enable B2B check:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_B2B" id="BYJUNO_B2B">
+                                <option value="enable"{if ($BYJUNO_B2B == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_B2B == 'disable')} selected{/if}>Disable</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                           Order state after success payment:
+                        </label>
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_SUCCESS_TRIGGER" id="BYJUNO_SUCCESS_TRIGGER">
+                                {foreach from=$order_success_status_list item=ostatus}
+                                <option value="{$ostatus['id_order_state']}"{if ($ostatus['id_order_state'] == $BYJUNO_SUCCESS_TRIGGER)} selected{/if}>{$ostatus['name']}</option>
+                                {/foreach}>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Do not change order status after success S3:
+                        </label>
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY[]" id="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY" multiple="multiple" style="height: 340px">
+                                {foreach from=$order_status_list item=ostatus}
+                                <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY))} selected{/if}>{$ostatus['name']}</option>
+                                {/foreach}>
+                            </select><br />
+                            Order will not change the status if it will have the following statuses<br />
+                            Ctrl + click select multiple
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Settle transactions:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_S4_ALLOWED" id="BYJUNO_S4_ALLOWED">
+                                <option value="enable"{if ($BYJUNO_S4_ALLOWED == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_S4_ALLOWED == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Settle trigger order state:
+                        </label>
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_S4_TRIGGER[]" id="BYJUNO_S4_TRIGGER" multiple="multiple" style="height: 340px">
+                                {foreach from=$order_status_list item=ostatus}
+                                    <option value="{$ostatus['id_order_state']}"{if (in_array($ostatus['id_order_state'], $BYJUNO_S4_TRIGGER))} selected{/if}>{$ostatus['name']}</option>
+                                {/foreach}>
+                            </select><br />
+                            Ctrl + click select multiple
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Cancel Credit transactions:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_CANCEL_S5_ALLOWED" id="BYJUNO_CANCEL_S5_ALLOWED">
+                                <option value="enable"{if ($BYJUNO_CANCEL_S5_ALLOWED == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_CANCEL_S5_ALLOWED == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Refund Credit transactions:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_REFUND_S5_ALLOWED" id="BYJUNO_REFUND_S5_ALLOWED">
+                                <option value="enable"{if ($BYJUNO_REFUND_S5_ALLOWED == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_REFUND_S5_ALLOWED == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
                             Accepted CDP risks if credit check enabled (comma separated):
@@ -452,8 +466,6 @@
                                    value="{$BYJUNO_CDP_ACCEPT|escape}"/>
                         </div>
                     </div>
-                </div>
-                <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
                             Accepted CembraPay Risk for S2 (comma separated):
@@ -464,8 +476,6 @@
                                    value="{$BYJUNO_S2_IJ_ACCEPT|escape}"/>
                         </div>
                     </div>
-                </div>
-                <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
                             Accepted Merchant Risk for S2 (comma separated):
@@ -476,8 +486,6 @@
                                    value="{$BYJUNO_S2_MERCHANT_ACCEPT|escape}"/>
                         </div>
                     </div>
-                </div>
-                <div class="form-wrapper">
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
                             Accepted statuses for S3 response (comma separated):
@@ -488,6 +496,7 @@
                                    value="{$BYJUNO_S3_ACCEPT|escape}"/>
                         </div>
                     </div>
+                    -->
                 </div>
                 <div class="panel-footer">
                     <input type="hidden" name="submitIntrumMain" value="intrum_main_configuration"/>
