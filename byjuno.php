@@ -17,13 +17,14 @@ if (!defined('_PS_MODULE_INTRUMCOM_API')) {
 
 class Byjuno extends PaymentModule
 {
+    public $is_eu_compatible;
 
     public $cembraPayAzure;
     public function __construct()
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.0';
+        $this->version = '1.1.2';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment');
         $this->is_eu_compatible = 1;
@@ -252,16 +253,16 @@ class Byjuno extends PaymentModule
         $accessData->timeout = (int)30;
         if ($mode == 'test') {
             $accessData->mode = 'test';
-            $accessData->username = "XXX";
-            $accessData->password = "XXX";
+            $accessData->username = Configuration::get("CEMBRAPAY_TEST_CLIENT_ID");
+            $accessData->password = Configuration::get("CEMBRAPAY_TEST_PASSWORD");
             $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
-            $accessToken = "XXX";
+            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_TEST");
         } else {
             $accessData->mode = 'live';
-            $accessData->username = "XXX";
-            $accessData->password = "XXX";
+            $accessData->username = Configuration::get("CEMBRAPAY_LIVE_CLIENT_ID");
+            $accessData->password = Configuration::get("CEMBRAPAY_LIVE_PASSWORD");
             $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
-            $accessToken = "XXX";
+            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_LIVE");
         }
         $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
         $hash = $accessData->username.$accessData->password.$accessData->audience;
@@ -447,7 +448,6 @@ class Byjuno extends PaymentModule
         return $defaultOrderState->id;
     }
 
-
     public function install()
     {
         if (!parent::install()
@@ -483,6 +483,7 @@ class Byjuno extends PaymentModule
                   PRIMARY KEY  (`intrum_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
 
+
         $defaultStateId = $this->addOrderState("Awaiting for Byjuno");
         $receivedPaymentId = $this->addOrderState("Byjuno payment success", "#32CD32", true, true);
         $s4FailId = $this->addOrderState("Byjuno S4 fail", "#FF0000", true, true);
@@ -495,6 +496,11 @@ class Byjuno extends PaymentModule
         if (!Configuration::get("byjuno_invoice")) {
             Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", '');
             Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", '');
+            Configuration::updateValue('CEMBRAPAY_PAYMENT_MODE', '');
+            Configuration::updateValue('CEMBRAPAY_LIVE_CLIENT_ID', '');
+            Configuration::updateValue('CEMBRAPAY_LIVE_PASSWORD', '');
+            Configuration::updateValue('CEMBRAPAY_TEST_CLIENT_ID', '');
+            Configuration::updateValue('CEMBRAPAY_TEST_PASSWORD', '');
             Configuration::updateValue('byjuno_invoice', 'disable');
             Configuration::updateValue('single_invoice', 'disable');
             Configuration::updateValue('installment_3', 'disable');
@@ -796,7 +802,7 @@ class Byjuno extends PaymentModule
         }
         if (Tools::isSubmit('submitIntrumMain')) {
             Configuration::updateValue('INTRUM_SUBMIT_MAIN', 'OK');
-            Configuration::updateValue('INTRUM_MODE', trim(Tools::getValue('intrum_mode')));
+            Configuration::updateValue('INTRUM_MODE', trim(Tools::getValue('INTRUM_MODE')));
             Configuration::updateValue('CEMBRAPAY_PAYMENT_MODE', trim(Tools::getValue('CEMBRAPAY_PAYMENT_MODE')));
             Configuration::updateValue('CEMBRAPAY_LIVE_CLIENT_ID', trim(Tools::getValue('CEMBRAPAY_LIVE_CLIENT_ID')));
             Configuration::updateValue('CEMBRAPAY_LIVE_PASSWORD', trim(Tools::getValue('CEMBRAPAY_LIVE_PASSWORD')));
@@ -906,6 +912,7 @@ class Byjuno extends PaymentModule
         $values = array(
             'bootstrap' => true,
             'this_path' => $this->_path,
+            'intrum_mode' => Configuration::get("INTRUM_MODE"),
             'intrum_submit_main' => Configuration::get("INTRUM_SUBMIT_MAIN"),
             'intrum_submit_payments' => Configuration::get("INTRUM_SUBMIT_PAYMENTS"),
             'cembrapay_payment_mode' => Configuration::get("CEMBRAPAY_PAYMENT_MODE"),

@@ -1,6 +1,8 @@
 <?php
 
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutAutRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
+use Byjuno\ByjunoPayments\Api\CustomerConsents;
 
 function Cembra_byjunoGetClientIp() {
     $ipaddress = '';
@@ -370,7 +372,7 @@ function Cembra_CreatePrestaShopRequestAfterPaid(Cart $cart, OrderCore $order, C
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno Prestashop 1.7, 1.8 module 1.1.0';
+    $extraInfo["Value"] = 'Byjuno Prestashop 1.7, 1.8 module 1.1.1';
     $request->setExtraInfo($extraInfo);	
 
     return $request;
