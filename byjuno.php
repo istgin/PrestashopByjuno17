@@ -4,6 +4,7 @@ use Byjuno\ByjunoPayments\Api\CembraPayAzure;
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutScreeningResponse;
 use Byjuno\ByjunoPayments\Api\CembraPayCommunicator;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
+use Byjuno\ByjunoPayments\Api\CembraPayLogger;
 use Byjuno\ByjunoPayments\Api\CembraPayLoginDto;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -370,7 +371,6 @@ class Byjuno extends PaymentModule
             $jsonUniq = $jsonUniq->createRequest();
             $sha = sha1($jsonUniq);
             if ($cookie->creditCheckSha != "" && $cookie->creditCheckSha == $sha) {
-                var_dump($cookie->creditCheckStatus);
                 $screeningStatus = $cookie->creditCheckStatus;
             } else {
                 $statusLog = "Screening request";
@@ -388,17 +388,18 @@ class Byjuno extends PaymentModule
                 $response = $cembrapayCommunicator->sendScreeningRequest($json, $accessData, function ($object, $token, $accessData) {
                     $object->saveToken($token, $accessData);
                 });
+                $cembraPayLogger = CembraPayLogger::getInstance();
                 if ($response) {
                     /* @var $responseRes CembraPayCheckoutScreeningResponse */
                     $responseRes = CembraPayConstants::screeningResponse($response);
                     $screeningStatus = $responseRes->processingStatus;
-                    //$this->saveCembraLog($event->getContext(), $json, $response, $responseRes->processingStatus, $statusLog,
-                   //     $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
-                    //    $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+                    $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
+                        $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
+                        $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
                 } else {
-                   // $this->saveCembraLog($event->getContext(), $json, $response, "Query error", $statusLog,
-                   //     $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
-                    //    $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, "-", "-");
+                    $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
+                        $request->custDetails->firstName, $request->custDetails->lastName, $request->requestMsgId,
+                        $request->billingAddr->postalCode, $request->billingAddr->town, $request->billingAddr->country, $request->billingAddr->addrFirstLine, "-", "-");
                     $screeningStatus = CembraPayConstants::$SCREENING_NET_ERROR;
                 }
 

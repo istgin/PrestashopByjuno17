@@ -2,61 +2,82 @@
 
 namespace Byjuno\ByjunoPayments\Api;
 
+use Db;
+
 class CembraPayLogger
 {
-    public function log($array) {
+    private static $instance = NULL;
+    private $logs;
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $connection = $objectManager->create('\Magento\Framework\App\ResourceConnection');
-
-        $conn = $connection->getConnection();
-        $conn->insert('cembrapaycheckout_log',
-            array(
-                'firstname' => $array['firstname'],
-                'lastname' => $array['lastname'],
-                'town' => $array['town'],
-                'postcode' => $array['postcode'],
-                'street' => $array['street1'],
-                'country' => $array['country'],
-                'ip' => $array['ip'],
-                'status' => $array['status'],
-                'request_id' => $array['request_id'],
-                'order_id' => $array['order_id'],
-                'transaction_id' => $array['transaction_id'],
-                'type' => $array['type'],
-                'error' => $array['error'],
-                'response' => $array['response'],
-                'request' => $array['request'],
-                'creation_date' => date ("Y-m-d H:i:s")
-            )
-        );
+    private function __construct() {
+        $this->logs = array();
     }
 
-    public function getAuthTransaction($orderId) {
-
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $connection = $objectManager->create('\Magento\Framework\App\ResourceConnection');
-        $tableName = $connection->getTableName("cembrapaycheckout_log");
-        $conn = $connection->getConnection();
-
-        $select = $conn->select()->from($tableName)
-            ->where('order_id = ?', $orderId)
-            ->where('type = ?',  DataHelper::$MESSAGE_AUTH);
-        $result = $conn->fetchRow($select);
-        return $result;
+    public static function getInstance() {
+        if(self::$instance === NULL) {
+            self::$instance = new CembraPayLogger();
+        }
+        return self::$instance;
     }
 
-    public function getChkTransaction($orderId) {
+    public function saveCembraLog($request, $response, $status, $type,
+                                   $firstName, $lastName, $requestId,
+                                   $postcode, $town, $country, $street1, $transactionId, $orderId)
+    {
+        $json_string1 = json_decode($request);
+        if ($json_string1 == null) {
+            $json_string11 = $request;
+        } else {
+            $json_string11 = json_encode($json_string1, JSON_PRETTY_PRINT);
+        }
+        $json_string2 = json_decode($response);
+        if ($json_string2 == null) {
+            $json_string22 = $response;
+        } else {
+            $json_string22 = json_encode($json_string2, JSON_PRETTY_PRINT);
+        }
+        if (empty($json_string11)) {
+            $json_string11 = "no request";
+        }
+        if (empty($json_string22)) {
+            $json_string22 = "no response";
+        }
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $connection = $objectManager->create('\Magento\Framework\App\ResourceConnection');
-        $tableName = $connection->getTableName("cembrapaycheckout_log");
-        $conn = $connection->getConnection();
-
-        $select = $conn->select()->from($tableName)
-            ->where('order_id = ?', $orderId)
-            ->where('type = ?',  DataHelper::$MESSAGE_CHK);
-        $result = $conn->fetchRow($select);
-        return $result;
+        $sql = '
+                INSERT INTO `'._DB_PREFIX_.'cembra_logs` (
+                  `request_id`,
+                  `request_type`,
+                  `firstname`,
+                  `lastname`,
+                  `town`,
+                  `postcode`,
+                  `street`,
+                  `country`,
+                  `ip`,
+                  `cembra_status` ,
+                  `order_id`,
+                  `transaction_id`,
+                  `request`,
+                  `response`
+                )
+                VALUES
+                (
+                    \''.pSQL((string)$requestId).'\',
+                    \''.pSQL((string)$type).'\',
+                    \''.pSQL((string)$firstName).'\',
+                    \''.pSQL((string)$lastName).'\',
+                    \''.pSQL((string)$town).'\',
+                    \''.pSQL((string)$postcode,).'\',
+                    \''.pSQL((string)$street1).'\',
+                    \''.pSQL((string)$country).'\',
+                    \''.pSQL(empty($_SERVER['REMOTE_ADDR']) ? "no ip" : $_SERVER['REMOTE_ADDR']).'\',
+                    \''.pSQL((string)$status).'\',
+                    \''.pSQL((string)$orderId).'\',
+                    \''.pSQL((string)$transactionId).'\',
+                    \''.pSQL((string)$json_string11).'\',
+                    \''.pSQL((string)$json_string22).'\'
+                )
+        ';
+        Db::getInstance()->Execute($sql);
     }
 };
