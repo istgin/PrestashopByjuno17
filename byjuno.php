@@ -957,13 +957,13 @@ class Byjuno extends PaymentModule
             'BYJUNO_TOC_INVOICE_IT' => Configuration::get('BYJUNO_TOC_INVOICE_IT'),
             'BYJUNO_TOC_INSTALLMENT_IT' => Configuration::get('BYJUNO_TOC_INSTALLMENT_IT'),
             'payment_methods' => $methods,
-            'intrum_logs' => self::getLogs(),
+            'cembra_logs' => self::getLogs(),
             'search_in_log' => Tools::getValue('searchInLog'),
             'showlogs' => Tools::getValue('logs') != "" ? 1 : 0,
             'url' => "?controller=AdminModules&token=" . Tools::getValue('token') . "&configure=byjuno&tab_module=payments_gateways&module_name=byjuno",
             'urllogs' => "?controller=AdminModules&token=" . Tools::getValue('token') . "&configure=byjuno&tab_module=payments_gateways&module_name=byjuno&logs=true",
-            'intrum_view_xml' => Tools::getValue('viewxml') != "" ? 1 : 0,
-            'intrum_single_log' => self::getSingleLog(Tools::getValue('viewxml')),
+            'cembra_view_json' => Tools::getValue('viewjson') != "" ? 1 : 0,
+            'cembra_single_log' => self::getSingleLog(Tools::getValue('viewjson')),
             'order_status_list' => OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT')),
             'order_success_status_list' => $success_statuses_list
         );
@@ -1001,19 +1001,19 @@ class Byjuno extends PaymentModule
         if (Tools::isSubmit('submitLogSearch') && Tools::getValue('searchInLog') != '') {
             $sql = '
                 SELECT *
-                FROM `' . _DB_PREFIX_ . 'intrum_logs` as I
+                FROM `' . _DB_PREFIX_ . 'cembra_logs` as I
                 WHERE I.firstname like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
                    OR I.lastname like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
                    OR I.request_id like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
-                ORDER BY intrum_id DESC
+                ORDER BY cembra_id DESC
                 ';
             return Db::getInstance()->ExecuteS($sql);
 
         } else {
             return Db::getInstance()->ExecuteS('
                 SELECT *
-                FROM `' . _DB_PREFIX_ . 'intrum_logs` as I
-                ORDER BY intrum_id DESC
+                FROM `' . _DB_PREFIX_ . 'cembra_logs` as I
+                ORDER BY cembra_id DESC
                 LIMIT 20 ');
         }
 
@@ -1027,30 +1027,14 @@ class Byjuno extends PaymentModule
         if ($val > 0) {
             $sql = '
                 SELECT *
-                FROM `' . _DB_PREFIX_ . 'intrum_logs` as I
-                WHERE I.intrum_id like \'%' . pSQL($val) . '%\'
+                FROM `' . _DB_PREFIX_ . 'cembra_logs` as I
+                WHERE I.cembra_id like \'%' . pSQL($val) . '%\'
                 ';
-            $xml = Db::getInstance()->getRow($sql);
+            $json = Db::getInstance()->getRow($sql);
 
+            $return["input"] = htmlspecialchars($json["request"]);
+            $return["output"] = htmlspecialchars("Raw data: " . $json["response"]);
 
-            $domInput = new DOMDocument();
-            $domInput->preserveWhiteSpace = FALSE;
-            $domInput->loadXML($xml["request"]);
-            $elem = $domInput->getElementsByTagName('Request');
-            $domInput->formatOutput = TRUE;
-            libxml_use_internal_errors(true);
-            $testXml = simplexml_load_string($xml["response"]);
-            $domOutput = new DOMDocument();
-            $domOutput->preserveWhiteSpace = FALSE;
-            if ($testXml) {
-                $domOutput->loadXML($xml["response"]);
-                $domOutput->formatOutput = TRUE;
-                $return["input"] = htmlspecialchars($domInput->saveXml());
-                $return["output"] = htmlspecialchars($domOutput->saveXml());
-            } else {
-                $return["input"] = htmlspecialchars($domInput->saveXml());
-                $return["output"] = htmlspecialchars("Raw data: " . $xml["response"]);
-            }
         }
         return $return;
     }

@@ -120,17 +120,17 @@
     <li><a href="{$url}" id="href-settings" title="Settings"><span>Settings</span></a></li>
     <li><a href="{$urllogs}" id="href-logs" title="Logs"><span>Logs</span></a></li>
 </ul>
-{if ($intrum_view_xml)}
+{if ($cembra_view_json)}
     <a href="javascript:history.go(-1)">Back to log</a>
-    <h1>Input & output XML</h1>
+    <h1>Input & output JSON</h1>
     <table width="100%">
         <tr>
             <td>Input</td>
             <td>Response</td>
         </tr>
         <tr>
-            <td width="50%" style="border: 1px solid #CCCCCC; background-color: #FFFFFF; padding: 5px;" valign="top"><code style="width: 100%; word-wrap: break-word; white-space: pre-wrap;">{$intrum_single_log["input"]}</code></td>
-            <td width="50%" style="border: 1px solid #CCCCCC; background-color: #FFFFFF; padding: 5px;" valign="top"><code style="width: 100%; word-wrap: break-word; white-space: pre-wrap;">{$intrum_single_log["output"]}</code></td>
+            <td width="50%" style="border: 1px solid #CCCCCC; background-color: #FFFFFF; padding: 5px;" valign="top"><code style="width: 100%; word-wrap: break-word; white-space: pre-wrap;">{$cembra_single_log["input"]}</code></td>
+            <td width="50%" style="border: 1px solid #CCCCCC; background-color: #FFFFFF; padding: 5px;" valign="top"><code style="width: 100%; word-wrap: break-word; white-space: pre-wrap;">{$cembra_single_log["output"]}</code></td>
         </tr>
     </table>
 {elseif ($showlogs)}
@@ -157,19 +157,19 @@
                 <td>Request ID</td>
                 <td>Type</td>
             </tr>
-            {foreach from=$intrum_logs item=log}
+            {foreach from=$cembra_logs item=log}
                 <tr>
                     <td>{$log.firstname|escape}</td>
                     <td>{$log.lastname|escape}</td>
                     <td>{$log.ip|escape}</td>
-                    <td>{if ($log.status === '0')}Error{else}{$log.status|escape}{/if}</td>
+                    <td>{$log.cembra_status|escape}</td>
                     <td>{$log.creation_date|escape}</td>
                     <td>{$log.request_id|escape}</td>
-                    <td><a href="{$url}&viewxml={$log.intrum_id}">{$log.type|escape}</a>
+                    <td><a href="{$url}&viewjson={$log.cembra_id}">{$log.request_type|escape}</a>
                     </td>
                 </tr>
             {/foreach}
-            {if !$intrum_logs}
+            {if !$cembra_logs}
                 <tr>
                     <td colspan="5" style="padding: 10px">
                         No results found
