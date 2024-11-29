@@ -24,6 +24,13 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use Byjuno\ByjunoPayments\Api\CembraPayAzure;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutAuthorizationResponse;
+use Byjuno\ByjunoPayments\Api\CembraPayCommunicator;
+use Byjuno\ByjunoPayments\Api\CembraPayConstants;
+use Byjuno\ByjunoPayments\Api\CembraPayLogger;
+use Byjuno\ByjunoPayments\Api\CembraPayLoginDto;
+
 /**
  * @since 1.5.0
  */
@@ -32,6 +39,41 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 	/**
 	 * @see FrontController::postProcess()
 	 */
+    function getAccessData($mode) {
+        $accessData = new CembraPayLoginDto();
+        $accessData->helperObject = $this;
+        $accessData->timeout = (int)30;
+        if ($mode == 'test') {
+            $accessData->mode = 'test';
+            $accessData->username = Configuration::get("CEMBRAPAY_TEST_CLIENT_ID");
+            $accessData->password = Configuration::get("CEMBRAPAY_TEST_PASSWORD");
+            $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
+            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_TEST");
+        } else {
+            $accessData->mode = 'live';
+            $accessData->username = Configuration::get("CEMBRAPAY_LIVE_CLIENT_ID");
+            $accessData->password = Configuration::get("CEMBRAPAY_LIVE_PASSWORD");
+            $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
+            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_LIVE");
+        }
+        $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
+        $hash = $accessData->username.$accessData->password.$accessData->audience;
+        if ($hash == $tkn[0] && !empty($tkn[1])) {
+            $accessData->accessToken = $tkn[1];
+        }
+        return $accessData;
+    }
+
+    function saveToken($token, $accessData) {
+        /* @var $accessData CembraPayLoginDto */
+        $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
+        if ($accessData->mode == 'test') {
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", $hash.$token);
+        } else {
+            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", $hash.$token);
+        }
+    }
+
 	public function postProcess()
 	{
 		global $cookie;
@@ -108,99 +150,44 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 			require(_PS_MODULE_DIR_.'intrumcom/api/intrum.php');
 			require(_PS_MODULE_DIR_.'intrumcom/api/library_prestashop.php');
 		}
+        $this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+        $order = new OrderCore((int)$this->module->currentOrder);
 
-		$request = CreatePrestaShopRequest($this->context->cart, $this->context->customer, $this->context->currency, "ORDERREQUEST", $selected_gender, $selected_birthday);
-		$invoice_address = new Address($this->context->cart->id_address_invoice);
-
-		$type = "S1 Request";
-		$b2b = Configuration::get("BYJUNO_B2B") == 'enable';
-		if ($b2b && !empty($invoice_address->company)) {
-			$type = "S1 Request B2B";
-			$xml = $request->createRequestCompany();
-		} else {
-			$xml = $request->createRequest();
-		}
-		$byjunoCommunicator = new ByjunoCommunicator();
-		$byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-		$response = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-
-        $transaction = "";
-		if ($response) {
-			$byjunoResponse = new ByjunoResponse();
-			$byjunoResponse->setRawResponse($response);
-			$byjunoResponse->processResponse();
-			$status = $byjunoResponse->getCustomerRequestStatus();
-            $transaction = $byjunoResponse->getTransactionNumber();
-		}
-		$byjunoLogger = ByjunoLogger::getInstance();
-		$byjunoLogger->log(Array(
-			"firstname" => $request->getFirstName(),
-			"lastname" => $request->getLastName(),
-			"town" => $request->getTown(),
-			"postcode" => $request->getPostCode(),
-			"street" => trim($request->getFirstLine().' '.$request->getHouseNumber()),
-			"country" => $request->getCountryCode(),
-			"ip" => byjunoGetClientIp(),
-			"status" => $status,
-			"request_id" => $request->getRequestId(),
-			"type" => $type,
-			"error" => ($status == 0) ? "ERROR" : "",
-			"response" => $response,
-			"request" => $xml
-		));
-
-		$accept = "";
-		if (byjunoIsStatusOk($status, "BYJUNO_S2_MERCHANT_ACCEPT")) {
-			$accept = "CLIENT";
-		}
-		if (byjunoIsStatusOk($status, "BYJUNO_S2_IJ_ACCEPT")) {
-			$accept = "IJ";
-		}
-
-		if ($accept == "") {
-			Tools::redirect($errorlnk);
-			exit();
-		}
-
-		$this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
-		$order = new OrderCore((int)$this->module->currentOrder);
-
-		$requestS3 = CreatePrestaShopRequestAfterPaid($this->context->cart, $order, $this->context->currency, Tools::getValue('selected_plan'), $accept, $invoiceDelivery, $selected_gender, $selected_birthday, $transaction);
-		$typeS3 = "S3 Request";
-		$b2b = Configuration::get("BYJUNO_B2B") == 'enable';
-		$xml = "";
-		if ($b2b && !empty($invoice_address->company)) {
-			$typeS3 = "S3 Request B2B";
-			$xml = $requestS3->createRequestCompany();
-		} else {
-			$xml = $requestS3->createRequest();
-		}
-
-		$responseS3 = $byjunoCommunicator->sendRequest($xml, (int)Configuration::get("BYJUNO_CONN_TIMEOUT"));
-		$statusS3 = 0;
-		if ($responseS3) {
-			$byjunoResponseS3 = new ByjunoResponse();
-			$byjunoResponseS3->setRawResponse($responseS3);
-			$byjunoResponseS3->processResponse();
-			$statusS3 = $byjunoResponseS3->getCustomerRequestStatus();
-		}
-		$byjunoLogger->log(Array(
-			"firstname" => $requestS3->getFirstName(),
-			"lastname" => $requestS3->getLastName(),
-			"town" => $requestS3->getTown(),
-			"postcode" => $requestS3->getPostCode(),
-			"street" => trim($requestS3->getFirstLine().' '.$requestS3->getHouseNumber()),
-			"country" => $requestS3->getCountryCode(),
-			"ip" => byjunoGetClientIp(),
-			"status" => $statusS3,
-			"request_id" => $requestS3->getRequestId(),
-			"type" => $typeS3,
-			"error" => ($statusS3 == 0) ? "ERROR" : "",
-			"response" => $responseS3,
-			"request" => $xml
-		));
-
-		if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
+        $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery);
+        $statusLog = "Authorization request backend";
+        if ($requestAUT->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
+            $statusLog = "Authorization request backend company";
+        }
+        $json = $requestAUT->createRequest();
+        $mode = Configuration::get("INTRUM_MODE");
+        $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
+        if (isset($mode) && strtolower($mode) == 'live') {
+            $cembrapayCommunicator->setServer('live');
+        } else {
+            $cembrapayCommunicator->setServer('test');
+        }
+        $accessData = $this->module->getAccessData($mode);
+        $response = $cembrapayCommunicator->sendAuthRequest($json, $accessData, function ($object, $token, $accessData) {
+            $object->saveToken($token, $accessData);
+        });
+        $status = "";
+        $responseRes = null;
+        $cembraPayLogger = CembraPayLogger::getInstance();
+        if (isset($response)) {
+            /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
+            $responseRes = CembraPayConstants::authorizationResponse($response);
+            $status = $responseRes->processingStatus;
+            $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
+                $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
+                $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
+                $requestAUT->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+        } else {
+            $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
+                $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
+                $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
+                $requestAUT->billingAddr->addrFirstLine, "-", "-");
+        }
+        if ($status == CembraPayConstants::$AUTH_OK) {
             $orderStatusChange = new OrderCore((int)$this->module->currentOrder);
             try {
                 $arrayOfTriggerDoNotChange = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
@@ -217,10 +204,12 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                     $order->setCurrentState($success);
                 }
             }
-			Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
-		} else {
-			$order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
-			Tools::redirect($errorlnk);
-		}
+            $order->setFieldsToUpdate(Array("chk_transaction_id" => $responseRes->transactionId));
+            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
+        } else {
+            $this->context->cookie->cembra_old_cart_id = $cart->id;
+            $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+            Tools::redirect($errorlnk);
+        }
 	}
 }

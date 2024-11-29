@@ -99,10 +99,12 @@ class Byjuno extends PaymentModule
             $byjuno_invoice = true;
         }
         if (Configuration::get("installment_3") == 'enable'
-            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_4") == 'enable'
+            || Configuration::get("installment_6") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
-            || Configuration::get("installment_4x12") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_48") == 'enable'
         ) {
             $byjuno_installment = true;
         }
@@ -186,10 +188,10 @@ class Byjuno extends PaymentModule
                 $values['toc_url_invoice'] = $tocUrl;
             } else  {
                 if (Configuration::get("byjuno_invoice") == 'enable') {
-                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
+                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
                 }
                 if (Configuration::get("single_invoice") == 'enable') {
-                    $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
+                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
                 }
                 $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
@@ -203,8 +205,11 @@ class Byjuno extends PaymentModule
             if (Configuration::get("installment_3") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
             }
-            if (Configuration::get("installment_36") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => 0);
+            if (Configuration::get("installment_4") == 'enable') {
+                $selected_payments_installment[] = Array('name' => $this->l('4 installments'), 'id' => 'installment_4', "selected" => 0);
+            }
+            if (Configuration::get("installment_6") == 'enable') {
+                $selected_payments_installment[] = Array('name' => $this->l('6 installments'), 'id' => 'installment_6', "selected" => 0);
             }
             if (Configuration::get("installment_12") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
@@ -212,8 +217,11 @@ class Byjuno extends PaymentModule
             if (Configuration::get("installment_24") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('24 installments'), 'id' => 'installment_24', "selected" => 0);
             }
-            if (Configuration::get("installment_4x12") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('4 installments in 12 months'), 'id' => 'installment_4x12', "selected" => 0);
+            if (Configuration::get("installment_36") == 'enable') {
+                $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => 0);
+            }
+            if (Configuration::get("installment_48") == 'enable') {
+                $selected_payments_installment[] = Array('name' => $this->l('48 installments'), 'id' => 'installment_48', "selected" => 0);
             }
             $tocUrl = Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
             $selected_payments_installment[0]["selected"] = 1;
@@ -295,10 +303,12 @@ class Byjuno extends PaymentModule
             $byjuno_invoice = true;
         }
         if (Configuration::get("installment_3") == 'enable'
-            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_4") == 'enable'
+            || Configuration::get("installment_6") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
-            || Configuration::get("installment_4x12") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_48") == 'enable'
         ) {
             $byjuno_installment = true;
         }
@@ -348,10 +358,12 @@ class Byjuno extends PaymentModule
             $byjuno_invoice = true;
         }
         if (Configuration::get("installment_3") == 'enable'
-            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_4") == 'enable'
+            || Configuration::get("installment_6") == 'enable'
             || Configuration::get("installment_12") == 'enable'
             || Configuration::get("installment_24") == 'enable'
-            || Configuration::get("installment_4x12") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_48") == 'enable'
         ) {
             $byjuno_installment = true;
         }
@@ -505,10 +517,12 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('byjuno_invoice', 'disable');
             Configuration::updateValue('single_invoice', 'disable');
             Configuration::updateValue('installment_3', 'disable');
-            Configuration::updateValue('installment_36', 'disable');
+            Configuration::updateValue('installment_4', 'disable');
+            Configuration::updateValue('installment_6', 'disable');
             Configuration::updateValue('installment_12', 'disable');
             Configuration::updateValue('installment_24', 'disable');
-            Configuration::updateValue('installment_4x12', 'disable');
+            Configuration::updateValue('installment_36', 'disable');
+            Configuration::updateValue('installment_48', 'disable');
             Configuration::updateValue('BYJUNO_CREDIT_CHECK', 'disable');
             Configuration::updateValue('BYJUNO_CDP_ACCEPT', '2');
             Configuration::updateValue('BYJUNO_S2_IJ_ACCEPT', '2');
@@ -528,14 +542,14 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', 'https://byjuno.ch/en/3a/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', 'https://byjuno.ch/en/1b/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', 'https://byjuno.ch/de/3a/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_DE', 'https://byjuno.ch/de/1b/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_FR', 'https://byjuno.ch/fr/3a/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_FR', 'https://byjuno.ch/fr/1b/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_IT', 'https://byjuno.ch/it/3a/terms/');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_IT', 'https://byjuno.ch/it/1b/terms/');
+            Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', 'https://cembrapay.ch/en/terms/CP');
+            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', 'https://cembrapay.ch/en/terms');
+            Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', 'https://cembrapay.ch/de/terms/CP');
+            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_DE', 'https://cembrapay.ch/de/terms');
+            Configuration::updateValue('BYJUNO_TOC_INVOICE_FR', 'https://cembrapay.ch/fr/terms/CP');
+            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_FR', 'https://cembrapay.ch/fr/terms');
+            Configuration::updateValue('BYJUNO_TOC_INVOICE_IT', 'https://cembrapay.ch/it/terms/CP');
+            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_IT', 'https://cembrapay.ch/it/terms');
 
         }
         return true;
@@ -543,6 +557,7 @@ class Byjuno extends PaymentModule
 
     public function hookDisplayBackOfficeOrderActions($params)
     {
+        exit('bbb');
         $orderCore = new OrderCore((int)$params["id_order"]);
         $order_module = $orderCore->module;
         if ($order_module != 'byjuno')
@@ -559,6 +574,7 @@ class Byjuno extends PaymentModule
 
     public function hookActionOrderSlipAdd($params)
     {
+        exit('aaa');
         if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") != 'enable') {
             return;
         }
@@ -697,43 +713,46 @@ class Byjuno extends PaymentModule
         if (Configuration::get("BYJUNO_CANCEL_S5_ALLOWED") == 'enable') {
             if ($orderStatus->id == Configuration::get('PS_OS_CANCELED')) {
                 $orderCore = new OrderCore((int)$params["id_order"]);
-                $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
-                if ($order_module == "byjuno") {
-                    $currency = CurrencyCore::getCurrency($orderCore->id_currency);
-                    $dt = date("Y-m-d", time());
-                    $requestCancel = CreateShopRequestS5Cancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $orderCore->id_customer, $dt);
-                    $xmlRequestS5 = $requestCancel->createRequest();
-                    $byjunoCommunicator = new ByjunoCommunicator();
-                    $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-                    $responseS5 = $byjunoCommunicator->sendS4Request($xmlRequestS5);
-                    $statusLog = "S5 cancel";
-                    $statusS5 = "ERR";
-                    if (isset($responseS5)) {
-                        $byjunoResponseS5 = new ByjunoS4Response();
-                        $byjunoResponseS5->setRawResponse($responseS5);
-                        $byjunoResponseS5->processResponse();
-                        $statusS5 = $byjunoResponseS5->getProcessingInfoClassification();
-                    }
-                    $byjunoLogger = ByjunoLogger::getInstance();
-                    $byjunoLogger->log(Array(
-                        "firstname" => "-",
-                        "lastname" => "-",
-                        "town" => "-",
-                        "postcode" => "-",
-                        "street" => "-",
-                        "country" => "-",
-                        "ip" => byjunoGetClientIp(),
-                        "status" => $statusS5,
-                        "request_id" => $requestCancel->getRequestId(),
-                        "type" => $statusLog,
-                        "error" => $statusS5,
-                        "response" => $responseS5,
-                        "request" => $xmlRequestS5
-                    ));
-                    if ($statusS5 == "ERR") {
-                        $orderCore->setCurrentState(Configuration::get('BYJUNO_ORDER_S5_FAIL'));
-                        Tools::redirectAdmin(Context::getContext()->link->getAdminLink("AdminOrders") . "&id_order=" . $orderCore->id . "&vieworder");
-                        exit();
+                $fields = $orderCore->getFields();
+                if (!empty($fields["chk_transaction_id"])) {
+                    $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
+                    if ($order_module == "byjuno") {
+                        $currency = CurrencyCore::getCurrency($orderCore->id_currency);
+                        $dt = date("Y-m-d", time());
+                        $requestCancel = CreateShopRequestS5Cancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $orderCore->id_customer, $dt);
+                        $xmlRequestS5 = $requestCancel->createRequest();
+                        $byjunoCommunicator = new ByjunoCommunicator();
+                        $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
+                        $responseS5 = $byjunoCommunicator->sendS4Request($xmlRequestS5);
+                        $statusLog = "S5 cancel";
+                        $statusS5 = "ERR";
+                        if (isset($responseS5)) {
+                            $byjunoResponseS5 = new ByjunoS4Response();
+                            $byjunoResponseS5->setRawResponse($responseS5);
+                            $byjunoResponseS5->processResponse();
+                            $statusS5 = $byjunoResponseS5->getProcessingInfoClassification();
+                        }
+                        $byjunoLogger = ByjunoLogger::getInstance();
+                        $byjunoLogger->log(array(
+                            "firstname" => "-",
+                            "lastname" => "-",
+                            "town" => "-",
+                            "postcode" => "-",
+                            "street" => "-",
+                            "country" => "-",
+                            "ip" => byjunoGetClientIp(),
+                            "status" => $statusS5,
+                            "request_id" => $requestCancel->getRequestId(),
+                            "type" => $statusLog,
+                            "error" => $statusS5,
+                            "response" => $responseS5,
+                            "request" => $xmlRequestS5
+                        ));
+                        if ($statusS5 == "ERR") {
+                            $orderCore->setCurrentState(Configuration::get('BYJUNO_ORDER_S5_FAIL'));
+                            Tools::redirectAdmin(Context::getContext()->link->getAdminLink("AdminOrders") . "&id_order=" . $orderCore->id . "&vieworder");
+                            exit();
+                        }
                     }
                 }
             }
@@ -814,11 +833,12 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('byjuno_invoice', trim(Tools::getValue('byjuno_invoice')));
             Configuration::updateValue('single_invoice', trim(Tools::getValue('single_invoice')));
             Configuration::updateValue('installment_3', trim(Tools::getValue('installment_3')));
-            Configuration::updateValue('installment_36', trim(Tools::getValue('installment_36')));
+            Configuration::updateValue('installment_4', trim(Tools::getValue('installment_4')));
+            Configuration::updateValue('installment_6', trim(Tools::getValue('installment_6')));
             Configuration::updateValue('installment_12', trim(Tools::getValue('installment_12')));
             Configuration::updateValue('installment_24', trim(Tools::getValue('installment_24')));
-            Configuration::updateValue('installment_4x12', trim(Tools::getValue('installment_4x12')));
-            Configuration::updateValue('installment_4x12', trim(Tools::getValue('installment_4x12')));
+            Configuration::updateValue('installment_36', trim(Tools::getValue('installment_36')));
+            Configuration::updateValue('installment_48', trim(Tools::getValue('installment_48')));
             Configuration::updateValue('BYJUNO_CREDIT_CHECK', trim(Tools::getValue('BYJUNO_CREDIT_CHECK')));
             Configuration::updateValue('BYJUNO_CDP_ACCEPT', trim(Tools::getValue('BYJUNO_CDP_ACCEPT')));
             Configuration::updateValue('BYJUNO_S2_IJ_ACCEPT', trim(Tools::getValue('BYJUNO_S2_IJ_ACCEPT')));
@@ -927,10 +947,12 @@ class Byjuno extends PaymentModule
             'byjuno_invoice' => Configuration::get("byjuno_invoice"),
             'single_invoice' => Configuration::get("single_invoice"),
             'installment_3' => Configuration::get("installment_3"),
-            'installment_36' => Configuration::get("installment_36"),
+            'installment_4' => Configuration::get("installment_4"),
+            'installment_6' => Configuration::get("installment_6"),
             'installment_12' => Configuration::get("installment_12"),
             'installment_24' => Configuration::get("installment_24"),
-            'installment_4x12' => Configuration::get("installment_4x12"),
+            'installment_36' => Configuration::get("installment_36"),
+            'installment_48' => Configuration::get("installment_48"),
             'BYJUNO_CREDIT_CHECK' => Configuration::get("BYJUNO_CREDIT_CHECK"),
             'BYJUNO_CDP_ACCEPT' => Configuration::get("BYJUNO_CDP_ACCEPT"),
             'BYJUNO_S2_IJ_ACCEPT' => Configuration::get("BYJUNO_S2_IJ_ACCEPT"),

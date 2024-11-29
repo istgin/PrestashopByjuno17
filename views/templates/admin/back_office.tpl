@@ -200,7 +200,7 @@
                         </label>
 
                         <div class="col-lg-9">
-                            <select name="intrum_mode" id="intrum_mode">
+                            <select name="INTRUM_MODE" id="INTRUM_MODE">
                                 <option value="test"{if ($intrum_mode == 'test')} selected{/if}>Test mode</option>
                                 <option value="live"{if ($intrum_mode == 'live')} selected{/if}>Production mode</option>
                             </select>
@@ -567,6 +567,30 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
+                            4 installments:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="installment_4" id="installment_4">
+                                <option value="enable"{if ($installment_4 == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($installment_4 == 'disable')} selected{/if}>Disable</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            6 installments:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="installment_6" id="installment_6">
+                                <option value="enable"{if ($installment_6 == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($installment_6 == 'disable')} selected{/if}>Disable</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
                             12 installments:
                         </label>
 
@@ -606,13 +630,13 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            4 installments in 12 months:
+                            48 installments:
                         </label>
 
                         <div class="col-lg-9">
-                            <select name="installment_4x12" id="installment_4x12">
-                                <option value="enable"{if ($installment_4x12 == 'enable')} selected{/if}>Enable</option>
-                                <option value="disable"{if ($installment_4x12 == 'disable')} selected{/if}>Disable
+                            <select name="installment_48" id="installment_48">
+                                <option value="enable"{if ($installment_48 == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($installment_48 == 'disable')} selected{/if}>Disable
                                 </option>
                             </select>
                         </div>
