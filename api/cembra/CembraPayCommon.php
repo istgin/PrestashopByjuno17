@@ -341,6 +341,119 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     return $request;
 }
 
+function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $currency, $repayment, $successUrl, $errorUrl, $selected_gender = "", $selected_birthday = "", $invoiceDelivery = "") {
+
+    $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
+    global $cookie;
+
+    $customer = new Customer($order->id_customer);
+    $invoice_address = new Address($order->id_address_invoice);
+    $shipping_address = new Address($order->id_address_delivery);
+    $country = new Country($invoice_address->id_country);
+    $country_shipping = new Country($shipping_address->id_country);
+
+    $request = new CembraPayCheckoutAutRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_CHK;
+    $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
+    $request->merchantOrderRef = $order->reference;
+    $request->amount = round(number_format($order->total_paid_tax_incl) * 100);
+    $request->currency = $currency->iso_code;
+
+    $reference = "";
+    if (!empty($customer->id)) {
+        $reference = $customer->id;
+    }
+    if (empty($reference)) {
+        $request->custDetails->merchantCustRef = uniqid("guest_");
+        $request->custDetails->loggedIn = false;
+    } else {
+        $request->custDetails->merchantCustRef = (string)$reference;
+        $request->custDetails->loggedIn = true;
+    }
+    if (!empty($invoice_address->company) && $b2b) {
+        $request->custDetails->custType = CembraPayConstants::$CUSTOMER_BUSINESS;
+        $request->custDetails->companyName = $invoice_address->company;
+    } else {
+        $request->custDetails->custType = CembraPayConstants::$CUSTOMER_PRIVATE;
+    }
+
+    $request->custDetails->firstName = html_entity_decode($invoice_address->firstname, ENT_COMPAT, 'UTF-8');
+    $request->custDetails->lastName = html_entity_decode($invoice_address->lastname, ENT_COMPAT, 'UTF-8');
+    $request->custDetails->language = Context::getContext()->language->iso_code;
+
+    $request->custDetails->salutation = CembraPayConstants::$GENTER_UNKNOWN;
+    if ($customer->id_gender != '0') {
+        if ($customer->id_gender == '1') {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_MALE;
+        }
+        if ($customer->id_gender == '2') {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_FEMALE;
+        }
+    }
+    if ($selected_gender != "") {
+        if (intval($selected_gender) == 1) {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_MALE;
+        }
+        if (intval($selected_gender) == 2) {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_FEMALE;
+        }
+    }
+
+    if (substr($customer->birthday, 0, 4) != '0000') {
+        try {
+            $request->custDetails->dateOfBirth = $customer->birthday;
+        } catch (Exception $e) {
+
+        }
+    }
+    if ($selected_birthday != "") {
+        $request->custDetails->dateOfBirth = $selected_birthday;
+    }
+
+    $request->billingAddr->addrFirstLine = html_entity_decode(trim($invoice_address->address1.' '.$invoice_address->address2), ENT_COMPAT, 'UTF-8');
+    $request->billingAddr->postalCode = $invoice_address->postcode;
+    $request->billingAddr->town = html_entity_decode($invoice_address->city, ENT_COMPAT, 'UTF-8');
+    $request->billingAddr->country = strtoupper($country->iso_code);
+    $request->custContacts->email = (string)$customer->email;
+    $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
+
+    $request->deliveryDetails->deliveryDetailsDifferent = true;
+    $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
+    if (!empty($shipping_address->company) && $b2b) {
+        $request->deliveryDetails->deliveryCompanyName = html_entity_decode($shipping_address->company, ENT_COMPAT, 'UTF-8');
+    }
+    $request->deliveryDetails->deliverySalutation = null;
+
+    $request->deliveryDetails->deliveryAddrFirstLine = html_entity_decode(trim($shipping_address->address1.' '.$shipping_address->address2), ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrPostalCode = $shipping_address->postcode;
+    $request->deliveryDetails->deliveryAddrTown = html_entity_decode($shipping_address->city, ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrCountry = strtoupper($country_shipping->iso_code);
+
+    if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && !empty($cookie->intrumId)) {
+        $request->sessionInfo->tmxSessionId = $cookie->intrumId;
+    }
+
+    $request->sessionInfo->sessionIp = Cembra_byjunoGetClientIp();
+
+    $request->cembraPayDetails->cembraPayPaymentMethod = Cembra_mapRepayment($repayment);
+    if ($invoiceDelivery == 'postal') {
+        $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
+    } else {
+        $request->cembraPayDetails->invoiceDeliveryType = "EMAIL";
+    }
+
+    $request->merchantDetails->returnUrlSuccess = base64_encode($successUrl);
+    $request->merchantDetails->returnUrlCancel = base64_encode($errorUrl);
+    $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
+
+    $request->merchantDetails->transactionChannel = "WEB";
+    $request->merchantDetails->integrationModule = "CembraPay Shopware 6 module 4.0.3";
+
+    return $request;
+}
+
 
 function Cembra_byjunoIsStatusOk($status, $position)
 {

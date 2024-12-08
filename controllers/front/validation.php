@@ -150,66 +150,75 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 			require(_PS_MODULE_DIR_.'intrumcom/api/intrum.php');
 			require(_PS_MODULE_DIR_.'intrumcom/api/library_prestashop.php');
 		}
+        $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
         $this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
         $order = new OrderCore((int)$this->module->currentOrder);
-
-        $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery);
-        $statusLog = "Authorization request backend";
-        if ($requestAUT->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
-            $statusLog = "Authorization request backend company";
-        }
-        $json = $requestAUT->createRequest();
-        $mode = Configuration::get("INTRUM_MODE");
-        $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
-        if (isset($mode) && strtolower($mode) == 'live') {
-            $cembrapayCommunicator->setServer('live');
+        if (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'checkout') {
+            $successUrl = $this->context->link->getModuleLink('byjuno', 'checkoutsuccess', [], $ssl);
+            $errorUrl = $this->context->link->getModuleLink('byjuno', 'checkouterror', [], $ssl);
+            $requestChk = Cembra_CreatePrestaShopRequestChk($order, $this->context->currency, Tools::getValue('selected_plan'),
+                $successUrl,
+                $errorUrl,
+                $selected_gender, $selected_birthday, $invoiceDelivery);
         } else {
-            $cembrapayCommunicator->setServer('test');
-        }
-        $accessData = $this->module->getAccessData($mode);
-        $response = $cembrapayCommunicator->sendAuthRequest($json, $accessData, function ($object, $token, $accessData) {
-            $object->saveToken($token, $accessData);
-        });
-        $status = "";
-        $responseRes = null;
-        $cembraPayLogger = CembraPayLogger::getInstance();
-        if (isset($response)) {
-            /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
-            $responseRes = CembraPayConstants::authorizationResponse($response);
-            $status = $responseRes->processingStatus;
-            $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
-                $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
-                $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
-                $requestAUT->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
-        } else {
-            $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
-                $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
-                $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
-                $requestAUT->billingAddr->addrFirstLine, "-", "-");
-        }
-        if ($status == CembraPayConstants::$AUTH_OK) {
-            $orderStatusChange = new OrderCore((int)$this->module->currentOrder);
-            try {
-                $arrayOfTriggerDoNotChange = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
-            } catch (Exception $e) {
-                $arrayOfTriggerDoNotChange = false;
+            $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery);
+            $statusLog = "Authorization request backend";
+            if ($requestAUT->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
+                $statusLog = "Authorization request backend company";
             }
-            if ($arrayOfTriggerDoNotChange == false || !in_array($orderStatusChange->getCurrentState(), $arrayOfTriggerDoNotChange)) {
+            $json = $requestAUT->createRequest();
+            $mode = Configuration::get("INTRUM_MODE");
+            $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
+            if (isset($mode) && strtolower($mode) == 'live') {
+                $cembrapayCommunicator->setServer('live');
+            } else {
+                $cembrapayCommunicator->setServer('test');
+            }
+            $accessData = $this->module->getAccessData($mode);
+            $response = $cembrapayCommunicator->sendAuthRequest($json, $accessData, function ($object, $token, $accessData) {
+                $object->saveToken($token, $accessData);
+            });
+            $status = "";
+            $responseRes = null;
+            $cembraPayLogger = CembraPayLogger::getInstance();
+            if (isset($response)) {
+                /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
+                $responseRes = CembraPayConstants::authorizationResponse($response);
+                $status = $responseRes->processingStatus;
+                $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
+                    $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
+                    $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
+                    $requestAUT->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+            } else {
+                $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
+                    $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
+                    $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
+                    $requestAUT->billingAddr->addrFirstLine, "-", "-");
+            }
+            if ($status == CembraPayConstants::$AUTH_OK) {
+                $orderStatusChange = new OrderCore((int)$this->module->currentOrder);
                 try {
-                    $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                    $arrayOfTriggerDoNotChange = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
                 } catch (Exception $e) {
-                    $success = -1;
+                    $arrayOfTriggerDoNotChange = false;
                 }
-                if ($success != -1) {
-                    $order->setCurrentState($success);
+                if ($arrayOfTriggerDoNotChange == false || !in_array($orderStatusChange->getCurrentState(), $arrayOfTriggerDoNotChange)) {
+                    try {
+                        $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                    } catch (Exception $e) {
+                        $success = -1;
+                    }
+                    if ($success != -1) {
+                        $order->setCurrentState($success);
+                    }
                 }
+                $order->setFieldsToUpdate(array("chk_transaction_id" => $responseRes->transactionId));
+                Tools::redirect('index.php?controller=order-confirmation&id_cart=' . $cart->id . '&id_module=' . $this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key);
+            } else {
+                $this->context->cookie->cembra_old_cart_id = $cart->id;
+                $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+                Tools::redirect($errorlnk);
             }
-            $order->setFieldsToUpdate(Array("chk_transaction_id" => $responseRes->transactionId));
-            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
-        } else {
-            $this->context->cookie->cembra_old_cart_id = $cart->id;
-            $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
-            Tools::redirect($errorlnk);
         }
 	}
 }

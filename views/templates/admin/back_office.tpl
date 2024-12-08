@@ -213,8 +213,8 @@
 
                         <div class="col-lg-9">
                             <select name="CEMBRAPAY_PAYMENT_MODE" id="CEMBRAPAY_PAYMENT_MODE">
-                                <option value="test"{if ($cembrapay_payment_mode == 'api')} selected{/if}>API with no redirect</option>
-                                <option value="live"{if ($cembrapay_payment_mode == 'checkout')} selected{/if}>Checkout with redirect</option>
+                                <option value="api"{if ($CEMBRAPAY_PAYMENT_MODE == 'api')} selected{/if}>API with no redirect</option>
+                                <option value="checkout"{if ($CEMBRAPAY_PAYMENT_MODE == 'checkout')} selected{/if}>Checkout with redirect</option>
                             </select>
                         </div>
                     </div>

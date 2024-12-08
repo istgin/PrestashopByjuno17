@@ -509,7 +509,7 @@ class Byjuno extends PaymentModule
         if (!Configuration::get("byjuno_invoice")) {
             Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", '');
             Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", '');
-            Configuration::updateValue('CEMBRAPAY_PAYMENT_MODE', '');
+            Configuration::updateValue('CEMBRAPAY_PAYMENT_MODE', 'checkout');
             Configuration::updateValue('CEMBRAPAY_LIVE_CLIENT_ID', '');
             Configuration::updateValue('CEMBRAPAY_LIVE_PASSWORD', '');
             Configuration::updateValue('CEMBRAPAY_TEST_CLIENT_ID', '');
@@ -557,7 +557,6 @@ class Byjuno extends PaymentModule
 
     public function hookDisplayBackOfficeOrderActions($params)
     {
-        exit('bbb');
         $orderCore = new OrderCore((int)$params["id_order"]);
         $order_module = $orderCore->module;
         if ($order_module != 'byjuno')
@@ -574,7 +573,6 @@ class Byjuno extends PaymentModule
 
     public function hookActionOrderSlipAdd($params)
     {
-        exit('aaa');
         if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") != 'enable') {
             return;
         }
@@ -987,7 +985,9 @@ class Byjuno extends PaymentModule
             'cembra_view_json' => Tools::getValue('viewjson') != "" ? 1 : 0,
             'cembra_single_log' => self::getSingleLog(Tools::getValue('viewjson')),
             'order_status_list' => OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT')),
-            'order_success_status_list' => $success_statuses_list
+            'order_success_status_list' => $success_statuses_list,
+            'CEMBRAPAY_PAYMENT_MODE' => Configuration::get('CEMBRAPAY_PAYMENT_MODE')
+
         );
         $this->context->smarty->assign($values);
 
