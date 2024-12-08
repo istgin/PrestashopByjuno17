@@ -1,6 +1,8 @@
 <?php
 
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutAutRequest;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutChkRequest;
+use Byjuno\ByjunoPayments\Api\CembraPayConfirmRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
 use Byjuno\ByjunoPayments\Api\CustomerConsents;
 
@@ -451,6 +453,15 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->merchantDetails->transactionChannel = "WEB";
     $request->merchantDetails->integrationModule = "CembraPay Shopware 6 module 4.0.3";
 
+    return $request;
+}
+
+function Byjuno_createShopRequestConfirmTransaction($transactionId)
+{
+    $request = new CembraPayConfirmRequest();
+    $request->requestMsgId = CembraPayCheckoutChkRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutChkRequest::Date();
+    $request->transactionId = $transactionId;
     return $request;
 }
 

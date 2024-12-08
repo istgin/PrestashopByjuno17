@@ -154,6 +154,8 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
         $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
         $this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
         $order = new OrderCore((int)$this->module->currentOrder);
+        $order->setFieldsToUpdate(array("chk_transaction_id" => "AAAA"));
+        $order->update();
         if (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'checkout') {
             $successUrl = $this->context->link->getModuleLink('byjuno', 'checkoutsuccess', [], $ssl);
             $errorUrl = $this->context->link->getModuleLink('byjuno', 'checkouterror', [], $ssl);
@@ -198,6 +200,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
             $this->context->cookie->cembra_checkout_order_id = $order->id;
             if ($status == CembraPayConstants::$CHK_OK) {
                 $order->setFieldsToUpdate(array("chk_transaction_id" => $responseRes->transactionId));
+                $order->update();
                 Tools::redirect($responseRes->redirectUrlCheckout);
             } else {
                 $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
@@ -256,6 +259,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                     }
                 }
                 $order->setFieldsToUpdate(array("chk_transaction_id" => $responseRes->transactionId));
+                $order->update();
                 Tools::redirect('index.php?controller=order-confirmation&id_cart=' . $cart->id . '&id_module=' . $this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key);
             } else {
                 $this->context->cookie->cembra_old_cart_id = $cart->id;
