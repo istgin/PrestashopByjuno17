@@ -23,6 +23,7 @@ function upgrade_module_2_0_0($module)
                   `transaction_id` varchar(250) default NULL,
                   `request` text default NULL,
                   `response` text default NULL,
+                  `custom_field` text default NULL,
                   `creation_date` TIMESTAMP NULL DEFAULT now() ,
                   PRIMARY KEY  (`cembra_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');

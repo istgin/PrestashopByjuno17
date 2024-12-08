@@ -20,6 +20,19 @@ class CembraPayLogger
         return self::$instance;
     }
 
+    public function getOrderFields($orderId)
+    {
+        $sql = '
+                SELECT *
+                FROM `' . _DB_PREFIX_ . 'cembra_logs` as I
+                WHERE I.order_id = \'' . pSQL($orderId) . '\'
+                  AND (I.request_type = \'Checkout request\' 
+                    OR I.request_type = \'Checkout request company\'
+                    OR I.request_type = \'Authorization request\'
+                    OR I.request_type = \'Authorization request company\')
+                ';
+        return Db::getInstance()->getRow($sql);
+    }
     public function saveCembraLog($request, $response, $status, $type,
                                    $firstName, $lastName, $requestId,
                                    $postcode, $town, $country, $street1, $transactionId, $orderId)

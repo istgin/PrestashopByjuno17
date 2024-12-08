@@ -187,7 +187,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
                     $requestChk->custDetails->firstName, $requestChk->custDetails->lastName, $requestChk->requestMsgId,
                     $requestChk->billingAddr->postalCode, $requestChk->billingAddr->town, $requestChk->billingAddr->country,
-                    $requestChk->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+                    $requestChk->billingAddr->addrFirstLine, $responseRes->transactionId, $order->reference);
             } else {
                 $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
                     $requestChk->custDetails->firstName, $requestChk->custDetails->lastName, $requestChk->requestMsgId,
@@ -232,7 +232,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
                     $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,
                     $requestAUT->billingAddr->postalCode, $requestAUT->billingAddr->town, $requestAUT->billingAddr->country,
-                    $requestAUT->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+                    $requestAUT->billingAddr->addrFirstLine, $responseRes->transactionId, $order->reference);
             } else {
                 $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
                     $requestAUT->custDetails->firstName, $requestAUT->custDetails->lastName, $requestAUT->requestMsgId,

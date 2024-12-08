@@ -11,37 +11,42 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
 	{
         if (!empty($this->context->cookie->cembra_checkout_order_id) && !empty($this->context->cookie->chk_transaction_id)) {
             $order = new OrderCore((int)$this->context->cookie->cembra_checkout_order_id);
-            $request = Byjuno_createShopRequestConfirmTransaction(
-                $this->context->cookie->chk_transaction_id);
-            $CembraPayRequestName = "CNF";
-            $json = $request->createRequest();
-            $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
-            $mode = Configuration::get("INTRUM_MODE");
-            if (isset($mode) && strtolower($mode) == 'live') {
-                $cembrapayCommunicator->setServer('live');
-            } else {
-                $cembrapayCommunicator->setServer('test');
-            }
-            $accessData = $this->module->getAccessData($mode);
-            $response = $cembrapayCommunicator->sendConfirmTransactionRequest($json, $accessData, function ($object, $token, $accessData) {
-                $object->saveToken($token, $accessData);
-            });
-            $transactionStatus = "";
-            $responseRes = null;
             $cembraPayLogger = CembraPayLogger::getInstance();
-            if ($response) {
-                $responseRes = CembraPayConstants::confirmTransactionResponse($response);
-                if (!empty($responseRes->transactionStatus)) {
-                    $transactionStatus = $responseRes->transactionStatus->transactionStatus;
+            $orderRef = $cembraPayLogger->getOrderFields($order->reference);
+            if (!empty($orderRef["transaction_id"])) {
+                $request = Byjuno_createShopRequestConfirmTransaction(
+                    $orderRef["transaction_id"]);
+                $CembraPayRequestName = "CNF";
+                $json = $request->createRequest();
+                $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
+                $mode = Configuration::get("INTRUM_MODE");
+                if (isset($mode) && strtolower($mode) == 'live') {
+                    $cembrapayCommunicator->setServer('live');
+                } else {
+                    $cembrapayCommunicator->setServer('test');
                 }
-                $cembraPayLogger->saveCembraLog($json, $response, $transactionStatus, $CembraPayRequestName,
-                    "-", "-", $request->requestMsgId, "-", "-", "-", "-", $this->context->cookie->chk_transaction_id, $order->reference);
-            } else {
-                $cembraPayLogger->saveCembraLog($json, $response, "Query error", $CembraPayRequestName,
-                    "-", "-", $request->requestMsgId, "-", "-", "-", "-", $this->context->cookie->chk_transaction_id, "-");
-            }
-            if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
-                Tools::redirect($this->context->cookie->chk_final_redirect);
+                $accessData = $this->module->getAccessData($mode);
+                $response = $cembrapayCommunicator->sendConfirmTransactionRequest($json, $accessData, function ($object, $token, $accessData) {
+                    $object->saveToken($token, $accessData);
+                });
+                $transactionStatus = "";
+                $responseRes = null;
+                if ($response) {
+                    $responseRes = CembraPayConstants::confirmTransactionResponse($response);
+                    if (!empty($responseRes->transactionStatus)) {
+                        $transactionStatus = $responseRes->transactionStatus->transactionStatus;
+                    }
+                    $cembraPayLogger->saveCembraLog($json, $response, $transactionStatus, $CembraPayRequestName,
+                        "-", "-", $request->requestMsgId, "-", "-", "-", "-", $orderRef["transaction_id"], $order->reference);
+                } else {
+                    $cembraPayLogger->saveCembraLog($json, $response, "Query error", $CembraPayRequestName,
+                        "-", "-", $request->requestMsgId, "-", "-", "-", "-", $orderRef["transaction_id"], "-");
+                }
+                if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
+                    Tools::redirect($this->context->cookie->chk_final_redirect);
+                } else {
+                    $this->errorRedirect();
+                }
             } else {
                 $this->errorRedirect();
             }
