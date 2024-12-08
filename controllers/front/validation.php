@@ -26,6 +26,7 @@
 
 use Byjuno\ByjunoPayments\Api\CembraPayAzure;
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutAuthorizationResponse;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutChkResponse;
 use Byjuno\ByjunoPayments\Api\CembraPayCommunicator;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
 use Byjuno\ByjunoPayments\Api\CembraPayLogger;
@@ -160,11 +161,53 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 $successUrl,
                 $errorUrl,
                 $selected_gender, $selected_birthday, $invoiceDelivery);
+            $statusLog = "Checkout request";
+            if ($requestChk->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
+                $statusLog = "Checkout request company";
+            }
+            $json = $requestChk->createRequest();
+            $mode = Configuration::get("INTRUM_MODE");
+            $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
+            if (isset($mode) && strtolower($mode) == 'live') {
+                $cembrapayCommunicator->setServer('live');
+            } else {
+                $cembrapayCommunicator->setServer('test');
+            }
+            $accessData = $this->module->getAccessData($mode);
+            $response = $cembrapayCommunicator->sendCheckoutRequest($json, $accessData, function ($object, $token, $accessData) {
+                $object->saveToken($token, $accessData);
+            });
+            $status = "";
+            $responseRes = null;
+            $cembraPayLogger = CembraPayLogger::getInstance();
+            if (isset($response)) {
+                /* @var $responseRes CembraPayCheckoutChkResponse */
+                $responseRes = CembraPayConstants::checkoutResponse($response);
+                $status = $responseRes->processingStatus;
+                $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $statusLog,
+                    $requestChk->custDetails->firstName, $requestChk->custDetails->lastName, $requestChk->requestMsgId,
+                    $requestChk->billingAddr->postalCode, $requestChk->billingAddr->town, $requestChk->billingAddr->country,
+                    $requestChk->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+            } else {
+                $cembraPayLogger->saveCembraLog($json, $response, "Query error", $statusLog,
+                    $requestChk->custDetails->firstName, $requestChk->custDetails->lastName, $requestChk->requestMsgId,
+                    $requestChk->billingAddr->postalCode, $requestChk->billingAddr->town, $requestChk->billingAddr->country,
+                    $requestChk->billingAddr->addrFirstLine, "-", "-");
+            }
+            $this->context->cookie->cembra_old_cart_id = $cart->id;
+            $this->context->cookie->cembra_checkout_order_id = $order->id;
+            if ($status == CembraPayConstants::$CHK_OK) {
+                $order->setFieldsToUpdate(array("chk_transaction_id" => $responseRes->transactionId));
+                Tools::redirect($responseRes->redirectUrlCheckout);
+            } else {
+                $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+                Tools::redirect($errorlnk);
+            }
         } else {
             $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery);
-            $statusLog = "Authorization request backend";
+            $statusLog = "Authorization request";
             if ($requestAUT->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
-                $statusLog = "Authorization request backend company";
+                $statusLog = "Authorization request company";
             }
             $json = $requestAUT->createRequest();
             $mode = Configuration::get("INTRUM_MODE");

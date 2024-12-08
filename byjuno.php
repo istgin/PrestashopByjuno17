@@ -27,7 +27,7 @@ class Byjuno extends PaymentModule
         $this->tab = 'payments_gateways';
         $this->version = '1.1.2';
         $this->author = 'CembraPay';
-        $this->controllers = array('payment', 'validation', 'errorpayment');
+        $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
         $this->currencies = true;
