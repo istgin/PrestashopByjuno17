@@ -240,7 +240,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
     $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
     $request->merchantOrderRef = $order->reference;
-    $request->amount = round(number_format($order->total_paid_tax_incl) * 100);
+    $request->amount = round(number_format($order->total_paid_tax_incl, 2, '.', '') * 100);
     $request->currency = $currency->iso_code;
 
     $reference = "";
@@ -362,7 +362,7 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
     $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
     $request->merchantOrderRef = $order->reference;
-    $request->amount = round(number_format($order->total_paid_tax_incl) * 100);
+    $request->amount = round(number_format($order->total_paid_tax_incl, 2, '.', '') * 100);
     $request->currency = $currency->iso_code;
 
     $reference = "";

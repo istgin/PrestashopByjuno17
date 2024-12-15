@@ -609,14 +609,14 @@ class Byjuno extends PaymentModule
             $amount = $curSlip->total_shipping_tax_incl + $curSlip->amount;
             $cembraPayLogger = CembraPayLogger::getInstance();
             $orderFields = $cembraPayLogger->getOrderFields($orderCore->reference);
+            $tx = "";
+            if (!empty($orderFields["transaction_id"])) {
+                $tx = $orderFields["transaction_id"];
+            }
             $settleFields = $cembraPayLogger->getSettleFields($orderCore->reference);
             $settleId = "";
             if (!empty($settleFields["transaction_id"])) {
                 $settleId = $settleFields["transaction_id"];
-            }
-            $tx = "";
-            if (!empty($orderFields["transaction_id"])) {
-                $tx = $orderFields["transaction_id"];
             }
             $requestRefund = Cembra_CreateShopRequestS5Refund($invoiceNum, $amount, $currency["iso_code"], $orderCore->reference,
                 $settleId,
@@ -702,8 +702,8 @@ class Byjuno extends PaymentModule
                         if (isset($responseRaw)) {
                             $responseSettle = CembraPayConstants::settleResponse($responseRaw);
                             $txSettle = "";
-                            if (!empty($responseRes->settlementId)) {
-                                $txSettle = $responseRes->settlementId;
+                            if (!empty($responseSettle->settlementId)) {
+                                $txSettle = $responseSettle->settlementId;
                             }
                             $cembraPayLogger->saveCembraLog($json, $responseRaw, $responseSettle->processingStatus, $CembraPayRequestName,
                                 "-","-", $requestInvoice->requestMsgId,
