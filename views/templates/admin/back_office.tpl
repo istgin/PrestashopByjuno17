@@ -391,7 +391,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Do not change order status after success S3:
+                            Do not change order status after success payment:
                         </label>
                         <div class="col-lg-9">
                             <select name="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY[]" id="BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY" multiple="multiple" style="height: 340px">

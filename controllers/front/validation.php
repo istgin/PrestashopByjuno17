@@ -78,7 +78,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 	public function postProcess()
 	{
 		global $cookie;
-		$repayment = mapRepayment(Tools::getValue('selected_plan'));
+		$repayment = Cembra_mapRepayment(Tools::getValue('selected_plan'));
 		$toc = Tools::getValue('terms_conditions');
 		if (empty($toc) || !$toc || $toc != "terms_conditions")
 		{

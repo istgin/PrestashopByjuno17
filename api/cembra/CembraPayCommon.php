@@ -3,6 +3,8 @@
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutAutRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutCancelRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutChkRequest;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutCreditRequest;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutSettleRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayConfirmRequest;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
 use Byjuno\ByjunoPayments\Api\CustomerConsents;
@@ -480,71 +482,32 @@ function Byjuno_CreateShopRequestBCDPCancel($amount, $orderCurrency, $orderId, $
     return $request;
 }
 
-function Cembra_CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency, $orderId, $customerId, $date)
+function Cembra_CreateShopRequestSettle($doucmentId, $amount, $orderCurrency, $orderId, $tx)
 {
-    $request = new ByjunoS4Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
-    $request->setVersion("1.00");
-    try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
-    } catch (Exception $e) {
-
-    }
-    $request->setRequestId(uniqid((String)$orderId . "_"));
-    $request->setOrderId($orderId);
-    $request->setClientRef($customerId);
-    $request->setTransactionDate($date);
-    $request->setTransactionAmount(number_format($amount, 2, '.', ''));
-    $request->setTransactionCurrency($orderCurrency);
-    $request->setAdditional1("INVOICE");
-    $request->setAdditional2($doucmentId);
-    $request->setOpenBalance(number_format($orderAmount, 2, '.', ''));
+    $request = new CembraPayCheckoutSettleRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_SET;
+    $request->requestMsgId = CembraPayCheckoutSettleRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutSettleRequest::Date();
+    $request->transactionId = $tx;
+    $request->merchantOrderRef = $orderId;
+    $request->amount = round(number_format($amount, 2, '.', '') * 100);
+    $request->currency = $orderCurrency;
+    $request->settlementDetails->merchantInvoiceRef = $doucmentId;
+    $request->settlementDetails->isFinal = true;
     return $request;
 }
-function Cembra_CreateShopRequestS5Refund($documentId, $amount, $orderCurrency, $orderId, $customerId, $date)
-{
-    $request = new ByjunoS5Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
-    $request->setVersion("1.00");
-    try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
-    } catch (Exception $e) {
 
-    }
-    $request->setRequestId(uniqid((String)$orderId . "_"));
-    $request->setOrderId($orderId);
-    $request->setClientRef($customerId);
-    $request->setTransactionDate($date);
-    $request->setTransactionAmount(number_format($amount, 2, '.', ''));
-    $request->setTransactionCurrency($orderCurrency);
-    $request->setTransactionType("REFUND");
-    $request->setAdditional2($documentId);
-    return $request;
-}
-function Cembra_CreateShopRequestS5Cancel($amount, $orderCurrency, $orderId, $customerId, $date)
+function Cembra_CreateShopRequestS5Refund($documentId, $amount, $orderCurrency, $orderId, $settlementId, $tx)
 {
-    $request = new ByjunoS5Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
-    $request->setVersion("1.00");
-    try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
-    } catch (Exception $e) {
-
-    }
-    $request->setRequestId(uniqid((String)$orderId . "_"));
-    $request->setOrderId($orderId);
-    $request->setClientRef($customerId);
-    $request->setTransactionDate($date);
-    $request->setTransactionAmount(number_format($amount, 2, '.', ''));
-    $request->setTransactionCurrency($orderCurrency);
-    $request->setAdditional2('');
-    $request->setTransactionType("EXPIRED");
-    $request->setOpenBalance("0");
+    $request = new CembraPayCheckoutCreditRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_CNL;
+    $request->requestMsgId = CembraPayCheckoutCreditRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutCreditRequest::Date();
+    $request->transactionId = $tx;
+    $request->merchantOrderRef = $orderId;
+    $request->amount = round(number_format($amount, 2, '.', '') * 100);
+    $request->currency = $orderCurrency;
+    $request->settlementDetails->merchantInvoiceRef = $documentId;
+    $request->settlementDetails->settlementId = $settlementId;
     return $request;
 }
