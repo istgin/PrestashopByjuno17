@@ -1,6 +1,7 @@
 <?php
 
 use Byjuno\ByjunoPayments\Api\CembraPayAzure;
+use Byjuno\ByjunoPayments\Api\CembraPayCheckoutCancelResponse;
 use Byjuno\ByjunoPayments\Api\CembraPayCheckoutScreeningResponse;
 use Byjuno\ByjunoPayments\Api\CembraPayCommunicator;
 use Byjuno\ByjunoPayments\Api\CembraPayConstants;
@@ -711,45 +712,39 @@ class Byjuno extends PaymentModule
         if (Configuration::get("BYJUNO_CANCEL_S5_ALLOWED") == 'enable') {
             if ($orderStatus->id == Configuration::get('PS_OS_CANCELED')) {
                 $orderCore = new OrderCore((int)$params["id_order"]);
-                $fields = $orderCore->getFields();
-                if (!empty($fields["chk_transaction_id"])) {
+                $cembraPayLogger = CembraPayLogger::getInstance();
+                $orderRef = $cembraPayLogger->getOrderFields($orderCore->reference);
+                if (!empty($orderRef["transaction_id"])) {
                     $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
                     if ($order_module == "byjuno") {
                         $currency = CurrencyCore::getCurrency($orderCore->id_currency);
                         $dt = date("Y-m-d", time());
-                        $requestCancel = CreateShopRequestS5Cancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $orderCore->id_customer, $dt);
-                        $xmlRequestS5 = $requestCancel->createRequest();
-                        $byjunoCommunicator = new ByjunoCommunicator();
-                        $byjunoCommunicator->setServer(Configuration::get("INTRUM_MODE"));
-                        $responseS5 = $byjunoCommunicator->sendS4Request($xmlRequestS5);
-                        $statusLog = "S5 cancel";
-                        $statusS5 = "ERR";
-                        if (isset($responseS5)) {
-                            $byjunoResponseS5 = new ByjunoS4Response();
-                            $byjunoResponseS5->setRawResponse($responseS5);
-                            $byjunoResponseS5->processResponse();
-                            $statusS5 = $byjunoResponseS5->getProcessingInfoClassification();
+                        $requestCancel = Byjuno_CreateShopRequestBCDPCancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $orderRef["transaction_id"]);
+
+                        $CembraPayRequestName = "Order Cancel request";
+                        $json = $requestCancel->createRequest();
+                        $cembrapayCommunicator = new CembraPayCommunicator($this->cembraPayAzure);
+                        $mode = Configuration::get("INTRUM_MODE");
+                        if (isset($mode) && strtolower($mode) == 'live') {
+                            $cembrapayCommunicator->setServer('live');
+                        } else {
+                            $cembrapayCommunicator->setServer('test');
                         }
-                        $byjunoLogger = ByjunoLogger::getInstance();
-                        $byjunoLogger->log(array(
-                            "firstname" => "-",
-                            "lastname" => "-",
-                            "town" => "-",
-                            "postcode" => "-",
-                            "street" => "-",
-                            "country" => "-",
-                            "ip" => byjunoGetClientIp(),
-                            "status" => $statusS5,
-                            "request_id" => $requestCancel->getRequestId(),
-                            "type" => $statusLog,
-                            "error" => $statusS5,
-                            "response" => $responseS5,
-                            "request" => $xmlRequestS5
-                        ));
-                        if ($statusS5 == "ERR") {
-                            $orderCore->setCurrentState(Configuration::get('BYJUNO_ORDER_S5_FAIL'));
-                            Tools::redirectAdmin(Context::getContext()->link->getAdminLink("AdminOrders") . "&id_order=" . $orderCore->id . "&vieworder");
-                            exit();
+
+                        $accessData = $this->getAccessData($mode);
+                        $response = $cembrapayCommunicator->sendCancelRequest($json, $accessData, function ($object, $token, $accessData) {
+                            $object->saveToken($token, $accessData);
+                        });
+                        $cembraPayLogger = CembraPayLogger::getInstance();
+                        if ($response) { /* @var $responseRes CembraPayCheckoutCancelResponse */
+                            $responseRes = CembraPayConstants::cancelResponse($response);
+                            $cembraPayLogger->saveCembraLog($json, $response, $responseRes->processingStatus, $CembraPayRequestName,
+                                "-","-", $requestCancel->requestMsgId,
+                                "-", "-", "-","-", $responseRes->transactionId, $orderCore->reference);
+                        } else {
+                            $cembraPayLogger->saveCembraLog($json, $response, "Query error", $CembraPayRequestName,
+                                "-","-", $requestCancel->requestMsgId,
+                                "-", "-", "-","-", "-", "-");
                         }
                     }
                 }

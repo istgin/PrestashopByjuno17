@@ -43,6 +43,14 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
                         "-", "-", $request->requestMsgId, "-", "-", "-", "-", $orderRef["transaction_id"], "-");
                 }
                 if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
+                    try {
+                        $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                    } catch (Exception $e) {
+                        $success = -1;
+                    }
+                    if ($success != -1) {
+                        $order->setCurrentState($success);
+                    }
                     Tools::redirect($this->context->cookie->chk_final_redirect);
                 } else {
                     $this->errorRedirect();
