@@ -131,7 +131,6 @@ class Byjuno extends PaymentModule
         }
         $selected_payments_invoice = Array();
         $selected_payments_installment = Array();
-        $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_EN');
         $lng = Context::getContext()->language->iso_code;
         $langtoc = "EN";
         if ($lng == "en" || $lng == "de" || $lng == "fr" || $lng == "it") {
@@ -174,7 +173,6 @@ class Byjuno extends PaymentModule
             'l_male' => $this->l("Male"),
             'l_female' => $this->l("Female"),
             'l_date_of_birth' => $this->l("Date of Birth"),
-            'l_i_agree_with_terms_and_conditions' => $this->l("I agree with terms and conditions"),
             'l_other_payment_methods' => $this->l("Other payment methods"),
             'l_i_confirm_my_order' => $this->l("I confirm my order"),
             'l_your_shopping_cart_is_empty' => $this->l("Your shopping cart is empty."),
@@ -182,12 +180,19 @@ class Byjuno extends PaymentModule
             'l_by_post' => $this->l("By post"),
             'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
         );
+        $termsText = $this->l("I agree with terms and conditions");
+        $termsL = $this->l("t_c_terms_url");
+        $privacyL = $this->l("t_c_privacy_url");
+        $termsText = str_replace("{1}", '<a href="'.$termsL.'" target="_blank" style="font-weight: bold; text-decoration: underline">', $termsText);
+        $termsText = str_replace("{2}", '</a>', $termsText);
+        $termsText = str_replace("{3}", '<a href="'.$privacyL.'" target="_blank" style="font-weight: bold; text-decoration: underline">', $termsText);
+        $termsText = str_replace("{4}", '</a>', $termsText);
+        $values['l_i_agree_with_terms_and_conditions'] = "XXX";
+
         if ($byjuno_invoice) {
             if ($b2b && !empty($invoice_address->company)) {
                 $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 1);
-                $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
-                $values['toc_url_invoice'] = $tocUrl;
             } else  {
                 if (Configuration::get("byjuno_invoice") == 'enable') {
                     $selected_payments_invoice[] = Array('name' => $this->l('Cembra Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
@@ -195,11 +200,9 @@ class Byjuno extends PaymentModule
                 if (Configuration::get("single_invoice") == 'enable') {
                     $selected_payments_invoice[] = Array('name' => $this->l('Cembra Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
                 }
-                $tocUrl = Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
 
                 $selected_payments_invoice[0]["selected"] = 1;
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
-                $values['toc_url_invoice'] = $tocUrl;
             }
         }
 
@@ -225,11 +228,9 @@ class Byjuno extends PaymentModule
             if (Configuration::get("installment_48") == 'enable') {
                 $selected_payments_installment[] = Array('name' => $this->l('48 installments'), 'id' => 'installment_48', "selected" => 0);
             }
-            $tocUrl = Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
             $selected_payments_installment[0]["selected"] = 1;
 
             $values['selected_payments_installment'] = $selected_payments_installment;
-            $values['toc_url_installment'] = $tocUrl;
         }
 
         $this->smarty->assign(
@@ -543,14 +544,6 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', 'https://cembrapay.ch/en/terms/CP');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', 'https://cembrapay.ch/en/terms');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', 'https://cembrapay.ch/de/terms/CP');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_DE', 'https://cembrapay.ch/de/terms');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_FR', 'https://cembrapay.ch/fr/terms/CP');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_FR', 'https://cembrapay.ch/fr/terms');
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_IT', 'https://cembrapay.ch/it/terms/CP');
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_IT', 'https://cembrapay.ch/it/terms');
 
         }
         return true;
@@ -605,7 +598,6 @@ class Byjuno extends PaymentModule
             }
             $invoiceNum = $curInvoice->getInvoiceNumberFormatted((int) Configuration::get('PS_LANG_DEFAULT'), (int)$orderCore->id_shop);
             $currency = CurrencyCore::getCurrency($orderCore->id_currency);
-            $time = strtotime($curSlip->date_add);
             $amount = $curSlip->total_shipping_tax_incl + $curSlip->amount;
             $cembraPayLogger = CembraPayLogger::getInstance();
             $orderFields = $cembraPayLogger->getOrderFields($orderCore->reference);
@@ -859,14 +851,6 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Tools::getValue('BYJUNO_S4_TRIGGER')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', trim(Tools::getValue('BYJUNO_TOC_INVOICE_EN')));
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_EN')));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', trim(Tools::getValue('BYJUNO_TOC_INVOICE_DE')));
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_DE', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_DE')));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_FR', trim(Tools::getValue('BYJUNO_TOC_INVOICE_FR')));
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_FR', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_FR')));
-            Configuration::updateValue('BYJUNO_TOC_INVOICE_IT', trim(Tools::getValue('BYJUNO_TOC_INVOICE_IT')));
-            Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_IT', trim(Tools::getValue('BYJUNO_TOC_INSTALLMENT_IT')));
         }
         if (Tools::isSubmit('submitLogSearch')) {
             Configuration::updateValue('INTRUM_SHOW_LOG', 'true');
@@ -973,14 +957,6 @@ class Byjuno extends PaymentModule
             'BYJUNO_S4_TRIGGER' => $arrayOfTrigger,
             'BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY' => $arrayOfNotModify,
             'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
-            'BYJUNO_TOC_INVOICE_EN' => Configuration::get('BYJUNO_TOC_INVOICE_EN'),
-            'BYJUNO_TOC_INSTALLMENT_EN' => Configuration::get('BYJUNO_TOC_INSTALLMENT_EN'),
-            'BYJUNO_TOC_INVOICE_DE' => Configuration::get('BYJUNO_TOC_INVOICE_DE'),
-            'BYJUNO_TOC_INSTALLMENT_DE' => Configuration::get('BYJUNO_TOC_INSTALLMENT_DE'),
-            'BYJUNO_TOC_INVOICE_FR' => Configuration::get('BYJUNO_TOC_INVOICE_FR'),
-            'BYJUNO_TOC_INSTALLMENT_FR' => Configuration::get('BYJUNO_TOC_INSTALLMENT_FR'),
-            'BYJUNO_TOC_INVOICE_IT' => Configuration::get('BYJUNO_TOC_INVOICE_IT'),
-            'BYJUNO_TOC_INSTALLMENT_IT' => Configuration::get('BYJUNO_TOC_INSTALLMENT_IT'),
             'payment_methods' => $methods,
             'cembra_logs' => self::getLogs(),
             'search_in_log' => Tools::getValue('searchInLog'),

@@ -341,7 +341,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Shopware 6 module 4.0.3";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.0";
 
     return $request;
 }
@@ -454,7 +454,7 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Shopware 6 module 4.0.3";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.0";
 
     return $request;
 }
