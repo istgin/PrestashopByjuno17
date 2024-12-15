@@ -187,7 +187,7 @@ class Byjuno extends PaymentModule
         $termsText = str_replace("{2}", '</a>', $termsText);
         $termsText = str_replace("{3}", '<a href="'.$privacyL.'" target="_blank" style="font-weight: bold; text-decoration: underline">', $termsText);
         $termsText = str_replace("{4}", '</a>', $termsText);
-        $values['l_i_agree_with_terms_and_conditions'] = "XXX";
+        $values['l_i_agree_with_terms_and_conditions'] = $termsText;
 
         if ($byjuno_invoice) {
             if ($b2b && !empty($invoice_address->company)) {

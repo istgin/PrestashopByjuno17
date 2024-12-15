@@ -84,7 +84,8 @@
         {/if}
         <div class="form-group byjuno_toc">
             <input type="checkbox" value="terms_conditions" name="terms_conditions" id="terms_conditions"
-                   style="display: inline-block"/> &nbsp;{$l_i_agree_with_terms_and_conditions nofilter}
+                   style="display: inline-block"/> &nbsp;
+            {$l_i_agree_with_terms_and_conditions nofilter}
         </div>
     </div>
 </form>
