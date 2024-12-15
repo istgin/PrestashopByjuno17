@@ -484,8 +484,10 @@ class Byjuno extends PaymentModule
         }
 
         Db::getInstance()->Execute('
-            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'intrum_logs` (
-                  `intrum_id` int(10) unsigned NOT NULL auto_increment,
+            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cembra_logs` (
+                  `cembra_id` int(10) unsigned NOT NULL auto_increment,
+                  `request_id` varchar(250) default NULL,
+                  `request_type` varchar(250) default NULL,
                   `firstname` varchar(250) default NULL,
                   `lastname` varchar(250) default NULL,
                   `town` varchar(250) default NULL,
@@ -493,14 +495,14 @@ class Byjuno extends PaymentModule
                   `street` varchar(250) default NULL,
                   `country` varchar(250) default NULL,
                   `ip` varchar(250) default NULL,
-                  `status` varchar(250) default NULL,
-                  `request_id` varchar(250) default NULL,
-                  `type` varchar(250) default NULL,
-                  `error` text default NULL,
-                  `response` text default NULL,
+                  `cembra_status` varchar(250) default NULL,
+                  `order_id` varchar(250) default NULL,
+                  `transaction_id` varchar(250) default NULL,
                   `request` text default NULL,
+                  `response` text default NULL,
+                  `custom_field` text default NULL,
                   `creation_date` TIMESTAMP NULL DEFAULT now() ,
-                  PRIMARY KEY  (`intrum_id`)
+                  PRIMARY KEY  (`cembra_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
 
 

@@ -207,7 +207,7 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Prestashop 2 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.0";
 
     return $request;
 
