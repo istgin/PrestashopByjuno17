@@ -44,12 +44,19 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
                 }
                 if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
                     try {
-                        $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                        $arrayOfTriggerDoNotChange = unserialize(Configuration::get('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY'));
                     } catch (Exception $e) {
-                        $success = -1;
+                        $arrayOfTriggerDoNotChange = false;
                     }
-                    if ($success != -1) {
-                        $order->setCurrentState($success);
+                    if ($arrayOfTriggerDoNotChange == false || !in_array($order->getCurrentState(), $arrayOfTriggerDoNotChange)) {
+                        try {
+                            $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
+                        } catch (Exception $e) {
+                            $success = -1;
+                        }
+                        if ($success != -1) {
+                            $order->setCurrentState($success);
+                        }
                     }
                     Tools::redirect($this->context->cookie->chk_final_redirect);
                 } else {

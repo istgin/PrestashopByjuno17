@@ -504,14 +504,14 @@ class Byjuno extends PaymentModule
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
 
 
-        $defaultStateId = $this->addOrderState("Awaiting for Byjuno");
-        $receivedPaymentId = $this->addOrderState("Byjuno payment success", "#32CD32", true, true);
-        $s4FailId = $this->addOrderState("Byjuno S4 fail", "#FF0000", true, true);
-        $s5FailId = $this->addOrderState("Byjuno S5 fail", "#FF0000", true, true);
-        Configuration::updateValue('BYJUNO_ORDER_STATE_DEFAULT', $defaultStateId);
-        Configuration::updateValue('BYJUNO_ORDER_STATE_COMPLETE', $receivedPaymentId);
-        Configuration::updateValue('BYJUNO_ORDER_S4_FAIL', $s4FailId);
-        Configuration::updateValue('BYJUNO_ORDER_S5_FAIL', $s5FailId);
+        $defaultStateId = $this->addOrderState("Awaiting for CembraPay");
+        $receivedPaymentId = $this->addOrderState("CembraPay payment success", "#32CD32", true, true);
+        $s4FailId = $this->addOrderState("CembraPay settle fail", "#FF0000", true, true);
+        $s5FailId = $this->addOrderState("CembraPay refund fail", "#FF0000", true, true);
+        Configuration::updateValue('CEMBRA_ORDER_STATE_DEFAULT', $defaultStateId);
+        Configuration::updateValue('CEMBRA_ORDER_STATE_COMPLETE', $receivedPaymentId);
+        Configuration::updateValue('CEMBRA_ORDER_S4_FAIL', $s4FailId);
+        Configuration::updateValue('CEMBRA_ORDER_S5_FAIL', $s5FailId);
 
         if (!Configuration::get("byjuno_invoice")) {
             Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", '');
@@ -548,7 +548,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', 'true');
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
-            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
 
         }
         return true;
@@ -706,7 +706,7 @@ class Byjuno extends PaymentModule
                                 "-","-", $requestInvoice->requestMsgId,
                                 "-", "-", "-","-", $txSettle, $orderCore->reference);
                             if (empty($responseSettle->settlementId)) {
-                                $orderCore->setCurrentState(Configuration::get('BYJUNO_ORDER_S4_FAIL'));
+                                $orderCore->setCurrentState(Configuration::get('CEMBRA_ORDER_S4_FAIL'));
                                 Tools::redirectAdmin(Context::getContext()->link->getAdminLink("AdminOrders") . "&id_order=" . $orderCore->id . "&vieworder");
                                 exit();
                             }
@@ -913,12 +913,12 @@ class Byjuno extends PaymentModule
         try {
             $triggerSuccess = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
         } catch (Exception $e) {
-            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
-            $triggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
+            $triggerSuccess = Configuration::get('CEMBRA_ORDER_STATE_COMPLETE');
         }
         if ($triggerSuccess == false) {
-            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('BYJUNO_ORDER_STATE_COMPLETE'));
-            $triggerSuccess = Configuration::get('BYJUNO_ORDER_STATE_COMPLETE');
+            Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
+            $triggerSuccess = Configuration::get('CEMBRA_ORDER_STATE_COMPLETE');
         }
         $success_statuses_list = OrderStateCore::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT'));
         $success_statuses_list = array(-1 => array('id_order_state' => -1, 'name' => 'Do not change')) + $success_statuses_list;

@@ -152,7 +152,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 			require(_PS_MODULE_DIR_.'intrumcom/api/library_prestashop.php');
 		}
         $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
-        $this->module->validateOrder($cart->id, Configuration::get('BYJUNO_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+        $this->module->validateOrder($cart->id, Configuration::get('CEMBRA_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
         $order = new OrderCore((int)$this->module->currentOrder);
         if (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'checkout') {
             $successUrl = $this->context->link->getModuleLink('byjuno', 'checkoutsuccess', [], $ssl);

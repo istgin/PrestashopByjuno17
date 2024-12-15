@@ -35,16 +35,5 @@ function upgrade_module_2_0_0($module)
     Configuration::updateValue('CEMBRA_ORDER_STATE_COMPLETE', $receivedPaymentId);
     Configuration::updateValue('CEMBRA_ORDER_S4_FAIL', $s4FailId);
     Configuration::updateValue('CEMBRA_ORDER_S5_FAIL', $s5FailId);
-
-/*
-    Configuration::updateValue('BYJUNO_TOC_INVOICE_EN', 'https://cembrapay.ch/en/terms/CP');
-    Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_EN', 'https://cembrapay.ch/en/terms');
-    Configuration::updateValue('BYJUNO_TOC_INVOICE_DE', 'https://cembrapay.ch/de/terms/CP');
-    Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_DE', 'https://cembrapay.ch/de/terms');
-    Configuration::updateValue('BYJUNO_TOC_INVOICE_FR', 'https://cembrapay.ch/fr/terms/CP');
-    Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_FR', 'https://cembrapay.ch/fr/terms');
-    Configuration::updateValue('BYJUNO_TOC_INVOICE_IT', 'https://cembrapay.ch/it/terms/CP');
-    Configuration::updateValue('BYJUNO_TOC_INSTALLMENT_IT', 'https://cembrapay.ch/it/terms');
-*/
     return true;
 }
