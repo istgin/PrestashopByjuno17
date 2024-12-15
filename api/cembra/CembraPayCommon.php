@@ -116,17 +116,6 @@ function Cembra_mapRepayment($type) {
     }
 }
 
-function Cembra_mapToc()
-{
-    $lng = Context::getContext()->language->iso_code;
-    $langtoc = "EN";
-    if ($lng == "en" || $lng == "de" || $lng == "fr" || $lng == "it") {
-        $langtoc = strtoupper($lng);
-    }
-    $tocUrl = Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
-    return $tocUrl;
-}
-
 function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $customer, CurrencyCore $currency) {
 
     $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
@@ -224,7 +213,7 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
 
 }
 
-function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $currency, $repayment, $selected_gender = "", $selected_birthday = "", $invoiceDelivery = "") {
+function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $currency, $repayment, $selected_gender = "", $selected_birthday = "", $invoiceDelivery = "", $tocUrl) {
 
     $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
     global $cookie;
@@ -331,8 +320,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $customerConsents->consentType = "CEMBRAPAY-TC";
     $customerConsents->consentProvidedAt = "MERCHANT";
     $customerConsents->consentDate = CembraPayCheckoutAutRequest::Date();
-    $link = Cembra_mapToc();
-    $exLink = explode("/", $link);
+    $exLink = explode("/", $tocUrl);
     $consentReference = end($exLink);
     if (empty($consentReference) && isset($exLink[count($exLink) - 1])) {
         $consentReference = $exLink[count($exLink) - 2];

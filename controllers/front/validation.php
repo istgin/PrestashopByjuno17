@@ -205,7 +205,8 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 Tools::redirect($errorlnk);
             }
         } else {
-            $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery);
+            $tocUrl = $this->module->getTocUrl();
+            $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery, $tocUrl);
             $statusLog = "Authorization request";
             if ($requestAUT->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS) {
                 $statusLog = "Authorization request company";

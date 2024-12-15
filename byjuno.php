@@ -89,6 +89,11 @@ class Byjuno extends PaymentModule
         return $this->fetch('module:byjuno/views/templates/hook/payment_return.tpl');
     }
 
+    public function getTocUrl()
+    {
+        return $this->l("t_c_terms_url");
+    }
+
     public function hookPaymentOptions($params)
     {
         if (!$this->hookPaymentCembraPay($params)) {
