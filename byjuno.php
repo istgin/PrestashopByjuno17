@@ -15,7 +15,6 @@ if (!defined('_PS_VERSION_'))
 
 if (!defined('_PS_MODULE_INTRUMCOM_API')) {
     require(_PS_MODULE_DIR_ . 'byjuno/api/cembrapay.php');
-    require(_PS_MODULE_DIR_ . 'byjuno/api/library_prestashop.php');
 }
 
 class Byjuno extends PaymentModule

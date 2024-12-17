@@ -144,13 +144,11 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 
 		$currency = $this->context->currency;
 		$total = (float)$cart->getOrderTotal(true, Cart::BOTH);
-		$mailVars = null;//array();
+		$mailVars = null;
 
-		$status = 0;
-		if (!defined('_PS_MODULE_INTRUMCOM_API')) {
-			require(_PS_MODULE_DIR_.'intrumcom/api/intrum.php');
-			require(_PS_MODULE_DIR_.'intrumcom/api/library_prestashop.php');
-		}
+        if (!defined('_PS_MODULE_INTRUMCOM_API')) {
+            require(_PS_MODULE_DIR_ . 'byjuno/api/cembrapay.php');
+        }
         $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
         $this->module->validateOrder($cart->id, Configuration::get('CEMBRA_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
         $order = new OrderCore((int)$this->module->currentOrder);
