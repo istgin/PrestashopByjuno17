@@ -354,7 +354,20 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Credit check before show payments:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <div>
+                                if "Screening before show payment" is enabled by the merchant, the merchant explicitly agrees and warrants the following:
+                                <br><br>- The merchant (as data controller) assigns CembraPay (as data processor) to perform a credit-check (screening) on its behalf. In this case the end-customers data (name, address, date of birth, contact information (email, telephone number) as well as IP-Address, Used Proxy Servers, etc.) is automatically being sent from the merchant to CembraPay and further to Intrum as subprocessor. CembraPay confirms or rejects to the merchant the availability of CembraPay payment solution for the specific customer.
+                                <br><br>- The merchant must clearly and transparently inform the end-customers about the data processing by CembraPay and Intrum and obtain (if legally required) their consent. It is in the sole responsibility of the merchant to assess the legality of this data processing and the merchant must ensure at all times full compliance with applicable data protection regulations.
+                                <br><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Screening before show payment:
                         </label>
 
                         <div class="col-lg-9">

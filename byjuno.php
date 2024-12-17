@@ -629,7 +629,7 @@ class Byjuno extends PaymentModule
                 $cembrapayCommunicator->setServer('test');
             }
             $accessData = $this->getAccessData($mode);
-            $responseRaw = $cembrapayCommunicator->sendSettleRequest($jsonRefund,
+            $responseRaw = $cembrapayCommunicator->sendCreditRequest($jsonRefund,
                 $accessData,
                 function ($object, $token, $accessData) {
                     $object->saveToken($token, $accessData);
