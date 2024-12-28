@@ -266,7 +266,10 @@ class Byjuno extends PaymentModule
     public function getAccessData($mode) {
         $accessData = new CembraPayLoginDto();
         $accessData->helperObject = $this;
-        $accessData->timeout = (int)30;
+        $accessData->timeout = (int)Configuration::get("BYJUNO_CONN_TIMEOUT");
+        if ($accessData->timeout < 1) {
+            $accessData->timeout = 30;
+        }
         if ($mode == 'test') {
             $accessData->mode = 'test';
             $accessData->username = Configuration::get("CEMBRAPAY_TEST_CLIENT_ID");

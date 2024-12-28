@@ -37,44 +37,6 @@ use Byjuno\ByjunoPayments\Api\CembraPayLoginDto;
  */
 class ByjunoValidationModuleFrontController extends ModuleFrontController
 {
-	/**
-	 * @see FrontController::postProcess()
-	 */
-    function getAccessData($mode) {
-        $accessData = new CembraPayLoginDto();
-        $accessData->helperObject = $this;
-        $accessData->timeout = (int)30;
-        if ($mode == 'test') {
-            $accessData->mode = 'test';
-            $accessData->username = Configuration::get("CEMBRAPAY_TEST_CLIENT_ID");
-            $accessData->password = Configuration::get("CEMBRAPAY_TEST_PASSWORD");
-            $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
-            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_TEST");
-        } else {
-            $accessData->mode = 'live';
-            $accessData->username = Configuration::get("CEMBRAPAY_LIVE_CLIENT_ID");
-            $accessData->password = Configuration::get("CEMBRAPAY_LIVE_PASSWORD");
-            $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
-            $accessToken = Configuration::get("BYJUNO_ACCESS_TOKEN_LIVE");
-        }
-        $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
-        $hash = $accessData->username.$accessData->password.$accessData->audience;
-        if ($hash == $tkn[0] && !empty($tkn[1])) {
-            $accessData->accessToken = $tkn[1];
-        }
-        return $accessData;
-    }
-
-    function saveToken($token, $accessData) {
-        /* @var $accessData CembraPayLoginDto */
-        $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
-        if ($accessData->mode == 'test') {
-            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_TEST", $hash.$token);
-        } else {
-            Configuration::updateValue("BYJUNO_ACCESS_TOKEN_LIVE", $hash.$token);
-        }
-    }
-
 	public function postProcess()
 	{
 		global $cookie;
