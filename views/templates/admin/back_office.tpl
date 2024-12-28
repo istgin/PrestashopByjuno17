@@ -154,7 +154,7 @@
                 <td>IP</td>
                 <td>Status</td>
                 <td>Date</td>
-                <td>Request ID</td>
+                <td>Order ref</td>
                 <td>Type</td>
             </tr>
             {foreach from=$cembra_logs item=log}
@@ -164,7 +164,7 @@
                     <td>{$log.ip|escape}</td>
                     <td>{$log.cembra_status|escape}</td>
                     <td>{$log.creation_date|escape}</td>
-                    <td>{$log.request_id|escape}</td>
+                    <td>{$log.order_id|escape}</td>
                     <td><a href="{$url}&viewjson={$log.cembra_id}">{$log.request_type|escape}</a>
                     </td>
                 </tr>

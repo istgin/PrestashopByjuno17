@@ -1027,6 +1027,7 @@ class Byjuno extends PaymentModule
                 WHERE I.firstname like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
                    OR I.lastname like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
                    OR I.request_id like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
+                   OR I.order_id like \'%' . pSQL(Tools::getValue('searchInLog')) . '%\'
                 ORDER BY cembra_id DESC
                 ';
             return Db::getInstance()->ExecuteS($sql);
