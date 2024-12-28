@@ -34,6 +34,17 @@ class CembraPayLogger
         return Db::getInstance()->getRow($sql);
     }
 
+    public function getCnfOrderFields($orderId)
+    {
+        $sql = '
+                SELECT *
+                FROM `' . _DB_PREFIX_ . 'cembra_logs` as I
+                WHERE I.order_id = \'' . pSQL($orderId) . '\'
+                  AND (I.request_type = \'CNF\')
+                ';
+        return Db::getInstance()->getRow($sql);
+    }
+
     public function getSettleFields($orderId)
     {
         $sql = '

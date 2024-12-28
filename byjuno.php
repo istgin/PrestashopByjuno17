@@ -726,6 +726,12 @@ class Byjuno extends PaymentModule
                 $cembraPayLogger = CembraPayLogger::getInstance();
                 $orderRef = $cembraPayLogger->getOrderFields($orderCore->reference);
                 if (!empty($orderRef["transaction_id"])) {
+                    if ($orderRef["request_type"] == 'Checkout request' || $orderRef["request_type"] == 'Checkout request company') {
+                        $orderRefCnf = $cembraPayLogger->getCnfOrderFields($orderCore->reference);
+                        if (empty($orderRefCnf["transaction_id"])) {
+                            return;
+                        }
+                    }
                     $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
                     if ($order_module == "byjuno") {
                         $currency = CurrencyCore::getCurrency($orderCore->id_currency);
