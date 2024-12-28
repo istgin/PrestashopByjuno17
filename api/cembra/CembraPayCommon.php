@@ -178,6 +178,9 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
     $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
@@ -289,6 +292,9 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
     $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
@@ -410,6 +416,9 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
     $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
