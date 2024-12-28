@@ -136,7 +136,7 @@
 {elseif ($showlogs)}
     <div id="tab-logs">
         <div>
-            Searh in log
+            Search in log
             <form method="post" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}">
                 <input value="{$search_in_log|escape}" name="searchInLog"> <input type="submit" value="search">
                 <input type="hidden" value="ok" name="submitLogSearch">
