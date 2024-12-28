@@ -34,7 +34,7 @@
                 </div>
             </div>
         {/if}
-        {if ($byjuno_gender_birthday == 1)}
+        {if ($byjuno_gender_birthday_gender == 1)}
             <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                     {$l_gender}
@@ -47,6 +47,8 @@
                     </select>
                 </div>
             </div>
+        {/if}
+        {if ($byjuno_gender_birthday == 1)}
             <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                     {$l_date_of_birth}

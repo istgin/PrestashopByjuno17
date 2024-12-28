@@ -305,7 +305,20 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
-                            Enable gender &amp; birthday selection:
+                            Enable gender selection:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_GENDER_BIRTHDAY_GENDER" id="BYJUNO_GENDER_BIRTHDAY_GENDER">
+                                <option value="false"{if ($BYJUNO_GENDER_BIRTHDAY_GENDER == 'false')} selected{/if}>Disabled
+                                </option>
+                                <option value="true"{if ($BYJUNO_GENDER_BIRTHDAY_GENDER == 'true')} selected{/if}>Enabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Enable birthday selection:
                         </label>
 
                         <div class="col-lg-9">

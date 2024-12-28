@@ -99,10 +99,12 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		}
 		$selected_gender = "";
 		$selected_birthday = "";
-		if (Configuration::get('BYJUNO_GENDER_BIRTHDAY') == 'true') {
+		if (Configuration::get('BYJUNO_GENDER_BIRTHDAY_GENDER') == 'true') {
 			$selected_gender = Tools::getValue('selected_gender');
-			$selected_birthday = Tools::getValue('years').'-'.sprintf("%02d", (int)Tools::getValue('months')).'-'.sprintf("%02d", (int)Tools::getValue('days'));
 		}
+        if (Configuration::get('BYJUNO_GENDER_BIRTHDAY') == 'true') {
+            $selected_birthday = Tools::getValue('years').'-'.sprintf("%02d", (int)Tools::getValue('months')).'-'.sprintf("%02d", (int)Tools::getValue('days'));
+        }
 
 		$currency = $this->context->currency;
 		$total = (float)$cart->getOrderTotal(true, Cart::BOTH);

@@ -161,6 +161,7 @@ class Byjuno extends PaymentModule
             'payment' => $payment,
             'invoice_send' => $invoice_send,
             'byjuno_allowpostal' => (Configuration::get('BYJUNO_ALLOW_POSTAL') == 'true') ? 1 : 0,
+            'byjuno_gender_birthday_gender' => (Configuration::get('BYJUNO_GENDER_BIRTHDAY_GENDER') == 'true') ? 1 : 0,
             'byjuno_gender_birthday' => (Configuration::get('BYJUNO_GENDER_BIRTHDAY') == 'true') ? 1 : 0,
             'email' => $this->context->customer->email,
             'address' => trim($invoice_address->address1 . ' ' . $invoice_address->address2) . ', ' . $invoice_address->postcode . ' ' . $invoice_address->city,
@@ -549,6 +550,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_REFUND_S5_ALLOWED', 'enable');
             Configuration::updateValue('INTRUM_TMXORGID', 'lq866c5i');
             Configuration::updateValue('INTRUM_ENABLETMX', 'true');
+            Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY_GENDER', 'true');
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', 'true');
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
@@ -862,6 +864,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_CANCEL_S5_ALLOWED', trim(Tools::getValue('BYJUNO_CANCEL_S5_ALLOWED')));
             Configuration::updateValue('BYJUNO_REFUND_S5_ALLOWED', trim(Tools::getValue('BYJUNO_REFUND_S5_ALLOWED')));
             Configuration::updateValue('BYJUNO_B2B', trim(Tools::getValue('BYJUNO_B2B')));
+            Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY_GENDER', trim(Tools::getValue('BYJUNO_GENDER_BIRTHDAY_GENDER')));
             Configuration::updateValue('BYJUNO_GENDER_BIRTHDAY', trim(Tools::getValue('BYJUNO_GENDER_BIRTHDAY')));
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Tools::getValue('BYJUNO_S4_TRIGGER')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY')));
@@ -968,6 +971,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_CANCEL_S5_ALLOWED' => Configuration::get("BYJUNO_CANCEL_S5_ALLOWED"),
             'BYJUNO_REFUND_S5_ALLOWED' => Configuration::get("BYJUNO_REFUND_S5_ALLOWED"),
             'BYJUNO_B2B' => Configuration::get("BYJUNO_B2B"),
+            'BYJUNO_GENDER_BIRTHDAY_GENDER' => Configuration::get("BYJUNO_GENDER_BIRTHDAY_GENDER"),
             'BYJUNO_GENDER_BIRTHDAY' => Configuration::get("BYJUNO_GENDER_BIRTHDAY"),
             'BYJUNO_S4_TRIGGER' => $arrayOfTrigger,
             'BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY' => $arrayOfNotModify,
