@@ -1,5 +1,4 @@
-<form action="{$link->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post"
-      onsubmit="return acceptCGVByjuno()" id="byjuno-invoice">
+<form action="{$link->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post" id="byjuno-invoice">
     <div class="form-fields">
         {if (count($selected_payments_invoice) > 1)}
             <div class="form-group row">
@@ -93,6 +92,7 @@
         {else}
             <input type="hidden" value="terms_conditions" name="terms_conditions" id="terms_conditions"/> &nbsp;
         {/if}
+        <input type="hidden" id="cembra_selected_invoice" name="cembra_selected_invoice" value="{$select_payment_option}">
     </div>
 </form>
 <style>
@@ -103,17 +103,10 @@
     }
 </style>
 <script>
-    var msg_order_byjuno = '{$l_you_must_agree_terms_conditions}';
-    function acceptCGVByjuno() {
-        {if ($cembra_direct_api == 1)}
-        if (typeof msg_order_byjuno != 'undefined' && $('#terms_conditions').length && !$('input#terms_conditions:checked').length) {
-            alert(msg_order_byjuno);
+    document.addEventListener('change', function (event) {
+        if (event.target.name === 'payment-option') {
+            const hiddenTextbox = document.getElementById('cembra_selected_invoice');
+             hiddenTextbox.value = event.target.id;
         }
-        else
-            return true;
-        return false;
-        {else}
-        return true;
-        {/if}
-    }
+    });
 </script>

@@ -42,16 +42,31 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 		global $cookie;
 		$repayment = Cembra_mapRepayment(Tools::getValue('selected_plan'));
 		$toc = Tools::getValue('terms_conditions');
+        $invBack = Tools::getValue('cembra_selected_invoice');
+        $instBack = Tools::getValue('cembra_selected_installment');
 		if (empty($toc) || !$toc || $toc != "terms_conditions")
 		{
+		    $selected = "";
+            if (!empty($invBack)) {
+                $selected = "&select_payment_option=".$invBack;
+            } else if (!empty($instBack)) {
+                $selected = "&select_payment_option=".$instBack;
+            }
+
+
+
 			if ($repayment == 3 || $repayment == 4) {
-				$backLink = "index.php?controller=order&step=1&agree_byjuno=true";
+				$backLink = "index.php?controller=order&step=1&agree_byjuno=true".$selected;
 			} else {
-				$backLink = "index.php?controller=order&step=1&agree_byjuno=true";
+				$backLink = "index.php?controller=order&step=1&agree_byjuno=true".$selected;
 			}
 
 			$cookie->byjuno_invoice_send = Tools::getValue('invoice_send');
-			$cookie->byjuno_selected_plan = Tools::getValue('selected_plan');
+            if (!empty($invBack)) {
+                $cookie->byjuno_selected_plan_invoice = Tools::getValue('selected_plan');
+            } else if (!empty($instBack)) {
+                $cookie->byjuno_selected_plan_installment = Tools::getValue('selected_plan');
+            }
 			$cookie->byjuno_selected_gender = Tools::getValue('selected_gender');
 			$cookie->byjuno_years = Tools::getValue('years');
 			$cookie->byjuno_months = Tools::getValue('months');
@@ -60,9 +75,14 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 			Tools::redirect($backLink);
 			exit();
 		}
+		$isInvoice = true;
+        if (!empty($instBack)) {
+            $isInvoice = false;
+        }
 
 		$cookie->byjuno_invoice_send = "";
-		$cookie->byjuno_selected_plan = "";
+		$cookie->byjuno_selected_plan_invoice = "";
+        $cookie->byjuno_selected_plan_installment = "";
 		$cookie->byjuno_selected_gender = "";
 		$cookie->byjuno_years = "";
 		$cookie->byjuno_months = "";
@@ -113,8 +133,12 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
         if (!defined('_PS_MODULE_INTRUMCOM_API')) {
             require(_PS_MODULE_DIR_ . 'byjuno/api/cembrapay.php');
         }
+        $paymentName = $this->module->getNameInvoice();
+        if (!$isInvoice) {
+            $paymentName = $this->module->getNameInstallment();
+        }
         $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
-        $this->module->validateOrder($cart->id, Configuration::get('CEMBRA_ORDER_STATE_DEFAULT'), $total, "Byjuno invoice", NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+        $this->module->validateOrder($cart->id, Configuration::get('CEMBRA_ORDER_STATE_DEFAULT'), $total, $paymentName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
         $order = new OrderCore((int)$this->module->currentOrder);
         if (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'checkout') {
             $successUrl = $this->context->link->getModuleLink('byjuno', 'checkoutsuccess', [], $ssl);

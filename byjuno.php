@@ -95,6 +95,7 @@ class Byjuno extends PaymentModule
 
     public function hookPaymentOptions($params)
     {
+        global $cookie;
         if (!$this->hookPaymentCembraPay($params)) {
             return;
         }
@@ -151,10 +152,21 @@ class Byjuno extends PaymentModule
             $tm = strtotime("1990-01-01");
         }
         $invoice_send = "email";
+        if (!empty($cookie->byjuno_invoice_send)) {
+            $invoice_send = $cookie->byjuno_invoice_send;
+        }
         $selected_gender = $customer->id_gender;
+        if (!empty($cookie->byjuno_selected_gender)) {
+            $selected_gender = $cookie->byjuno_selected_gender;
+        }
         $byjuno_years = date("Y", $tm);
         $byjuno_months = date("m", $tm);
         $byjuno_days = date("d", $tm);
+        if (!empty($cookie->byjuno_years) && !!empty($cookie->byjuno_months) && !!empty($cookie->byjuno_days)) {
+            $byjuno_years = $cookie->byjuno_years;
+            $byjuno_months = $cookie->byjuno_months;
+            $byjuno_days = $cookie->byjuno_days;
+        }
         $paymentMethod = Array();
         $invoice_address = new Address($cart->id_address_invoice);
         $values = array(
@@ -185,6 +197,7 @@ class Byjuno extends PaymentModule
             'l_by_post' => $this->l("By post"),
             'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
             'cembra_direct_api' => (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'api') ? 1 : 0,
+            'select_payment_option' => Tools::getValue('select_payment_option'),
         );
         $termsText = $this->l("I agree with terms and conditions");
         $termsL = $this->l("t_c_terms_url");
@@ -201,40 +214,79 @@ class Byjuno extends PaymentModule
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
             } else  {
                 if (Configuration::get("byjuno_invoice") == 'enable') {
-                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
+                    $selected = 0;
+                    if (!empty($cookie->byjuno_selected_plan_invoice) && $cookie->byjuno_selected_plan_invoice == 'byjuno_invoice') {
+                        $selected = 1;
+                    }
+                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => $selected);
                 }
                 if (Configuration::get("single_invoice") == 'enable') {
-                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
+                    $selected = 0;
+                    if (!empty($cookie->byjuno_selected_plan_invoice) && $cookie->byjuno_selected_plan_invoice == 'single_invoice') {
+                        $selected = 1;
+                    }
+                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Single Invoice'), 'id' => 'single_invoice', "selected" => $selected);
                 }
-
-                $selected_payments_invoice[0]["selected"] = 1;
+                if (empty($cookie->byjuno_selected_plan_invoice)) {
+                    $selected_payments_invoice[0]["selected"] = 1;
+                }
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
             }
         }
 
         if ($byjuno_installment) {
             if (Configuration::get("installment_3") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_3') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => $selected);
             }
             if (Configuration::get("installment_4") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('4 installments'), 'id' => 'installment_4', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_4') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('4 installments'), 'id' => 'installment_4', "selected" => $selected);
             }
             if (Configuration::get("installment_6") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('6 installments'), 'id' => 'installment_6', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_6') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('6 installments'), 'id' => 'installment_6', "selected" => $selected);
             }
             if (Configuration::get("installment_12") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_12') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => $selected);
             }
             if (Configuration::get("installment_24") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('24 installments'), 'id' => 'installment_24', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_24') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('24 installments'), 'id' => 'installment_24', "selected" => $selected);
             }
             if (Configuration::get("installment_36") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_36') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => $selected);
             }
             if (Configuration::get("installment_48") == 'enable') {
-                $selected_payments_installment[] = Array('name' => $this->l('48 installments'), 'id' => 'installment_48', "selected" => 0);
+                $selected = 0;
+                if (!empty($cookie->byjuno_selected_plan_installment) && $cookie->byjuno_selected_plan_installment == 'installment_48') {
+                    $selected = 1;
+                }
+                $selected_payments_installment[] = Array('name' => $this->l('48 installments'), 'id' => 'installment_48', "selected" => $selected);
             }
-            $selected_payments_installment[0]["selected"] = 1;
+            if (empty($cookie->byjuno_selected_plan_installment)) {
+                $selected_payments_installment[0]["selected"] = 1;
+            }
 
             $values['selected_payments_installment'] = $selected_payments_installment;
         }
@@ -349,6 +401,14 @@ class Byjuno extends PaymentModule
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
         return $this->display(__FILE__, 'payment.tpl');
+    }
+
+    public function getNameInvoice() {
+        return $this->l('Byjuno invoice', 'byjuno');
+    }
+
+    public function getNameInstallment() {
+        return $this->l('Byjuno installment', 'byjuno');
     }
 
     public function hookPaymentCembraPay($params)
