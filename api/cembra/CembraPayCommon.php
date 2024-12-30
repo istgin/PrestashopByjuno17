@@ -177,9 +177,13 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     $request->billingAddr->town = html_entity_decode($invoice_address->city, ENT_COMPAT, 'UTF-8');
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
-    $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
-    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
-        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    $request->custContacts->phonePrivate = (string)$invoice_address->phone;
+    $request->custContacts->phoneMobile = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone;
+    }
+    if (empty($request->custContacts->phoneMobile) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
@@ -216,7 +220,7 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
 
 }
 
-function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $currency, $repayment, $selected_gender = "", $selected_birthday = "", $invoiceDelivery = "", $tocUrl) {
+function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $currency, $repayment, $selected_gender = "", $selected_birthday = "", $invoiceDelivery = "", $tocUrl = "") {
 
     $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
     global $cookie;
@@ -291,9 +295,13 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $request->billingAddr->town = html_entity_decode($invoice_address->city, ENT_COMPAT, 'UTF-8');
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
-    $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
-    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
-        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    $request->custContacts->phonePrivate = (string)$invoice_address->phone;
+    $request->custContacts->phoneMobile = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone;
+    }
+    if (empty($request->custContacts->phoneMobile) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
@@ -415,9 +423,13 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->billingAddr->town = html_entity_decode($invoice_address->city, ENT_COMPAT, 'UTF-8');
     $request->billingAddr->country = strtoupper($country->iso_code);
     $request->custContacts->email = (string)$customer->email;
-    $request->custContacts->phonePrivate = (string)$invoice_address->phone_mobile;
-    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone_mobile)) {
-        $request->custContacts->phonePrivate = (string)$shipping_address->phone_mobile;
+    $request->custContacts->phonePrivate = (string)$invoice_address->phone;
+    $request->custContacts->phoneMobile = (string)$invoice_address->phone_mobile;
+    if (empty($request->custContacts->phonePrivate) && !empty($shipping_address->phone)) {
+        $request->custContacts->phonePrivate = (string)$shipping_address->phone;
+    }
+    if (empty($request->custContacts->phoneMobile) && !empty($shipping_address->phone_mobile)) {
+        $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;

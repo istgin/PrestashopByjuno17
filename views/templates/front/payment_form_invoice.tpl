@@ -84,11 +84,15 @@
                 </div>
             </div>
         {/if}
+        {if ($cembra_direct_api == 1)}
         <div class="form-group byjuno_toc">
             <input type="checkbox" value="terms_conditions" name="terms_conditions" id="terms_conditions"
                    style="display: inline-block"/> &nbsp;
             {$l_i_agree_with_terms_and_conditions nofilter}
         </div>
+        {else}
+            <input type="hidden" value="terms_conditions" name="terms_conditions" id="terms_conditions"/> &nbsp;
+        {/if}
     </div>
 </form>
 <style>
@@ -101,11 +105,15 @@
 <script>
     var msg_order_byjuno = '{$l_you_must_agree_terms_conditions}';
     function acceptCGVByjuno() {
+        {if ($cembra_direct_api == 1)}
         if (typeof msg_order_byjuno != 'undefined' && $('#terms_conditions').length && !$('input#terms_conditions:checked').length) {
             alert(msg_order_byjuno);
         }
         else
             return true;
         return false;
+        {else}
+        return true;
+        {/if}
     }
 </script>

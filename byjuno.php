@@ -184,6 +184,7 @@ class Byjuno extends PaymentModule
             'l_by_email' => $this->l("By email"),
             'l_by_post' => $this->l("By post"),
             'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
+            'cembra_direct_api' => (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'api') ? 1 : 0,
         );
         $termsText = $this->l("I agree with terms and conditions");
         $termsL = $this->l("t_c_terms_url");
