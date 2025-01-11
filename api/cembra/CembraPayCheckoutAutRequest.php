@@ -90,6 +90,7 @@ class CembraPayDetails
 {
     public $cembraPayPaymentMethod; //String
     public $invoiceDeliveryType; //String
+    public $riskOnlyOnCembraPay;
 
 }
 

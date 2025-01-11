@@ -329,6 +329,20 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Allow only Risk on CembraPay
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="CEMBRA_ALLOW_RISK" id="CEMBRA_ALLOW_RISK">
+                                <option value="false"{if ($CEMBRA_ALLOW_RISK == 'false')} selected{/if}>Disabled
+                                </option>
+                                <option value="true"{if ($CEMBRA_ALLOW_RISK == 'true')} selected{/if}>Enabled</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="panel-footer">
                     <input type="hidden" name="submitIntrumMain" value="intrum_main_configuration"/>

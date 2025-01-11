@@ -602,6 +602,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S2_MERCHANT_ACCEPT', '');
             Configuration::updateValue('BYJUNO_S3_ACCEPT', '2');
             Configuration::updateValue('BYJUNO_ALLOW_POSTAL', 'false');
+            Configuration::updateValue('CEMBRA_ALLOW_RISK', 'false');
             Configuration::updateValue('BYJUNO_CONN_TIMEOUT', '30');
             Configuration::updateValue('BYJUNO_MIN_AMOUNT', '10');
             Configuration::updateValue('BYJUNO_MAX_AMOUNT', '1000');
@@ -918,6 +919,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S2_MERCHANT_ACCEPT', trim(Tools::getValue('BYJUNO_S2_MERCHANT_ACCEPT')));
             Configuration::updateValue('BYJUNO_S3_ACCEPT', trim(Tools::getValue('BYJUNO_S3_ACCEPT')));
             Configuration::updateValue('BYJUNO_ALLOW_POSTAL', trim(Tools::getValue('BYJUNO_ALLOW_POSTAL')));
+            Configuration::updateValue('CEMBRA_ALLOW_RISK', trim(Tools::getValue('CEMBRA_ALLOW_RISK')));
             Configuration::updateValue('BYJUNO_CONN_TIMEOUT', trim(Tools::getValue('BYJUNO_CONN_TIMEOUT')));
             Configuration::updateValue('BYJUNO_MIN_AMOUNT', trim(Tools::getValue('BYJUNO_MIN_AMOUNT')));
             Configuration::updateValue('BYJUNO_MAX_AMOUNT', trim(Tools::getValue('BYJUNO_MAX_AMOUNT')));
@@ -1025,6 +1027,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_S2_MERCHANT_ACCEPT' => Configuration::get("BYJUNO_S2_MERCHANT_ACCEPT"),
             'BYJUNO_S3_ACCEPT' => Configuration::get("BYJUNO_S3_ACCEPT"),
             'BYJUNO_ALLOW_POSTAL' => Configuration::get("BYJUNO_ALLOW_POSTAL"),
+            'CEMBRA_ALLOW_RISK' => Configuration::get("CEMBRA_ALLOW_RISK"),
             'BYJUNO_CONN_TIMEOUT' => Configuration::get("BYJUNO_CONN_TIMEOUT"),
             'BYJUNO_MIN_AMOUNT' => Configuration::get("BYJUNO_MIN_AMOUNT"),
             'BYJUNO_MAX_AMOUNT' => Configuration::get("BYJUNO_MAX_AMOUNT"),

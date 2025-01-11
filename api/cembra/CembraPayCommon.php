@@ -198,10 +198,13 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     $request->deliveryDetails->deliveryAddrPostalCode = $shipping_address->postcode;
     $request->deliveryDetails->deliveryAddrTown = html_entity_decode($shipping_address->city, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrCountry = strtoupper($country_shipping->iso_code);
-
-
     if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && !empty($cookie->intrumId)) {
         $request->sessionInfo->tmxSessionId = $cookie->intrumId;
+    }
+    if (Configuration::get('CEMBRA_ALLOW_RISK') == 'true') {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
     }
 
     $request->sessionInfo->sessionIp = Cembra_byjunoGetClientIp();
@@ -328,6 +331,11 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
         $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
     } else {
         $request->cembraPayDetails->invoiceDeliveryType = "EMAIL";
+    }
+    if (Configuration::get('CEMBRA_ALLOW_RISK') == 'true') {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
     }
 
     $customerConsents = new CustomerConsents();
@@ -456,6 +464,11 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
         $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
     } else {
         $request->cembraPayDetails->invoiceDeliveryType = "EMAIL";
+    }
+    if (Configuration::get('CEMBRA_ALLOW_RISK') == 'true') {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
     }
 
     $request->merchantDetails->returnUrlSuccess = base64_encode($successUrl);
