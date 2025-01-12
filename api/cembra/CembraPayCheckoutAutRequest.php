@@ -14,6 +14,7 @@ class CustDetails
     public $dateOfBirth; //String
     public $companyName; //String
     public $companyRegNum; //String
+    public $isAbove18;
 
 }
 

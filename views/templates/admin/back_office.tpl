@@ -342,6 +342,33 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Submit above 18 years flag
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="CEMBRA_IS_ABOVE_18" id="CEMBRA_IS_ABOVE_18">
+                                <option value="false"{if ($CEMBRA_IS_ABOVE_18 == 'false')} selected{/if}>Disabled</option>
+                                <option value="true"{if ($CEMBRA_IS_ABOVE_18 == 'true')} selected{/if}>Enabled</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                        </label>
+
+                        <div class="col-lg-9">
+                            <div>
+                                By setting this option to enabled, the merchant confirms, that all private customers using CembraPay are 18 years or older.
+                                <br>
+                                This tag is only required, if Actual Date of Birth is not captured in Merchants or CembraPay Checkout.
+                                <br><br>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="panel-footer">

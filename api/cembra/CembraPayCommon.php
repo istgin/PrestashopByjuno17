@@ -172,6 +172,11 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
 
         }
     }
+    if (Configuration::get('CEMBRA_IS_ABOVE_18') == 'true') {
+        $request->custDetails->isAbove18 = true;
+    } else {
+        $request->custDetails->isAbove18 = false;
+    }
     $request->billingAddr->addrFirstLine = html_entity_decode(trim($invoice_address->address1.' '.$invoice_address->address2), ENT_COMPAT, 'UTF-8');
     $request->billingAddr->postalCode = $invoice_address->postcode;
     $request->billingAddr->town = html_entity_decode($invoice_address->city, ENT_COMPAT, 'UTF-8');
@@ -291,6 +296,11 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     }
     if ($selected_birthday != "") {
         $request->custDetails->dateOfBirth = $selected_birthday;
+    }
+    if (Configuration::get('CEMBRA_IS_ABOVE_18') == 'true') {
+        $request->custDetails->isAbove18 = true;
+    } else {
+        $request->custDetails->isAbove18 = false;
     }
 
     $request->billingAddr->addrFirstLine = html_entity_decode(trim($invoice_address->address1.' '.$invoice_address->address2), ENT_COMPAT, 'UTF-8');
@@ -424,6 +434,11 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     }
     if ($selected_birthday != "") {
         $request->custDetails->dateOfBirth = $selected_birthday;
+    }
+    if (Configuration::get('CEMBRA_IS_ABOVE_18') == 'true') {
+        $request->custDetails->isAbove18 = true;
+    } else {
+        $request->custDetails->isAbove18 = false;
     }
 
     $request->billingAddr->addrFirstLine = html_entity_decode(trim($invoice_address->address1.' '.$invoice_address->address2), ENT_COMPAT, 'UTF-8');
