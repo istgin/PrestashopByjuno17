@@ -23,10 +23,12 @@ $_MODULE['<{byjuno}prestashop>payment_error_569fd05bdafa1712c4f6be5b153b8418'] =
 $_MODULE['<{byjuno}prestashop>byjuno_e7a40b36fd632b62f6f00d89030832b7'] = 'CembraPay invoice with partial payment option';
 $_MODULE['<{byjuno}prestashop>byjuno_b8405c16fab03dd6ba7f50aa1805a412'] = 'CembraPay single invoice';
 $_MODULE['<{byjuno}prestashop>byjuno_dbd37025b503190124596363e32f3c2e'] = '3 installments';
-$_MODULE['<{byjuno}prestashop>byjuno_3f4cb51dc3d57775b11eead1fd42578c'] = '36 installments';
+$_MODULE['<{byjuno}prestashop>byjuno_4147ef096a0a067a1b3a6ccd9758a0d6'] = '4 installments';
+$_MODULE['<{byjuno}prestashop>byjuno_40c5acd4838e7b876fc335a9ee81a837'] = '6 installments';
 $_MODULE['<{byjuno}prestashop>byjuno_9ed230c74799a3db4bdc4294b42080bd'] = '12 installments';
 $_MODULE['<{byjuno}prestashop>byjuno_ef5010d8911ba4b1a4d2665c22a8e51c'] = '24 installments';
-$_MODULE['<{byjuno}prestashop>byjuno_5d92fdfa267376f9c89c1a26f1d2e1c4'] = '4 installments within 12 months';
+$_MODULE['<{byjuno}prestashop>byjuno_3f4cb51dc3d57775b11eead1fd42578c'] = '36 installments';
+$_MODULE['<{byjuno}prestashop>byjuno_d5a775f16832f9f1933440899be639d1'] = '48 installments';
 
 $_MODULE['<{byjuno}prestashop>byjuno_06aac5c4279d0d93b5527804b88827e1'] = 'CembraPay Invoice';
 $_MODULE['<{byjuno}prestashop>byjuno_b7d009d8f8d9c3d5e07692546dcf3806'] = 'CembraPay Installment';
