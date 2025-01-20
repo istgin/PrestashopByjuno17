@@ -20,15 +20,15 @@ $_MODULE['<{byjuno}prestashop>payment_error_1e97d97a923eaddd810e056c828e99ea'] =
 $_MODULE['<{byjuno}prestashop>payment_error_c74e2d6724e2edc933a7bded86301b08'] = 'Der Zahlungsanbieter hat die Zahlung abgelehnt. Bitte versuchen Sie eine andere Zahlungsmethode';
 $_MODULE['<{byjuno}prestashop>payment_error_569fd05bdafa1712c4f6be5b153b8418'] = 'Andere Zahlungsmethoden';
 
-$_MODULE['<{byjuno}prestashop>byjuno_e7a40b36fd632b62f6f00d89030832b7'] = 'CembraPay Rechnung mit Teilzahlungsoption';
-$_MODULE['<{byjuno}prestashop>byjuno_b8405c16fab03dd6ba7f50aa1805a412'] = 'CembraPay Einmalrechnung';
-$_MODULE['<{byjuno}prestashop>byjuno_dbd37025b503190124596363e32f3c2e'] = '3 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_4147ef096a0a067a1b3a6ccd9758a0d6'] = '4 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_40c5acd4838e7b876fc335a9ee81a837'] = '6 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_9ed230c74799a3db4bdc4294b42080bd'] = '12 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_ef5010d8911ba4b1a4d2665c22a8e51c'] = '24 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_3f4cb51dc3d57775b11eead1fd42578c'] = '36 Raten';
-$_MODULE['<{byjuno}prestashop>byjuno_d5a775f16832f9f1933440899be639d1'] = '48 Raten';
+$_MODULE['<{byjuno}prestashop>byjuno_e7a40b36fd632b62f6f00d89030832b7'] = 'CembraPay Rechnung';
+$_MODULE['<{byjuno}prestashop>byjuno_b8405c16fab03dd6ba7f50aa1805a412'] = 'CembraPay Einzelrechnung';
+$_MODULE['<{byjuno}prestashop>byjuno_dbd37025b503190124596363e32f3c2e'] = 'CembraPay ZERO 3in3';
+$_MODULE['<{byjuno}prestashop>byjuno_4147ef096a0a067a1b3a6ccd9758a0d6'] = 'CembraPay ZERO 4in4';
+$_MODULE['<{byjuno}prestashop>byjuno_40c5acd4838e7b876fc335a9ee81a837'] = 'CembraPay ZERO 6in6';
+$_MODULE['<{byjuno}prestashop>byjuno_9ed230c74799a3db4bdc4294b42080bd'] = 'CembraPay ZERO 12in12';
+$_MODULE['<{byjuno}prestashop>byjuno_ef5010d8911ba4b1a4d2665c22a8e51c'] = 'CembraPay ZERO 24in24';
+$_MODULE['<{byjuno}prestashop>byjuno_3f4cb51dc3d57775b11eead1fd42578c'] = 'CembraPay ZERO 36in36';
+$_MODULE['<{byjuno}prestashop>byjuno_d5a775f16832f9f1933440899be639d1'] = 'CembraPay ZERO 48in48';
 
 $_MODULE['<{byjuno}prestashop>byjuno_06aac5c4279d0d93b5527804b88827e1'] = 'CembraPay Rechnung';
 $_MODULE['<{byjuno}prestashop>byjuno_b7d009d8f8d9c3d5e07692546dcf3806'] = 'CembraPay Ratenzahlung';
@@ -37,9 +37,9 @@ $_MODULE['<{byjuno}prestashop>byjuno_962c29e9d818d87968b7460bf9a6472b'] = 'Zahlu
 
 $_MODULE['<{byjuno}prestashop>byjuno_879f6b8877752685a966564d072f498f'] = 'Es befinden sich keine Artikel im Warenkorb.';
 $_MODULE['<{byjuno}prestashop>byjuno_de373d72d209506f178c46735ecbf447'] = 'Zahlungsplan auswählen';
-$_MODULE['<{byjuno}prestashop>byjuno_eaf1849876a6548ecc5b804d7da44b27'] = 'Rechnungsversand auswählen';
-$_MODULE['<{byjuno}prestashop>byjuno_dfc27ef27b631b0e7114573a439c3180'] = 'Rechnungsversand via E-Mail an';
-$_MODULE['<{byjuno}prestashop>byjuno_3cd02748d4e2c00844a284b71a479ba1'] = 'Rechnungsversand in Papierform via Post (gegen Gebühr von CHF 4.25 pro Brief) an';
+$_MODULE['<{byjuno}prestashop>byjuno_eaf1849876a6548ecc5b804d7da44b27'] = 'Rechnung erhalten';
+$_MODULE['<{byjuno}prestashop>byjuno_dfc27ef27b631b0e7114573a439c3180'] = 'via E-Mail (ohne Gebühr)';
+$_MODULE['<{byjuno}prestashop>byjuno_3cd02748d4e2c00844a284b71a479ba1'] = 'in Papierform via Post (gegen Gebühr von CHF 4.25)';
 $_MODULE['<{byjuno}prestashop>byjuno_019ec3132cdf8ee0f2e2a75cf5d3e459'] = 'Anrede';
 $_MODULE['<{byjuno}prestashop>byjuno_63889cfb9d3cbe05d1bd2be5cc9953fd'] = 'Herr';
 $_MODULE['<{byjuno}prestashop>byjuno_b719ce180ec7bd9641fece2f920f4817'] = 'Frau';
