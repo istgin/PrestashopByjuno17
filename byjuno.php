@@ -788,10 +788,15 @@ class Byjuno extends PaymentModule
         if (Configuration::get("BYJUNO_CANCEL_S5_ALLOWED") == 'enable') {
             if ($orderStatus->id == Configuration::get('PS_OS_CANCELED')) {
                 $orderCore = new OrderCore((int)$params["id_order"]);
+                $isOldorder = false;
+                if ($orderCore->payment == "Byjuno invoice") {
+                    //old order - process;
+                    $isOldorder = true;
+                }
                 $cembraPayLogger = CembraPayLogger::getInstance();
                 $orderRef = $cembraPayLogger->getOrderFields($orderCore->reference);
-                if (!empty($orderRef["transaction_id"])) {
-                    if ($orderRef["request_type"] == 'Checkout request' || $orderRef["request_type"] == 'Checkout request company') {
+                if (!empty($orderRef["transaction_id"]) || $isOldorder) {
+                    if (!$isOldorder && ($orderRef["request_type"] == 'Checkout request' || $orderRef["request_type"] == 'Checkout request company')) {
                         $orderRefCnf = $cembraPayLogger->getCnfOrderFields($orderCore->reference);
                         if (empty($orderRefCnf["transaction_id"])) {
                             return;
@@ -800,8 +805,12 @@ class Byjuno extends PaymentModule
                     $order_module = $orderCore->module; // will return the payment module eg. ps_checkpayment , ps_wirepayment
                     if ($order_module == "byjuno") {
                         $currency = CurrencyCore::getCurrency($orderCore->id_currency);
-                        $dt = date("Y-m-d", time());
-                        $requestCancel = Byjuno_CreateShopRequestBCDPCancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $orderRef["transaction_id"]);
+                        if ($isOldorder) {
+                            $txId = "";
+                        } else {
+                            $txId = $orderRef["transaction_id"];
+                        }
+                        $requestCancel = Byjuno_CreateShopRequestBCDPCancel($orderCore->total_paid_tax_incl, $currency["iso_code"], $orderCore->reference, $txId);
 
                         $CembraPayRequestName = "Order Cancel request";
                         $json = $requestCancel->createRequest();
