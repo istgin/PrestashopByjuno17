@@ -102,7 +102,7 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 				break;
 			}
 		if (!$authorized)
-			die($this->module->getTranslator()->trans('This payment method is not available.'));
+			die($this->module->l('This payment method is not available.'));
 
 		$customer = new Customer($cart->id_customer);
 		if (!Validate::isLoadedObject($customer)) {

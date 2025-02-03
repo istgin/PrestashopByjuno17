@@ -53,6 +53,6 @@ $_MODULE['<{byjuno}prestashop>byjuno_51ac4ff7f71235c19d06298e3a513536'] = 'https
 
 $_MODULE['<{byjuno}prestashop>byjuno_5ee8c79dfc349c62050783e00349ef76'] = 'Passerelle de paiement CembraPay';
 $_MODULE['<{byjuno}prestashop>byjuno_fcc612d49d54a345ef52a746981a6c08'] = 'CembraPay';
-$_MODULE['<{byjuno}prestashop>byjuno_e2b7dec8fa4b498156dfee6e4c84b156'] = 'Ce mode de paiement n\'est pas disponible.';
+$_MODULE['<{byjuno}prestashop>validation_e2b7dec8fa4b498156dfee6e4c84b156'] = 'Ce mode de paiement n\'est pas disponible.';
 
 return $_MODULE;
