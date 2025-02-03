@@ -20,8 +20,8 @@ $_MODULE['<{byjuno}prestashop>payment_error_1e97d97a923eaddd810e056c828e99ea'] =
 $_MODULE['<{byjuno}prestashop>payment_error_c74e2d6724e2edc933a7bded86301b08'] = 'L´institution de crédit a refusé le paiement. Veuillez essayer un autre moyen de paiement.';
 $_MODULE['<{byjuno}prestashop>payment_error_569fd05bdafa1712c4f6be5b153b8418'] = 'Autres méthodes de paiement';
 
-$_MODULE['<{byjuno}prestashop>byjuno_e7a40b36fd632b62f6f00d89030832b7'] = 'CembraPay facture';
-$_MODULE['<{byjuno}prestashop>byjuno_b8405c16fab03dd6ba7f50aa1805a412'] = 'CembraPay facture unique';
+$_MODULE['<{byjuno}prestashop>byjuno_ba3bbb8c09357b3430e21c1511a49f5f'] = 'CembraPay facture';
+$_MODULE['<{byjuno}prestashop>byjuno_d99dbdeb4e35b0cac27448595b09c1c3'] = 'CembraPay facture unique';
 $_MODULE['<{byjuno}prestashop>byjuno_dbd37025b503190124596363e32f3c2e'] = 'CembraPay ZERO 3in3';
 $_MODULE['<{byjuno}prestashop>byjuno_4147ef096a0a067a1b3a6ccd9758a0d6'] = 'CembraPay ZERO 4in4';
 $_MODULE['<{byjuno}prestashop>byjuno_40c5acd4838e7b876fc335a9ee81a837'] = 'CembraPay ZERO 6in6';
@@ -51,6 +51,8 @@ $_MODULE['<{byjuno}prestashop>byjuno_ebd29ea4b1bd3dc92af6104cb4efa135'] = 'Veuil
 $_MODULE['<{byjuno}prestashop>byjuno_0d07446aa5a3ae551bda96e7dadcd0cd'] = 'https://cembrapay.ch/fr/terms';
 $_MODULE['<{byjuno}prestashop>byjuno_51ac4ff7f71235c19d06298e3a513536'] = 'https://cembrapay.ch/fr/privacy';
 
-
+$_MODULE['<{byjuno}prestashop>byjuno_5ee8c79dfc349c62050783e00349ef76'] = 'Passerelle de paiement CembraPay';
+$_MODULE['<{byjuno}prestashop>byjuno_fcc612d49d54a345ef52a746981a6c08'] = 'CembraPay';
+$_MODULE['<{byjuno}prestashop>byjuno_e2b7dec8fa4b498156dfee6e4c84b156'] = 'Ce mode de paiement n\'est pas disponible.';
 
 return $_MODULE;

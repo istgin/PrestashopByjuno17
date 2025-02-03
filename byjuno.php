@@ -210,7 +210,7 @@ class Byjuno extends PaymentModule
 
         if ($byjuno_invoice) {
             if ($b2b && !empty($invoice_address->company)) {
-                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 1);
+                $selected_payments_invoice[] = Array('name' => $this->l('CembraPay single invoice'), 'id' => 'single_invoice', "selected" => 1);
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
             } else  {
                 if (Configuration::get("byjuno_invoice") == 'enable') {
@@ -218,14 +218,14 @@ class Byjuno extends PaymentModule
                     if (!empty($cookie->byjuno_selected_plan_invoice) && $cookie->byjuno_selected_plan_invoice == 'byjuno_invoice') {
                         $selected = 1;
                     }
-                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => $selected);
+                    $selected_payments_invoice[] = Array('name' => $this->l('CembraPay invoice'), 'id' => 'byjuno_invoice', "selected" => $selected);
                 }
                 if (Configuration::get("single_invoice") == 'enable') {
                     $selected = 0;
                     if (!empty($cookie->byjuno_selected_plan_invoice) && $cookie->byjuno_selected_plan_invoice == 'single_invoice') {
                         $selected = 1;
                     }
-                    $selected_payments_invoice[] = Array('name' => $this->l('Cembra Single Invoice'), 'id' => 'single_invoice', "selected" => $selected);
+                    $selected_payments_invoice[] = Array('name' => $this->l('CembraPay single invoice'), 'id' => 'single_invoice', "selected" => $selected);
                 }
                 if (empty($cookie->byjuno_selected_plan_invoice)) {
                     $selected_payments_invoice[0]["selected"] = 1;
