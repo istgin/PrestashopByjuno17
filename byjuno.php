@@ -26,7 +26,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.0';
+        $this->version = '2.0.1';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
@@ -419,7 +419,7 @@ class Byjuno extends PaymentModule
 
         $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
         if ((float)$total < (float)Configuration::get("BYJUNO_MIN_AMOUNT") || (float)$total > (float)Configuration::get("BYJUNO_MAX_AMOUNT")) {
-            return true;
+            return false;
         }
 
         $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
