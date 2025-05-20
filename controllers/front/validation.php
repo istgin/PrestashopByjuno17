@@ -238,7 +238,6 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 });
                 $status = "";
                 $responseRes = null;
-                $cembraPayLogger = CembraPayLogger::getInstance();
                 if (isset($response)) {
                     /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
                     $responseRes = CembraPayConstants::authorizationResponse($response);
