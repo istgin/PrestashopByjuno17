@@ -140,13 +140,8 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 
 
         $b2b = Configuration::get("BYJUNO_B2B") == 'enable';
+        $screeningStatus = CembraPayConstants::$SCREENING_NET_ERROR;
         $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
-        $requestScr = Cembra_CreatePrestaShopRequestScreening($this->context->cart, $this->context->customer, $this->context->currency);
-        $statusLog = "Screening request before order";
-        if ($requestScr->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS && $b2b) {
-            $statusLog = "Screening request company before order";
-        }
-        $jsonScr = $requestScr->createRequest();
         $mode = Configuration::get("INTRUM_MODE");
         if (isset($mode) && strtolower($mode) == 'live') {
             $cembrapayCommunicator->setServer('live');
@@ -154,23 +149,32 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
             $cembrapayCommunicator->setServer('test');
         }
         $accessData = $this->module->getAccessData($mode);
-        $response = $cembrapayCommunicator->sendScreeningRequest($jsonScr, $accessData, function ($object, $token, $accessData) {
-            $object->saveToken($token, $accessData);
-        });
         $cembraPayLogger = CembraPayLogger::getInstance();
-        if ($response) {
-            $responseRes = CembraPayConstants::screeningResponse($response);
-            $screeningStatus = $responseRes->processingStatus;
-            $cembraPayLogger->saveCembraLog($jsonScr, $response, $responseRes->processingStatus, $statusLog,
-                $requestScr->custDetails->firstName, $requestScr->custDetails->lastName, $requestScr->requestMsgId,
-                $requestScr->billingAddr->postalCode, $requestScr->billingAddr->town, $requestScr->billingAddr->country,
-                $requestScr->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+        if (Configuration::get("BYJUNO_SCREENING_BEFORE_ORDER") == 'enable') {
+            $requestScr = Cembra_CreatePrestaShopRequestScreening($this->context->cart, $this->context->customer, $this->context->currency);
+            $statusLog = "Screening request before order";
+            if ($requestScr->custDetails->custType == CembraPayConstants::$CUSTOMER_BUSINESS && $b2b) {
+                $statusLog = "Screening request company before order";
+            }
+            $jsonScr = $requestScr->createRequest();
+            $response = $cembrapayCommunicator->sendScreeningRequest($jsonScr, $accessData, function ($object, $token, $accessData) {
+                $object->saveToken($token, $accessData);
+            });
+            if ($response) {
+                $responseRes = CembraPayConstants::screeningResponse($response);
+                $screeningStatus = $responseRes->processingStatus;
+                $cembraPayLogger->saveCembraLog($jsonScr, $response, $responseRes->processingStatus, $statusLog,
+                    $requestScr->custDetails->firstName, $requestScr->custDetails->lastName, $requestScr->requestMsgId,
+                    $requestScr->billingAddr->postalCode, $requestScr->billingAddr->town, $requestScr->billingAddr->country,
+                    $requestScr->billingAddr->addrFirstLine, $responseRes->transactionId, "-");
+            } else {
+                $cembraPayLogger->saveCembraLog($jsonScr, $response, "Query error", $statusLog,
+                    $requestScr->custDetails->firstName, $requestScr->custDetails->lastName, $requestScr->requestMsgId,
+                    $requestScr->billingAddr->postalCode, $requestScr->billingAddr->town, $requestScr->billingAddr->country,
+                    $requestScr->billingAddr->addrFirstLine, "-", "-");
+            }
         } else {
-            $cembraPayLogger->saveCembraLog($jsonScr, $response, "Query error", $statusLog,
-                $requestScr->custDetails->firstName, $requestScr->custDetails->lastName, $requestScr->requestMsgId,
-                $requestScr->billingAddr->postalCode, $requestScr->billingAddr->town, $requestScr->billingAddr->country,
-                $requestScr->billingAddr->addrFirstLine, "-", "-");
-            $screeningStatus = CembraPayConstants::$SCREENING_NET_ERROR;
+            $screeningStatus = CembraPayConstants::$SCREENING_OK;
         }
 
         if ($screeningStatus == CembraPayConstants::$SCREENING_OK) {
@@ -226,13 +230,6 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                     $statusLog = "Authorization request company";
                 }
                 $json = $requestAUT->createRequest();
-                $cembrapayCommunicator = new CembraPayCommunicator(new CembraPayAzure());
-                if (isset($mode) && strtolower($mode) == 'live') {
-                    $cembrapayCommunicator->setServer('live');
-                } else {
-                    $cembrapayCommunicator->setServer('test');
-                }
-                $accessData = $this->module->getAccessData($mode);
                 $response = $cembrapayCommunicator->sendAuthRequest($json, $accessData, function ($object, $token, $accessData) {
                     $object->saveToken($token, $accessData);
                 });

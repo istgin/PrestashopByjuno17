@@ -618,6 +618,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Array(0 => Configuration::get('PS_OS_PAYMENT'))));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
+            Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', 'disable');
 
         }
         return true;
@@ -943,6 +944,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_S4_TRIGGER', serialize(Tools::getValue('BYJUNO_S4_TRIGGER')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
+            Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', Tools::getValue('BYJUNO_SCREENING_BEFORE_ORDER'));
         }
         if (Tools::isSubmit('submitLogSearch')) {
             Configuration::updateValue('INTRUM_SHOW_LOG', 'true');
@@ -1052,6 +1054,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_S4_TRIGGER' => $arrayOfTrigger,
             'BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY' => $arrayOfNotModify,
             'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
+            'BYJUNO_SCREENING_BEFORE_ORDER' => Configuration::get("BYJUNO_SCREENING_BEFORE_ORDER"),
             'payment_methods' => $methods,
             'cembra_logs' => self::getLogs(),
             'search_in_log' => Tools::getValue('searchInLog'),

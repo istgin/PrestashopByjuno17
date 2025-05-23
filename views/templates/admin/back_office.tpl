@@ -434,6 +434,19 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-3 required">
+                            Screening before create order:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_SCREENING_BEFORE_ORDER" id="BYJUNO_SCREENING_BEFORE_ORDER">
+                                <option value="enable" {if ($BYJUNO_SCREENING_BEFORE_ORDER == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_SCREENING_BEFORE_ORDER == 'disable' || $BYJUNO_SCREENING_BEFORE_ORDER == '')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
                             Enable B2B check:
                         </label>
 
