@@ -447,6 +447,10 @@ class Byjuno extends PaymentModule
         }
         if (($byjuno_invoice || $byjuno_installment) && Configuration::get("BYJUNO_CREDIT_CHECK") == 'enable') {
             $screeningStatus = "";
+            $invoice_address = new Address($this->context->cart->id_address_invoice);
+            if (empty(html_entity_decode($invoice_address->firstname, ENT_COMPAT, 'UTF-8'))) {
+                return true;
+            }
             $request = Cembra_CreatePrestaShopRequestScreening($this->context->cart, $this->context->customer, $this->context->currency);
             $jsonUniq = clone $request;
             $jsonUniq->requestMsgId = "";
@@ -543,6 +547,7 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('displayBackOfficeOrderActions')
             || !$this->registerHook('header')
+            || !$this->registerHook('displayAdminOrder')
         ) {
             return false;
         }
@@ -638,6 +643,25 @@ class Byjuno extends PaymentModule
             return '';
         }
         return '<style>#desc-order-partial_refund { display: none !important; visibility: hidden !important;}</style>';
+    }
+
+
+    public function hookDisplayAdminOrder($params)
+    {
+        if (!isset($params['id_order'])) {
+            return;
+        }
+
+        $order = new Order((int)$params['id_order']);
+
+        // Payment method to match
+        $targetPayment = 'Byjuno'; // Change this to your payment module's display name
+        var_dump($order->payment);
+        exit();
+        if (strpos($order->payment, $targetPayment) !== false) {
+            // Add CSS file that hides the sources block
+            $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
+        }
     }
 
     public function hookActionOrderSlipAdd($params)
