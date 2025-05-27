@@ -547,7 +547,6 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('displayBackOfficeOrderActions')
             || !$this->registerHook('header')
-            || !$this->registerHook('displayAdminOrder')
         ) {
             return false;
         }
