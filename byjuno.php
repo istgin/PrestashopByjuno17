@@ -645,25 +645,6 @@ class Byjuno extends PaymentModule
         return '<style>#desc-order-partial_refund { display: none !important; visibility: hidden !important;}</style>';
     }
 
-
-    public function hookDisplayAdminOrder($params)
-    {
-        if (!isset($params['id_order'])) {
-            return;
-        }
-
-        $order = new Order((int)$params['id_order']);
-
-        // Payment method to match
-        $targetPayment = 'Byjuno'; // Change this to your payment module's display name
-        var_dump($order->payment);
-        exit();
-        if (strpos($order->payment, $targetPayment) !== false) {
-            // Add CSS file that hides the sources block
-            $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
-        }
-    }
-
     public function hookActionOrderSlipAdd($params)
     {
         if (Configuration::get("BYJUNO_REFUND_S5_ALLOWED") != 'enable') {
