@@ -23,6 +23,7 @@ class ByjunoErrorpaymentModuleFrontController extends ModuleFrontController
         }
 		$this->display_column_left = false;
 		parent::initContent();
+        $this->context->smarty->assign('cmbrlink', Context::getContext()->link);
 		$this->setTemplate('module:byjuno/views/templates/front/payment_error.tpl');
 	}
 }

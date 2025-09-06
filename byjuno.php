@@ -84,6 +84,7 @@ class Byjuno extends PaymentModule
         } else {
             $this->smarty->assign('status', 'failed');
         }
+        $this->smarty->assign('cmbrlink', Context::getContext()->link);
         $cookie->intrumId = "";
         return $this->fetch('module:byjuno/views/templates/hook/payment_return.tpl');
     }
@@ -295,6 +296,7 @@ class Byjuno extends PaymentModule
             $values
         );
 
+        $this->smarty->assign('cmbrlink', Context::getContext()->link);
         if ($byjuno_invoice) {
             $newOptionInvoice = new PaymentOption();
             $newOptionInvoice->setModuleName($this->name)
@@ -400,6 +402,8 @@ class Byjuno extends PaymentModule
             'this_path_bw' => $this->_path,
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
+
+        $this->smarty->assign('cmbrlink', Context::getContext()->link);
         return $this->display(__FILE__, 'payment.tpl');
     }
 
@@ -859,7 +863,7 @@ class Byjuno extends PaymentModule
             $this->smarty->assign(
                 $values
             );
-
+            $this->smarty->assign('cmbrlink', Context::getContext()->link);
             return $this->fetch('module:byjuno/views/templates/hook/payment_err_byjuno.tpl');
         }
     }
@@ -1076,6 +1080,7 @@ class Byjuno extends PaymentModule
 
         Configuration::updateValue('INTRUM_SUBMIT_MAIN', '');
         Configuration::updateValue('INTRUM_SUBMIT_PAYMENTS', '');
+        $this->smarty->assign('cmbrlink', Context::getContext()->link);
         $output = $this->fetchTemplate('/views/templates/admin/back_office.tpl');
 
         return $output;

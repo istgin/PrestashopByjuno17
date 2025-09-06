@@ -1,4 +1,4 @@
-<form action="{$link->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post" id="byjuno-invoice">
+<form action="{$cmbrlink->getModuleLink('byjuno', 'validation', [], true)|escape:'html':'UTF-8'}" method="post" id="byjuno-invoice">
     <div class="form-fields">
         {if (count($selected_payments_invoice) > 1)}
             <div class="form-group row">
