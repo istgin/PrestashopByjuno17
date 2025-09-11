@@ -201,12 +201,7 @@ class Byjuno extends PaymentModule
             'select_payment_option' => Tools::getValue('select_payment_option'),
         );
         $termsText = $this->l("I agree with terms and conditions");
-        $termsL = $this->l("t_c_terms_url");
-        $privacyL = $this->l("t_c_privacy_url");
-        $termsText = str_replace("{1}", '<a href="'.$termsL.'" target="_blank" style="font-weight: bold; text-decoration: underline">', $termsText);
-        $termsText = str_replace("{2}", '</a>', $termsText);
-        $termsText = str_replace("{3}", '<a href="'.$privacyL.'" target="_blank" style="font-weight: bold; text-decoration: underline">', $termsText);
-        $termsText = str_replace("{4}", '</a>', $termsText);
+        $termsText = html_entity_decode($termsText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $values['l_i_agree_with_terms_and_conditions'] = $termsText;
 
         if ($byjuno_invoice) {

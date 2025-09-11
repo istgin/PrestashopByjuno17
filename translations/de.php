@@ -46,7 +46,7 @@ $_MODULE['<{byjuno}prestashop>byjuno_b719ce180ec7bd9641fece2f920f4817'] = 'Frau'
 $_MODULE['<{byjuno}prestashop>byjuno_10803b83a68db8f7e7a33e3b41e184d0'] = 'Geburtsdatum';
 $_MODULE['<{byjuno}prestashop>byjuno_569fd05bdafa1712c4f6be5b153b8418'] = 'Andere Zahlungsmethoden';
 $_MODULE['<{byjuno}prestashop>byjuno_46b9e3665f187c739c55983f757ccda0'] = 'Bestellung abschliessen';
-$_MODULE['<{byjuno}prestashop>byjuno_a6d6486d3d26f3ee5d215b120b4d9aa9'] = 'Ich akzeptiere die {1}AGB{2}und die {3}Datenschutzerklärung{4} von CembraPay.';
+$_MODULE['<{byjuno}prestashop>byjuno_a6d6486d3d26f3ee5d215b120b4d9aa9'] = 'Ich akzeptiere die <a href=\'https://cembrapay.ch/de/terms/CP\' target=\'_blank\'>AGB</a> und die <a href=\'https://cembrapay.ch/de/privacy\' target=\'_blank\'>Datenschutzerklärung von CembraPay</a>. Ich akzeptiere ebenfalls die AGB der <a href=\'https://kanela.ch/de/content/allgemeine-geschaeftsbedingungen\' target=\'_blank\'>Kanela AG</a>.';
 $_MODULE['<{byjuno}prestashop>byjuno_ebd29ea4b1bd3dc92af6104cb4efa135'] = 'Sie müssen die AGB akzeptieren';
 $_MODULE['<{byjuno}prestashop>byjuno_0d07446aa5a3ae551bda96e7dadcd0cd'] = 'https://cembrapay.ch/de/terms';
 $_MODULE['<{byjuno}prestashop>byjuno_51ac4ff7f71235c19d06298e3a513536'] = 'https://cembrapay.ch/de/privacy';
