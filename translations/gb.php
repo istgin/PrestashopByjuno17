@@ -11,7 +11,7 @@ $_MODULE['<{byjuno}prestashop>byjuno_63889cfb9d3cbe05d1bd2be5cc9953fd'] = 'Mr.';
 $_MODULE['<{byjuno}prestashop>byjuno_b719ce180ec7bd9641fece2f920f4817'] = 'Ms.';
 $_MODULE['<{byjuno}prestashop>byjuno_10803b83a68db8f7e7a33e3b41e184d0'] = 'Date of Birth';
 $_MODULE['<{byjuno}prestashop>byjuno_ebd29ea4b1bd3dc92af6104cb4efa135'] = 'You must agree with terms and conditions';
-$_MODULE['<{byjuno}prestashop>byjuno_a6d6486d3d26f3ee5d215b120b4d9aa9'] = 'I have read and accept the <a href=\'https://cembrapay.ch/en/terms/CP\' target=\'_blank\'>Terms and Conditions</a> and the <a href=\'https://cembrapay.ch/en/privacy\' target=\'_blank\'>Data Privacy Policy of CembraPay</a>. I also accept the <a href=\'https://kanela.ch/gb/content/conditions-of-use\' target=\'_blank\'>Dterms and conditions of Kanela AG</a>.';
+$_MODULE['<{byjuno}prestashop>byjuno_a6d6486d3d26f3ee5d215b120b4d9aa9'] = 'I have read and accept the <a href=\'https://cembrapay.ch/en/terms/CP\' target=\'_blank\'>Terms and Conditions</a> and the <a href=\'https://cembrapay.ch/en/privacy\' target=\'_blank\'>Data Privacy Policy of CembraPay</a>. I also accept the <a href=\'https://kanela.ch/gb/content/conditions-of-use\' target=\'_blank\'>terms and conditions of Kanela AG</a>.';
 $_MODULE['<{byjuno}prestashop>byjuno_569fd05bdafa1712c4f6be5b153b8418'] = 'Other payment methods';
 $_MODULE['<{byjuno}prestashop>byjuno_46b9e3665f187c739c55983f757ccda0'] = 'I confirm my order';
 $_MODULE['<{byjuno}prestashop>byjuno_879f6b8877752685a966564d072f498f'] = 'Your shopping cart is empty.';
