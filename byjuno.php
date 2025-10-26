@@ -26,7 +26,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.2';
+        $this->version = '2.0.3';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
@@ -301,7 +301,8 @@ class Byjuno extends PaymentModule
             $newOptionInvoice = new PaymentOption();
             $newOptionInvoice->setModuleName($this->name)
                 ->setCallToActionText($this->l('Byjuno invoice'))
-                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_invoice.tpl'));
+                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_invoice.tpl'))
+                ->setLogo($this->getPathUri() . 'views/img/cembrapay-logo.png');
 
             $paymentMethod[] = $newOptionInvoice;
         }
@@ -309,7 +310,8 @@ class Byjuno extends PaymentModule
             $newOptionInstallment = new PaymentOption();
             $newOptionInstallment->setModuleName($this->name)
                 ->setCallToActionText($this->l('Byjuno installment'))
-                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_installment.tpl'));
+                ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_installment.tpl'))
+                ->setLogo($this->getPathUri() . 'views/img/cembrapay-logo.png');
             $paymentMethod[] = $newOptionInstallment;
         }
 
