@@ -56,6 +56,8 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
                         }
                         if ($success != -1) {
                             $order->setCurrentState($success);
+                            $order->valid = true;
+                            $order->update();
                         }
                     }
                     Tools::redirect($this->context->cookie->chk_final_redirect);

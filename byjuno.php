@@ -506,7 +506,7 @@ class Byjuno extends PaymentModule
         $this->context->controller->addCSS($this->_path . 'byjuno.css', 'all');
     }
 
-    public function addOrderState($name, $color = '#FFF000', $send_mail = false, $paid = false)
+    public function addOrderState($name, $logable, $color = '#FFF000', $send_mail = false, $paid = false)
     {
         $states = OrderState::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT'));
 
@@ -525,7 +525,7 @@ class Byjuno extends PaymentModule
             $defaultOrderState->invoice = false;
             $defaultOrderState->color = $color;
             $defaultOrderState->unremovable = false;
-            $defaultOrderState->logable = false;
+            $defaultOrderState->logable = $logable;
             $defaultOrderState->paid = $paid;
             $defaultOrderState->add();
         } else {
@@ -573,10 +573,10 @@ class Byjuno extends PaymentModule
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
 
 
-        $defaultStateId = $this->addOrderState("Awaiting for CembraPay");
-        $receivedPaymentId = $this->addOrderState("CembraPay payment success", "#32CD32", true, true);
-        $s4FailId = $this->addOrderState("CembraPay settle fail", "#FF0000", true, true);
-        $s5FailId = $this->addOrderState("CembraPay refund fail", "#FF0000", true, true);
+        $defaultStateId = $this->addOrderState("Awaiting for CembraPay", false);
+        $receivedPaymentId = $this->addOrderState("CembraPay payment success", true, "#32CD32", true, true);
+        $s4FailId = $this->addOrderState("CembraPay settle fail", false, "#FF0000", true, true);
+        $s5FailId = $this->addOrderState("CembraPay refund fail", false, "#FF0000", true, true);
         Configuration::updateValue('CEMBRA_ORDER_STATE_DEFAULT', $defaultStateId);
         Configuration::updateValue('CEMBRA_ORDER_STATE_COMPLETE', $receivedPaymentId);
         Configuration::updateValue('CEMBRA_ORDER_S4_FAIL', $s4FailId);
@@ -780,6 +780,8 @@ class Byjuno extends PaymentModule
                                 "-", "-", "-","-", $txSettle, $orderCore->reference);
                             if (empty($responseSettle->settlementId)) {
                                 $orderCore->setCurrentState(Configuration::get('CEMBRA_ORDER_S4_FAIL'));
+                                $orderCore->valid = false;
+                                $orderCore->update();
                                 Tools::redirectAdmin(Context::getContext()->link->getAdminLink("AdminOrders") . "&id_order=" . $orderCore->id . "&vieworder");
                                 exit();
                             }
