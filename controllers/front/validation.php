@@ -40,8 +40,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 	public function postProcess()
 	{
         PrestaShopLogger::addLog(
-            'ByjunoValidationModuleFrontController payment start',
-            1
+            'CembraPayValidationModuleFrontController payment start',
+            1,
+            "CembraPay"
         );
 		global $cookie;
 		$repayment = Cembra_mapRepayment(Tools::getValue('selected_plan'));
@@ -156,8 +157,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
         $cembraPayLogger = CembraPayLogger::getInstance();
         if (Configuration::get("BYJUNO_SCREENING_BEFORE_ORDER") == 'enable') {
             PrestaShopLogger::addLog(
-                'ByjunoValidationModuleFrontController screening requested',
-                1
+                'CembraPayValidationModuleFrontController screening requested',
+                1,
+                "CembraPay"
             );
             $requestScr = Cembra_CreatePrestaShopRequestScreening($this->context->cart, $this->context->customer, $this->context->currency);
             $statusLog = "Screening request before order";
@@ -187,20 +189,23 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 
         if ($screeningStatus == CembraPayConstants::$SCREENING_OK) {
             PrestaShopLogger::addLog(
-                'ByjunoValidationModuleFrontController screening ok',
-                1
+                'CembraPayValidationModuleFrontController screening ok',
+                1,
+                "CembraPay"
             );
             $ssl = Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
             $this->module->validateOrder($cart->id, Configuration::get('CEMBRA_ORDER_STATE_DEFAULT'), $total, $paymentName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
             PrestaShopLogger::addLog(
-                'ByjunoValidationModuleFrontController auth order validated',
-                1
+                'CembraPayValidationModuleFrontController auth order validated',
+                1,
+                "CembraPay"
             );
             $order = new OrderCore((int)$this->module->currentOrder);
             if (Configuration::get('CEMBRAPAY_PAYMENT_MODE') == 'checkout') {
                 PrestaShopLogger::addLog(
-                    'ByjunoValidationModuleFrontController checkout request',
-                    1
+                    'CembraPayValidationModuleFrontController checkout request',
+                    1,
+                    "CembraPay"
                 );
                 $successUrl = $this->context->link->getModuleLink('byjuno', 'checkoutsuccess', [], $ssl);
                 $errorUrl = $this->context->link->getModuleLink('byjuno', 'checkouterror', [], $ssl);
@@ -236,24 +241,27 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 $this->context->cookie->cembra_checkout_order_id = $order->id;
                 if ($status == CembraPayConstants::$CHK_OK) {
                     PrestaShopLogger::addLog(
-                        'ByjunoValidationModuleFrontController checkout request ok',
-                        1
+                        'CembraPayValidationModuleFrontController checkout request ok',
+                        1,
+                        "CembraPay"
                     );
                     $this->context->cookie->chk_transaction_id = $responseRes->transactionId;
                     $this->context->cookie->chk_final_redirect = 'index.php?controller=order-confirmation&id_cart=' . $cart->id . '&id_module=' . $this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key;
                     Tools::redirect($responseRes->redirectUrlCheckout);
                 } else {
                     PrestaShopLogger::addLog(
-                        'ByjunoValidationModuleFrontController checkout request failed',
-                        1
+                        'CembraPayValidationModuleFrontController checkout request failed',
+                        1,
+                        "CembraPay"
                     );
                     $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
                     Tools::redirect($errorlnk);
                 }
             } else {
                 PrestaShopLogger::addLog(
-                    'ByjunoValidationModuleFrontController auth request created',
-                    1
+                    'CembraPayValidationModuleFrontController auth request created',
+                    1,
+                    "CembraPay"
                 );
                 $tocUrl = $this->module->getTocUrl();
                 $requestAUT = Cembra_CreatePrestaShopRequestAut($order, $this->context->currency, Tools::getValue('selected_plan'), $selected_gender, $selected_birthday, $invoiceDelivery, $tocUrl);
@@ -283,8 +291,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                 }
                 if ($status == CembraPayConstants::$AUTH_OK) {
                     PrestaShopLogger::addLog(
-                        'ByjunoValidationModuleFrontController auth request ok',
-                        1
+                        'CembraPayValidationModuleFrontController auth request ok',
+                        1,
+                        "CembraPay"
                     );
                     $orderStatusChange = new OrderCore((int)$this->module->currentOrder);
                     try {
@@ -297,15 +306,17 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                             $success = Configuration::get('BYJUNO_SUCCESS_TRIGGER');
                         } catch (Exception $e) {
                             PrestaShopLogger::addLog(
-                                'ByjunoValidationModuleFrontController auth request update order faled',
-                                1
+                                'CembraPayValidationModuleFrontController auth request update order faled',
+                                1,
+                                "CembraPay"
                             );
                             $success = -1;
                         }
                         if ($success != -1) {
                             PrestaShopLogger::addLog(
-                                'ByjunoValidationModuleFrontController auth request update order state',
-                                1
+                                'CembraPayValidationModuleFrontController auth request update order state',
+                                1,
+                                "CembraPay"
                             );
                             $order->setCurrentState($success);
                             $order->valid = true;
@@ -315,8 +326,9 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                     Tools::redirect('index.php?controller=order-confirmation&id_cart=' . $cart->id . '&id_module=' . $this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key);
                 } else {
                     PrestaShopLogger::addLog(
-                        'ByjunoValidationModuleFrontController auth request failed',
-                        1
+                        'CembraPayValidationModuleFrontController auth request failed',
+                        1,
+                        "CembraPay"
                     );
                     $this->context->cookie->cembra_old_cart_id = $cart->id;
                     $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
