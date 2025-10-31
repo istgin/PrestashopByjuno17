@@ -26,7 +26,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.2';
+        $this->version = '2.0.3';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
@@ -297,6 +297,9 @@ class Byjuno extends PaymentModule
             $newOptionInvoice->setModuleName($this->name)
                 ->setCallToActionText($this->l('Byjuno invoice'))
                 ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_invoice.tpl'));
+            if (!empty(Configuration::get("CEMBRAPAY_SHOW_LOGO")) && Configuration::get("CEMBRAPAY_SHOW_LOGO") == 'enable') {
+                $newOptionInvoice->setLogo($this->getPathUri() . 'views/img/cembrapay-logo.png');
+            }
 
             $paymentMethod[] = $newOptionInvoice;
         }
@@ -305,6 +308,9 @@ class Byjuno extends PaymentModule
             $newOptionInstallment->setModuleName($this->name)
                 ->setCallToActionText($this->l('Byjuno installment'))
                 ->setForm($this->fetch('module:byjuno/views/templates/front/payment_form_installment.tpl'));
+            if (!empty(Configuration::get("CEMBRAPAY_SHOW_LOGO")) && Configuration::get("CEMBRAPAY_SHOW_LOGO") == 'enable') {
+                $newOptionInvoice->setLogo($this->getPathUri() . 'views/img/cembrapay-logo.png');
+            }
             $paymentMethod[] = $newOptionInstallment;
         }
 
@@ -622,6 +628,8 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Array()));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
             Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', 'disable');
+            Configuration::updateValue('CEMBRAPAY_SHOW_LOGO', 'disable');
+
 
         }
         return true;
@@ -873,11 +881,25 @@ class Byjuno extends PaymentModule
                 $cookie->intrumId = Context::getContext()->cookie->checksum;
             }
             echo '
-                <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '&pageid=checkout"></script>
+            <script>
+                window.addEventListener("load", function () {
+                    window.setTimeout(function() {
+                        const s = document.createElement("script");
+                        s.type = "text/javascript";
+                        s.src = "https://cdn.cembrapay.ch/public/fp-clientlib-v5.js";
+                        s.async = true;
+                        s.onload = function() {
+                            threatmetrix.profile("prof4rs.cembrapay.ch", "' . Configuration::get("INTRUM_TMXORGID") . '", "' . $cookie->intrumId . '");
+                        };
+                        document.body.appendChild(s);
+                    }, 0);
+                });
+            </script>
+            <link rel="preload" href="https://cdn.cembrapay.ch/public/fp-clientlib-v5.js" as="script">
             <noscript>
-            <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/tags?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '&pageid=checkout"></iframe>
+            <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://prof4rs.cembrapay.ch/fp/tags?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '"></iframe>
             </noscript>
-                ';
+            ';
         }
     }
 
@@ -950,6 +972,7 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY', serialize(Tools::getValue('BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY')));
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
             Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', Tools::getValue('BYJUNO_SCREENING_BEFORE_ORDER'));
+            Configuration::updateValue('CEMBRAPAY_SHOW_LOGO', Tools::getValue('CEMBRAPAY_SHOW_LOGO'));
         }
         if (Tools::isSubmit('submitLogSearch')) {
             Configuration::updateValue('INTRUM_SHOW_LOG', 'true');
@@ -1060,6 +1083,7 @@ class Byjuno extends PaymentModule
             'BYJUNO_SUCCESS_TRIGGER_NOT_MODIFY' => $arrayOfNotModify,
             'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
             'BYJUNO_SCREENING_BEFORE_ORDER' => Configuration::get("BYJUNO_SCREENING_BEFORE_ORDER"),
+            'CEMBRAPAY_SHOW_LOGO' => Configuration::get("CEMBRAPAY_SHOW_LOGO"),
             'payment_methods' => $methods,
             'cembra_logs' => self::getLogs(),
             'search_in_log' => Tools::getValue('searchInLog'),

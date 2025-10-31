@@ -369,6 +369,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Show CembraPay logo near payment method on checkout page:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="CEMBRAPAY_SHOW_LOGO" id="BYJUNO_SCREENING_BEFORE_ORDER">
+                                <option value="enable" {if ($CEMBRAPAY_SHOW_LOGO == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($CEMBRAPAY_SHOW_LOGO == 'disable' || $CEMBRAPAY_SHOW_LOGO == '')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="panel-footer">
