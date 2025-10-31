@@ -12,6 +12,8 @@ class ByjunoCheckouterrorModuleFrontController extends ModuleFrontController
         if (!empty($this->context->cookie->cembra_checkout_order_id)) {
             $order = new OrderCore((int)$this->context->cookie->cembra_checkout_order_id);
             $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+            $order->valid = false;
+            $order->update();
         }
         $errorLink = $this->context->link->getModuleLink('byjuno', 'errorpayment');
         Tools::redirect($errorLink);

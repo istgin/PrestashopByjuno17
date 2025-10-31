@@ -248,6 +248,8 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                         1
                     );
                     $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+                    $order->valid = false;
+                    $order->update();
                     Tools::redirect($errorlnk);
                 }
             } else {
@@ -320,6 +322,8 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
                     );
                     $this->context->cookie->cembra_old_cart_id = $cart->id;
                     $order->setCurrentState(Configuration::get('PS_OS_CANCELED'));
+                    $order->valid = false;
+                    $order->update();
                     Tools::redirect($errorlnk);
                 }
             }
