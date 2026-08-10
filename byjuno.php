@@ -67,10 +67,9 @@ class Byjuno extends PaymentModule
         }
         if (in_array($state, array($success))) {
             $this->smarty->assign(array(
-                'total_to_pay' => Tools::displayPrice(
+                'total_to_pay' => $this->context->getCurrentLocale()->formatPrice(
                     $params['order']->getOrdersTotalPaid(),
-                    new Currency($params['order']->id_currency),
-                    false
+                    Currency::getIsoCodeById((int) $params['order']->id_currency)
                 ),
                 'shop_name' => $this->context->shop->name,
                 'status' => 'ok',
