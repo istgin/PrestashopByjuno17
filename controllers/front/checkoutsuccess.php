@@ -11,6 +11,11 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
 	{
         if (!empty($this->context->cookie->cembra_checkout_order_id) && !empty($this->context->cookie->chk_transaction_id)) {
             $order = new OrderCore((int)$this->context->cookie->cembra_checkout_order_id);
+            if (!Validate::isLoadedObject($order) || (int)$order->id_customer !== (int)$this->context->customer->id) {
+                $this->clearCembraSessionData();
+                $this->errorRedirect();
+                return;
+            }
             $cembraPayLogger = CembraPayLogger::getInstance();
             $orderRef = $cembraPayLogger->getOrderFields($order->reference);
             if (!empty($orderRef["transaction_id"])) {
@@ -60,11 +65,15 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
                             $order->update();
                         }
                     }
-                    Tools::redirect($this->context->cookie->chk_final_redirect);
+                    $finalRedirect = $this->context->cookie->chk_final_redirect;
+                    $this->clearCembraSessionData();
+                    Tools::redirect($finalRedirect);
                 } else {
+                    $this->clearCembraSessionData();
                     $this->errorRedirect();
                 }
             } else {
+                $this->clearCembraSessionData();
                 $this->errorRedirect();
             }
         } else {
@@ -76,5 +85,13 @@ class ByjunoCheckoutsuccessModuleFrontController extends ModuleFrontController
     {
         $errorLink = $this->context->link->getModuleLink('byjuno', 'errorpayment');
         Tools::redirect($errorLink);
+    }
+
+    private function clearCembraSessionData()
+    {
+        unset($this->context->cookie->cembra_checkout_order_id);
+        unset($this->context->cookie->chk_transaction_id);
+        unset($this->context->cookie->chk_final_redirect);
+        $this->context->cookie->write();
     }
 }
