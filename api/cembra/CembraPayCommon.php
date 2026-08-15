@@ -189,10 +189,8 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
         $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
-    $request->deliveryDetails->deliveryDetailsDifferent = true;
-    if (!empty($cart)) {
-        $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
-    }
+    $request->deliveryDetails->deliveryDetailsDifferent = ((int) $cart->id_address_delivery !== (int) $cart->id_address_invoice);
+    $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
     if (!empty($shipping_address->company) && $b2b) {
@@ -317,7 +315,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
         $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
-    $request->deliveryDetails->deliveryDetailsDifferent = true;
+    $request->deliveryDetails->deliveryDetailsDifferent = ((int) $order->id_address_delivery !== (int) $order->id_address_invoice);
     $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
@@ -455,7 +453,7 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
         $request->custContacts->phoneMobile = (string)$shipping_address->phone_mobile;
     }
 
-    $request->deliveryDetails->deliveryDetailsDifferent = true;
+    $request->deliveryDetails->deliveryDetailsDifferent = ((int) $order->id_address_delivery !== (int) $order->id_address_invoice);
     if (!empty($cart)) {
         $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
     }
