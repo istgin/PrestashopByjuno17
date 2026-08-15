@@ -890,7 +890,7 @@ class Byjuno extends PaymentModule
                     window.setTimeout(function() {
                         const s = document.createElement("script");
                         s.type = "text/javascript";
-                        s.src = "https://cdn.cembrapay.ch/public/fp-clientlib-v5.js";
+                        s.src = "https://cdn.cembrapay.ch/public/fp-clientlib-v6_0.js";
                         s.async = true;
                         s.onload = function() {
                             threatmetrix.profile("prof4rs.cembrapay.ch", "' . Configuration::get("INTRUM_TMXORGID") . '", "' . $cookie->intrumId . '");
@@ -899,7 +899,7 @@ class Byjuno extends PaymentModule
                     }, 0);
                 });
             </script>
-            <link rel="preload" href="https://cdn.cembrapay.ch/public/fp-clientlib-v5.js" as="script">
+            <link rel="preload" href="https://cdn.cembrapay.ch/public/fp-clientlib-v6_0.js" as="script">
             <noscript>
             <iframe allow="unload" style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://prof4rs.cembrapay.ch/fp/tags?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '"></iframe>
             </noscript>
