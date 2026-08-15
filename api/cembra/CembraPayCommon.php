@@ -190,6 +190,9 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
+    if (!empty($cart)) {
+        $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
+    }
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
     if (!empty($shipping_address->company) && $b2b) {
@@ -236,6 +239,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $shipping_address = new Address($order->id_address_delivery);
     $country = new Country($invoice_address->id_country);
     $country_shipping = new Country($shipping_address->id_country);
+    $cart = new Cart($order->id_cart);
 
     $request = new CembraPayCheckoutAutRequest();
     $request->requestMsgType = CembraPayConstants::$MESSAGE_AUTH;
@@ -314,6 +318,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
+    $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
     if (!empty($shipping_address->company) && $b2b) {
@@ -372,6 +377,7 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $shipping_address = new Address($order->id_address_delivery);
     $country = new Country($invoice_address->id_country);
     $country_shipping = new Country($shipping_address->id_country);
+    $cart = new Cart($order->id_cart);
 
     $request = new CembraPayCheckoutAutRequest();
     $request->requestMsgType = CembraPayConstants::$MESSAGE_CHK;
@@ -450,6 +456,9 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     }
 
     $request->deliveryDetails->deliveryDetailsDifferent = true;
+    if (!empty($cart)) {
+        $request->deliveryDetails->deliveryMethod = $cart->isVirtualCart() ? CembraPayConstants::$DELIVERY_VIRTUAL : CembraPayConstants::$DELIVERY_POST;
+    }
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($shipping_address->firstname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($shipping_address->lastname, ENT_COMPAT, 'UTF-8');
     if (!empty($shipping_address->company) && $b2b) {
