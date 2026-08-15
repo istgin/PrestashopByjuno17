@@ -901,7 +901,7 @@ class Byjuno extends PaymentModule
             </script>
             <link rel="preload" href="https://cdn.cembrapay.ch/public/fp-clientlib-v5.js" as="script">
             <noscript>
-            <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://prof4rs.cembrapay.ch/fp/tags?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '"></iframe>
+            <iframe allow="unload" style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://prof4rs.cembrapay.ch/fp/tags?org_id=' . Configuration::get("INTRUM_TMXORGID") . '&session_id=' . $cookie->intrumId . '"></iframe>
             </noscript>
             ';
         }
