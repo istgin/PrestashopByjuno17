@@ -39,6 +39,10 @@ class ByjunoValidationModuleFrontController extends ModuleFrontController
 {
 	public function postProcess()
 	{
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$this->isTokenValid()) {
+            Tools::redirect('index.php?controller=order&step=1');
+            exit();
+        }
         PrestaShopLogger::addLog(
             'CembraPayValidationModuleFrontController payment start',
             1

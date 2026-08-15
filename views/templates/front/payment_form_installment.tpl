@@ -93,6 +93,7 @@
             <input type="hidden" value="terms_conditions" name="terms_conditions" id="terms_conditions"/> &nbsp;
         {/if}
         <input type="hidden" id="cembra_selected_installment" name="cembra_selected_installment" value="{$select_payment_option}">
+        <input type="hidden" name="token" value="{$static_token|escape:'html':'UTF-8'}">
     </div>
 </form>
 <style>
