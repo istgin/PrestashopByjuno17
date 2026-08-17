@@ -29,6 +29,20 @@ function Cembra_byjunoGetClientIp() {
     return $ipaddress;
 }
 
+// Cart::duplicate() deliberately nulls checkout_session_data on the new cart (it's built for the
+// "reorder" feature, which should start a fresh checkout). For a payment retry we want the customer
+// back on the step they were on, not bounced to Personal Information, so carry the step-completion
+// state over from the cart being retried. There's no ObjectModel field/API for this column - core
+// itself (controllers/front/OrderController.php: saveDataToPersist()/restorePersistedData()) reads
+// and writes it with raw SQL the same way.
+function Cembra_copyCheckoutSessionData($fromCartId, $toCartId) {
+    return Db::getInstance()->execute(
+        'UPDATE `' . _DB_PREFIX_ . 'cart` SET `checkout_session_data` = (
+            SELECT `checkout_session_data` FROM `' . _DB_PREFIX_ . 'cart` WHERE `id_cart` = ' . (int) $fromCartId . '
+        ) WHERE `id_cart` = ' . (int) $toCartId
+    );
+}
+
 function Cembra_mapPaymentMethodToSpecs($method){
     $method = strtolower(str_replace(" ", "", $method));
     $IntrumMapping = array(
