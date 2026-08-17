@@ -33,6 +33,7 @@ class CembraPayConstants
 
     public static $DELIVERY_POST = 'POST';
     public static $DELIVERY_VIRTUAL = 'DIGITAL';
+    public static $DELIVERY_PICKUP = 'PICK-UP';
 
     public static $SCREENING_OK = 'SCREENING-APPROVED';
     public static $SCREENING_NET_ERROR = 'NET-ERROR';

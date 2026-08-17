@@ -26,7 +26,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.4';
+        $this->version = '2.0.5';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
@@ -512,7 +512,7 @@ class Byjuno extends PaymentModule
     }
 
 
-    public function hookHeader($params)
+    public function hookDisplayHeader($params)
     {
         $this->context->controller->addCSS($this->_path . 'byjuno.css', 'all');
     }
@@ -556,7 +556,7 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('displayBackOfficeOrderActions')
-            || !$this->registerHook('header')
+            || !$this->registerHook('displayHeader')
         ) {
             return false;
         }
