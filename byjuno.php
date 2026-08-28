@@ -26,7 +26,7 @@ class Byjuno extends PaymentModule
     {
         $this->name = 'byjuno';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.5';
+        $this->version = '2.0.6';
         $this->author = 'CembraPay';
         $this->controllers = array('payment', 'validation', 'errorpayment', 'checkoutsuccess', 'checkouterror');
         $this->is_eu_compatible = 1;
@@ -50,6 +50,7 @@ class Byjuno extends PaymentModule
         $this->l('Your shopping cart is empty.');
         $this->l('By email');
         $this->l('By post');
+        $this->l('Buy now, pay later with CembraPay invoice or installments');
         $this->cembraPayAzure = new CembraPayAzure();
     }
 
@@ -517,6 +518,45 @@ class Byjuno extends PaymentModule
         $this->context->controller->addCSS($this->_path . 'byjuno.css', 'all');
     }
 
+    public function hookDisplayProductPriceBlock($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+        if (!isset($params['type']) || $params['type'] != 'after_price') {
+            return;
+        }
+        if (Configuration::get('BYJUNO_PRODUCT_BADGE_ENABLED') != 'enable') {
+            return;
+        }
+        $byjuno_invoice = (Configuration::get("single_invoice") == 'enable' || Configuration::get("byjuno_invoice") == 'enable');
+        $byjuno_installment = (Configuration::get("installment_3") == 'enable'
+            || Configuration::get("installment_4") == 'enable'
+            || Configuration::get("installment_6") == 'enable'
+            || Configuration::get("installment_12") == 'enable'
+            || Configuration::get("installment_24") == 'enable'
+            || Configuration::get("installment_36") == 'enable'
+            || Configuration::get("installment_48") == 'enable'
+        );
+        if (!$byjuno_invoice && !$byjuno_installment) {
+            return;
+        }
+
+        $badgeText = Configuration::get('BYJUNO_PRODUCT_BADGE_TEXT');
+        if (empty($badgeText)) {
+            $badgeText = $this->l('Buy now, pay later with CembraPay invoice or installments');
+        }
+        $showLogo = Configuration::get('BYJUNO_PRODUCT_BADGE_SHOW_LOGO') == 'enable';
+
+        $this->smarty->assign(array(
+            'byjuno_product_badge_text' => $badgeText,
+            'byjuno_product_badge_show_logo' => $showLogo,
+            'byjuno_product_badge_logo' => $this->getPathUri() . 'views/img/cembrapay-logo.png',
+        ));
+
+        return $this->fetch('module:byjuno/views/templates/hook/product_price_badge.tpl');
+    }
+
     public function addOrderState($name, $logable, $color = '#FFF000', $send_mail = false, $paid = false)
     {
         $states = OrderState::getOrderStates((int)Configuration::get('PS_LANG_DEFAULT'));
@@ -553,6 +593,7 @@ class Byjuno extends PaymentModule
             || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayAfterBodyOpeningTag')
             || !$this->registerHook('displayPaymentTop')
+            || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('actionOrderSlipAdd')
             || !$this->registerHook('displayBackOfficeOrderActions')
@@ -634,6 +675,9 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Configuration::get('CEMBRA_ORDER_STATE_COMPLETE'));
             Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', 'disable');
             Configuration::updateValue('CEMBRAPAY_SHOW_LOGO', 'disable');
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_ENABLED', 'disable');
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_TEXT', $this->l('Buy now, pay later with CembraPay invoice or installments'));
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_SHOW_LOGO', 'enable');
 
 
         }
@@ -978,6 +1022,9 @@ class Byjuno extends PaymentModule
             Configuration::updateValue('BYJUNO_SUCCESS_TRIGGER', Tools::getValue('BYJUNO_SUCCESS_TRIGGER'));
             Configuration::updateValue('BYJUNO_SCREENING_BEFORE_ORDER', Tools::getValue('BYJUNO_SCREENING_BEFORE_ORDER'));
             Configuration::updateValue('CEMBRAPAY_SHOW_LOGO', Tools::getValue('CEMBRAPAY_SHOW_LOGO'));
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_ENABLED', trim(Tools::getValue('BYJUNO_PRODUCT_BADGE_ENABLED')));
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_TEXT', trim(Tools::getValue('BYJUNO_PRODUCT_BADGE_TEXT')));
+            Configuration::updateValue('BYJUNO_PRODUCT_BADGE_SHOW_LOGO', trim(Tools::getValue('BYJUNO_PRODUCT_BADGE_SHOW_LOGO')));
         }
         if (Tools::isSubmit('submitLogSearch')) {
             Configuration::updateValue('INTRUM_SHOW_LOG', 'true');
@@ -1089,6 +1136,9 @@ class Byjuno extends PaymentModule
             'BYJUNO_SUCCESS_TRIGGER' => $triggerSuccess,
             'BYJUNO_SCREENING_BEFORE_ORDER' => Configuration::get("BYJUNO_SCREENING_BEFORE_ORDER"),
             'CEMBRAPAY_SHOW_LOGO' => Configuration::get("CEMBRAPAY_SHOW_LOGO"),
+            'BYJUNO_PRODUCT_BADGE_ENABLED' => Configuration::get("BYJUNO_PRODUCT_BADGE_ENABLED"),
+            'BYJUNO_PRODUCT_BADGE_TEXT' => Configuration::get("BYJUNO_PRODUCT_BADGE_TEXT"),
+            'BYJUNO_PRODUCT_BADGE_SHOW_LOGO' => Configuration::get("BYJUNO_PRODUCT_BADGE_SHOW_LOGO"),
             'payment_methods' => $methods,
             'cembra_logs' => self::getLogs(),
             'search_in_log' => Tools::getValue('searchInLog'),

@@ -61,3 +61,18 @@ p.payment_module a.cheque:after, p.payment_module a.byjunoinstallment:after, p.p
     width: 14px;
     color: #777;
 }
+
+.byjuno-product-badge
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+.byjuno-product-badge-logo
+{
+    height: 18px;
+    width: auto;
+}

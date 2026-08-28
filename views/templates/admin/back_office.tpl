@@ -383,6 +383,45 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Show "pay by invoice" badge on product page:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_PRODUCT_BADGE_ENABLED" id="BYJUNO_PRODUCT_BADGE_ENABLED">
+                                <option value="enable" {if ($BYJUNO_PRODUCT_BADGE_ENABLED == 'enable')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_PRODUCT_BADGE_ENABLED == 'disable' || $BYJUNO_PRODUCT_BADGE_ENABLED == '')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Product page badge text:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <input type="text" name="BYJUNO_PRODUCT_BADGE_TEXT" id="BYJUNO_PRODUCT_BADGE_TEXT"
+                                   class="form-control" value="{$BYJUNO_PRODUCT_BADGE_TEXT}"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-3 required">
+                            Show CembraPay logo next to product page badge text:
+                        </label>
+
+                        <div class="col-lg-9">
+                            <select name="BYJUNO_PRODUCT_BADGE_SHOW_LOGO" id="BYJUNO_PRODUCT_BADGE_SHOW_LOGO">
+                                <option value="enable" {if ($BYJUNO_PRODUCT_BADGE_SHOW_LOGO == 'enable' || $BYJUNO_PRODUCT_BADGE_SHOW_LOGO == '')} selected{/if}>Enable</option>
+                                <option value="disable"{if ($BYJUNO_PRODUCT_BADGE_SHOW_LOGO == 'disable')} selected{/if}>Disable
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="panel-footer">
                     <input type="hidden" name="submitIntrumMain" value="intrum_main_configuration"/>
