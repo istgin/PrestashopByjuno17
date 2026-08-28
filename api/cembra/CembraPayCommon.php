@@ -235,7 +235,7 @@ function Cembra_CreatePrestaShopRequestScreening(CartCore $cart, CustomerCore $c
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.5";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.6";
 
     return $request;
 
@@ -374,7 +374,7 @@ function Cembra_CreatePrestaShopRequestAut(OrderCore $order, CurrencyCore $curre
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.5";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.6";
 
     return $request;
 }
@@ -506,7 +506,7 @@ function Cembra_CreatePrestaShopRequestChk(OrderCore $order, CurrencyCore $curre
     $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.5";
+    $request->merchantDetails->integrationModule = "CembraPay Prestashop module 2.0.6";
 
     return $request;
 }
