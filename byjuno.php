@@ -883,7 +883,7 @@ class Byjuno extends PaymentModule
         global $cookie;
         if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '') {
             if (!isset($cookie->intrumId) || $cookie->intrumId == "") {
-                $cookie->intrumId = Context::getContext()->cookie->checksum;
+                $cookie->intrumId = Tools::passwdGen(32, Tools::PASSWORDGEN_FLAG_ALPHANUMERIC);
             }
             echo '
             <script>
